@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 __author__ = 'luckydonald'
 
-from .Logging import logging  # pip install luckydonald-utils
-logger = logging.getLogger(__name__)
-
-
 import base64
 from .dependencies import import_or_install
 # import Crypto  # pip install pycrypto
