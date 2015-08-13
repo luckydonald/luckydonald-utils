@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 __author__ = 'luckydonald'
 
-from luckydonaldUtils.Logging import logging
-logger = logging.getLogger(__name__)
-
-
 CHARS_UNESCAPED = ["\\", "\n", "\r", "\t", "\b", "\a", "'"]
 CHARS_ESCAPED = ["\\\\", "\\n", "\\r", "\\t", "\\b", "\\a", "\\'"]
 

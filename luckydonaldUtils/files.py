@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 __author__ = 'luckydonald'
 
-from .Logging import logging
-from .dependencies import import_or_install
+import logging
 logger = logging.getLogger(__name__)
+from .dependencies import import_or_install
 
 import pip  # installing stuff
 
