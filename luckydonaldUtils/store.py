@@ -7,10 +7,13 @@ logger = logging.getLogger(__name__)
 
 import base64
 from .dependencies import import_or_install
+# import Crypto  # pip install pycrypto
 import_or_install("Crypto", "pycrypto")
 from Crypto import Random  # pip install pycrypto
 from Crypto.Cipher import AES
 from Crypto.Hash import MD5
+# from usersettings import Settings  # pip install usersettings
+Settings = import_or_install("usersettings.Settings", "usersettings")
 
 BS = 16
 pad = lambda s: s + (BS - len(s) % BS) * chr(BS - len(s) % BS)
@@ -18,9 +21,9 @@ un_pad = lambda s: s[:-ord(s[len(s) - 1:])]
 
 
 class Store(object):
-	def __init__(self, key=None):
+	def __init__(self, settings_name, key=None):
 		if not key:
-			settings = Settings(IDENTIFIER)  # store settings, password etc.
+			settings = Settings(settings_name)  # store settings, password etc.
 			settings.add_setting("do-not-change!", str, random())
 			settings.load_settings()
 			settings.save_settings()
@@ -43,13 +46,3 @@ class Store(object):
 
 def random():
 	return MD5.new(Random.new().read(4)).hexdigest()
-
-
-from usersettings import Settings # pip install usersettings
-settings = Settings(IDENTIFIER)  # store settings, password etc.
-settings.add_setting("ponyfm_user", str, "")
-settings.add_setting("ponyfm_pass", str, "")
-settings.add_setting("use_login", bool, True)
-settings.add_setting("do-not-change!", str, random())
-settings.load_settings()  # get da settings.
-settings.save_settings()  # write da settings. (new ones)

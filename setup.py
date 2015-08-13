@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from luckydonaldUtils import VERSION
+
 __author__ = 'luckydonald'
 
 from setuptools import setup
@@ -12,7 +14,7 @@ long_description = """A collection of utilities I use across different projects"
 setup(
 	name="luckydonald-utils",
 	packages=['luckydonaldUtils'],
-	version="0.2",
+	version=VERSION,
 	author="luckydonald",
 	author_email="code@luckydonald.de",
 	description=long_description,
