@@ -2,5 +2,5 @@
 __author__ = 'luckydonald'
 
 # DO NOT REMOVE the following, to allow 'from luckydonaldUtils import logging'
-VERSION = "0.005"
+VERSION = "0.006"
 

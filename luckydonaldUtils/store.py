@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 __author__ = 'luckydonald'
 
-from luckydonaldUtils.Logging import logging  # pip install luckydonald-utils
+from .Logging import logging  # pip install luckydonald-utils
 logger = logging.getLogger(__name__)
 
 
