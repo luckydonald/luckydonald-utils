@@ -3,7 +3,7 @@
 
 __author__ = 'luckydonald'
 
-from luckydonaldUtils.logging import logging  # pip install luckydonald-utils
+from luckydonaldUtils.logger import logging  # pip install luckydonald-utils
 logger = logging.getLogger(__name__)
 
 

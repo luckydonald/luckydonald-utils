@@ -4,7 +4,7 @@ __author__ = 'luckydonald'
 
 __all__ = ["logging", "ColoredFormatter"]
 
-import logging as _logging
+import logger as _logging
 import sys
 
 class ColoredFormatter(_logging.Formatter):

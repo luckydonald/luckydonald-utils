@@ -2,7 +2,7 @@
 __author__ = 'luckydonald'
 from .dependencies import import_or_install
 from .files import gettempdir
-from .Logging import logging  # pip install luckydonald-utils
+import logging  # pip install luckydonald-utils
 logger = logging.getLogger(__name__)
 
 import hashlib

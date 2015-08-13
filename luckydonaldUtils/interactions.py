@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 __author__ = 'luckydonald'
 
-from .Logging import logging
-logger = logging.getLogger(__name__)
 import getpass
 
 

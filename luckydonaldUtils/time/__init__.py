@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 __author__ = 'luckydonald'
 
-from luckydonaldUtils.logging import logging  # pip install luckydonald-utils
+from luckydonaldUtils.logger import logging  # pip install luckydonald-utils
 logger = logging.getLogger(__name__)
 
 
 # -*- coding: utf-8 -*-
 __author__ = 'luckydonald'
 
-from luckydonaldUtils.Logging import logging
+from luckydonaldUtils.logger import logging
 from ..dependencies import import_or_install
 
 logger = logging.getLogger(__name__)
