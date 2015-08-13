@@ -972,7 +972,8 @@ coverage/
 ##### END OF base's `.gitignore` #####
 ######################################
 
-
+secret_logins.py
+secret_logins.pyc
 
 
 
