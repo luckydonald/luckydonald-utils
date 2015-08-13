@@ -11,6 +11,12 @@ long_description = """A collection of utilities I use across different projects"
 # $ python setup.py register -r pypi
 # $ python setup.py sdist upload -r pypi
 
+install_requires = ["pip"]
+try:
+    import importlib
+except ImportError:
+    install_requires.append('importlib')
+
 setup(
 	name="luckydonald-utils",
 	packages=['luckydonaldUtils'],
@@ -21,7 +27,7 @@ setup(
 	license="BSD",
 	keywords="example documentation tutorial",
 	url="https://github.com/luckydonald/python-utils",
-	install_requires=["pip", "importlib"],
+	install_requires=install_requires,
 	long_description=long_description,
 	classifiers=[
 		"Development Status :: 4 - Beta",
