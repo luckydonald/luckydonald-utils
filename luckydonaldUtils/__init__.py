@@ -5,3 +5,5 @@ __author__ = 'luckydonald'
 from .Logging import logging as Logging
 
 
+VERSION = "0.3"
+
