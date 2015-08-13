@@ -58,7 +58,7 @@ def install_only(pip_name, upgrade=False):
 		   "If that fails, install it manually:\n"
 		   "pip install {pip_name}\n"
 		   "".format(pip_name=pip_name))
-	args = ["install", pip_name, "--quiet"]
+	args = ["install", pip_name, "--verbose"]
 	if upgrade and not "--upgrade" in args:
 		args.append("--upgrade")
 	logger.debug("Trying to install \"{pip_name}\" with pip using the following arguments: {pip_args}".format(pip_name=pip_name, pip_args=args))
