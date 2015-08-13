@@ -12,7 +12,7 @@ long_description = """A collection of utilities I use across different projects"
 setup(
 	name="luckydonald-utils",
 	packages=['luckydonaldUtils'],
-	version="0.1",
+	version="0.2",
 	author="luckydonald",
 	author_email="code@luckydonald.de",
 	description=long_description,
