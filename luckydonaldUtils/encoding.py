@@ -28,8 +28,6 @@ def to_binary(x):
 
 def to_unicode(x):
     if isinstance(x, binary_type):
-        if x == b'\\':
-            return u"\\"
         return x.decode("utf-8")
     else:
         return x
