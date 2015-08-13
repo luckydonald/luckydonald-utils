@@ -73,7 +73,7 @@ def answer(prompt=None, default=None):
 			return default
 		#end if
 	#end while, when the user finally entered something
-	return answer
+	return ans
 #end def
 
 
