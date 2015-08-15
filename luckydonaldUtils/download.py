@@ -1,18 +1,26 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import division
 __author__ = 'luckydonald'
+
 from .dependencies import import_or_install
 from .files import gettempdir
-import logging  # pip install luckydonald-utils
-logger = logging.getLogger(__name__)
-
+from .encoding import to_binary as b
 import hashlib
 import mimetypes
+import sys
 import os
 
 DictObject = import_or_install("DictObject.DictObject", "DictObject")  # from DictObject import DictObject
 magic = import_or_install("magic", "python-magic")  # import magic
 requests = import_or_install("requests", "requests")  # import requests
+import_or_install("progressbar", ("progressbar" if sys.version < "3.3" else "progressbar33"))
+from progressbar import Widget
+from progressbar import ETA, Percentage, Bar, FileTransferSpeed, ProgressBar
 from requests.packages.urllib3.exceptions import HTTPError
+
+import logging
+logger = logging.getLogger(__name__)
 
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X10.69; rv:4458.42) Gecko/4458 Firefox/69.0 Pon3Downloader'}
 
@@ -33,12 +41,15 @@ def download_file(url, used_cached=True, temp_dir=None, return_mime=False, retur
 	:param used_cached:
 	:param temp_dir:
 	:param return_mime:
-	:param return_buffer: True: Don't write a file, just return the buffer. False: Write to file, return the files path
-	:type  return_buffer: bool
+	:param return_buffer:
+	:param progress_bar:
+	:param progress_bar_widgets: see the progressbar package.
+	:param requests_kwargs:
 	:return:
 	"""
 	requests_kwargs.setdefault("headers", HEADERS)
 	requests_kwargs.setdefault("verify", False)
+	bar = Bar(marker="#", left="[", right="]")
 	if not return_buffer:
 		if not temp_dir:
 			temp_dir = gettempdir()
@@ -46,7 +57,32 @@ def download_file(url, used_cached=True, temp_dir=None, return_mime=False, retur
 	#end if not return_buffer
 	try:
 		logger.debug("DL: Downloading from '{url}'.".format(url=url))
-		image_buffer = requests.get(url, **requests_kwargs).content
+		if progress_bar:
+			requests_kwargs["stream"] = True
+			response = requests.get(url, **requests_kwargs)
+			total_length = response.headers.get('content-length')
+			if total_length is None: # no content length header
+				widgets =["Downloading Song: ", bar, " ", DoneWidget(init="Connecting...", started="Unknown Size.", finished="Complete.")]
+				pbar = ProgressBar(widgets=widgets).start()
+				logger.debug("No content-length provided.")
+				image_buffer = response.content
+				pbar.finish()
+			else:
+				dl = 0
+				image_buffer = b("")
+				total_length = int(total_length)
+				widgets =["Downloading Song: ",bar, " ", Percentage(), " ", FileTransferSpeed(), ", ", ETA()]
+				pbar = ProgressBar(widgets=widgets, maxval=total_length).start()
+				for data in response.iter_content(chunk_size=int(total_length/100)):
+					dl += len(data)
+					image_buffer += data
+					pbar.update(dl)
+				#end for
+				pbar.finish()
+				# now is downloaded.
+				logger.debug("Download completed.")
+		else:
+			image_buffer = requests.get(url, **requests_kwargs).content
 	except HTTPError as e:
 		logger.exception("DL: Error in URL '" + url + "'.\n" + str(e))
 		raise
@@ -88,3 +124,21 @@ def download_file(url, used_cached=True, temp_dir=None, return_mime=False, retur
 			return file_name, mime
 		return file_name
 	#end if-else
+
+
+class DoneWidget(Widget):
+	"""
+	Can display 3 values.
+	"""
+	def __init__(self, init="Not started.", started="Running.", finished="Done."):
+		self.init_text = init
+		self.started_text = started
+		self.finished_text = finished
+
+	def update(self, pbar):
+		if pbar.start_time is None:
+			return self.init_text
+		elif not pbar.finished:
+			return self.started_text
+		else:
+			return self.finished_text
