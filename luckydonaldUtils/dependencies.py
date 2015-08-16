@@ -1,5 +1,7 @@
 
 import logging
+from setuptools import find_packages
+
 logger = logging.getLogger(__name__)
 
 import pip
@@ -63,3 +65,10 @@ def install_only(pip_name, upgrade=False):
 		args.append("--upgrade")
 	logger.debug("Trying to install \"{pip_name}\" with pip using the following arguments: {pip_args}".format(pip_name=pip_name, pip_args=args))
 	return pip.main(args)
+
+
+def find_submodules(main_package):
+	packages = [main_package]
+	for package in find_packages(where=main_package):
+		packages.append(main_package + "." + package)
+	return packages

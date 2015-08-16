@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-from luckydonaldUtils import VERSION
-
 __author__ = 'luckydonald'
 
 from setuptools import setup
+from luckydonaldUtils import VERSION
+from luckydonaldUtils.dependencies import find_submodules
+
 
 long_description = """A collection of utilities I use across different projects"""
 
@@ -11,15 +12,17 @@ long_description = """A collection of utilities I use across different projects"
 # $ python setup.py register -r pypi
 # $ python setup.py sdist upload -r pypi
 
-install_requires = ["pip"]
+main_package = 'luckydonaldUtils'
+
+install_requires = ["pip", "setuptools"]  # both should be installed by default.
 try:
-    import importlib
+	import importlib
 except ImportError:
-    install_requires.append('importlib')
+	install_requires.append('importlib')
 
 setup(
 	name="luckydonald-utils",
-	packages=['luckydonaldUtils'],
+	packages=find_submodules(main_package),
 	version=VERSION,
 	author="luckydonald",
 	author_email="code@luckydonald.de",
