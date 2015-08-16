@@ -27,33 +27,47 @@ HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X10.69; rv:4458.4
 
 def get_json(url, objectify=True, **kwargs):
 	kwargs.setdefault("headers", HEADERS)
-	kwargs.setdefault("verify", False)
 	json = requests.get(url, **kwargs).json()
 	if objectify:
 		return DictObject.objectify(json)
 	return json
 
 
-def download_file(url, used_cached=True, temp_dir=None, return_mime=False, return_buffer=False, progress_bar=False, **requests_kwargs):
+def download_file(url, used_cached=True, download_folder=None, temp_folder_name="luckydonald-utils", return_mime=False, return_buffer=False, progress_bar=False, **requests_kwargs):
 	"""
+	Downloads a file. Filename is the md5 hash of the url.
 
-	:param url:
-	:param used_cached:
-	:param temp_dir:
-	:param return_mime:
-	:param return_buffer:
-	:param progress_bar:
-	:param progress_bar_widgets: see the progressbar package.
-	:param requests_kwargs:
-	:return:
+	:param url: The url you want to download.
+
+	:param used_cached: If the url was already downloaded, that file will not be overwritten.
+	The files name is just a hash of the url. So the same filename means same hash means same url.
+
+	:param download_folder:
+	Path to the download dir.
+	If None, a folder will be created inside the /tmp/ folder equivalent of your system, with the name from `temp_folder_name`.
+
+	:param temp_folder_name:
+	Name of the folder to be created/used in the /tmp/ equivalent of your system.
+	This is option ignored, if `download_folder` is given. 	Default: "luckydonald-utils"
+
+	:param return_mime: If set to true, a (filename, mime) tuple is returned, else just the filename.
+
+	:param return_buffer: If set to true, nothing will be written to disk,
+	you'll get the buffer returned instead of the filename.
+
+	:param progress_bar: If it should display a progress bar.
+
+	:param **requests_kwargs: All other arguments are piped to the requests.get() call.
+
+	:return: The path of the file. If `return_buffer` is true, instead it contains the buffer.
+	If `return_mime` is true, it is a tuple of that and the mime, (file_path, mime) or (buffer, mime)
+
 	"""
 	requests_kwargs.setdefault("headers", HEADERS)
-	requests_kwargs.setdefault("verify", False)
 	bar = Bar(marker="#", left="[", right="]")
 	if not return_buffer:
-		if not temp_dir:
-			temp_dir = gettempdir()
-		file_name = url.split("/")[-1]
+		if not download_folder:
+			download_folder = gettempdir(temp_dir_name=temp_folder_name)
 	#end if not return_buffer
 	try:
 		logger.debug("DL: Downloading from '{url}'.".format(url=url))
@@ -100,7 +114,7 @@ def download_file(url, used_cached=True, temp_dir=None, return_mime=False, retur
 		return image_buffer
 	else: # -> not return_buffer:
 		file_name = str(hashlib.md5(url.encode()).hexdigest()) + suffix
-		file_name = os.path.join(temp_dir, file_name)
+		file_name = os.path.join(download_folder, file_name)
 		if os.path.isfile(file_name):
 			if used_cached:
 				logger.debug("DL: File exists, using cached: %s" % file_name)
