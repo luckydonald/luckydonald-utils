@@ -13,11 +13,13 @@ magic = import_or_install("magic", "python-magic")
 import os
 import errno #exist_ok workaround
 
-temp_dir_name = "luckydonald-utils"
+#open_folder()
+import subprocess
+import sys
 
-def gettempdir():
+def gettempdir(temp_folder_name="luckydonald-utils"):
 	temp_dir = tempfile.gettempdir()
-	temp_dir = os.path.join(temp_dir, temp_dir_name)
+	temp_dir = os.path.join(temp_dir, temp_folder_name)
 	#py3
 	# os.makedirs(temp_dir, exist_ok=True) #don't raise errors if existent.
 	#py2/3 exist_ok workaround
@@ -61,17 +63,14 @@ def do_a_filename(input_file_name):
 	return output_file_name
 
 
-import subprocess
-import sys
-
 """
 def open_folder(folder_path)
 """  # for different Platforms
 if sys.platform == 'darwin':  # Mac OS
 	def open_folder(folder_path):
 		subprocess.check_call(['open', '--', folder_path])
-	def open_file_folder(folder_path):
-		subprocess.check_call(['open', '-R', '--', folder_path])
+	def open_file_folder(file_path):
+		subprocess.check_call(['open', '-R', '--', file_path])
 elif sys.platform == 'linux2':  # linux, hopefully has gnome?
 	def open_folder(folder_path):
 		subprocess.check_call(['gnome-open', '--', folder_path])  # untested.
