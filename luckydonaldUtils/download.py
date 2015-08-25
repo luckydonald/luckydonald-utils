@@ -67,7 +67,7 @@ def download_file(url, used_cached=True, download_folder=None, temp_folder_name=
 	bar = Bar(marker="#", left="[", right="]")
 	if not return_buffer:
 		if not download_folder:
-			download_folder = gettempdir(temp_dir_name=temp_folder_name)
+			download_folder = gettempdir(temp_folder_name=temp_folder_name)
 	#end if not return_buffer
 	try:
 		logger.debug("DL: Downloading from '{url}'.".format(url=url))
