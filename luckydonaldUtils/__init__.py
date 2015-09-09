@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
 __author__ = 'luckydonald'
 
-VERSION = "0.014"
+VERSION = "0.015"
