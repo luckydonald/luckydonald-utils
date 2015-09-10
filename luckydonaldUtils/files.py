@@ -36,6 +36,9 @@ def gettempdir(temp_folder_name="luckydonald-utils"):
 
 
 def get_file_suffix(file_path=None, file_url=None):
+	"""
+	This calls `get_file_mime()` to get the mime, and then calls `guess_extension()`.
+	"""
 	mime = get_file_mime(file_path=file_path, file_url=file_url)
 	return guess_extension(mime)
 
@@ -54,6 +57,11 @@ def get_file_mime(file_path=None, file_url=None):
 			raise AttributeError("Neither URL (file_url) nor local path (file_path) given.")
 		mime = magic.from_file(file_path).decode("utf-8")
 		return mime
+
+
+def get_byte_mime(bytes):
+	magic.from_buffer(bytes, mime=True).decode("utf-8")
+
 
 def do_a_filename(input_file_name):
 	output_file_name = input_file_name
