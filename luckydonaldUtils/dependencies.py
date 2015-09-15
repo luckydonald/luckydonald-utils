@@ -70,15 +70,18 @@ def import_only(package_name, module_list=None):
 
 
 def install_only(pip_name, upgrade=False):
-	logger.warn("Installing package '{pip_name}'.\n"
+	logger.warn("{install_or_upgrade} package '{pip_name}'.\n"
 		   "If that fails, install it manually:\n"
 		   "pip install {pip_name}\n"
-		   "".format(pip_name=pip_name))
+		   "".format(pip_name=pip_name, install_or_upgrade="Upgrading" if upgrade else "Installing"))
 	args = ["install", pip_name, "--verbose"]
 	if upgrade and not "--upgrade" in args:
 		args.append("--upgrade")
-	logger.debug("Trying to install \"{pip_name}\" with pip using the following arguments: {pip_args}".format(pip_name=pip_name, pip_args=args))
+	logger.debug("Trying to install \"{pip_name}\" with pip using the following arguments: {pip_args}...".format(pip_name=pip_name, pip_args=args))
 	return pip.main(args)
+
+def upgrade(pip_name):
+	install_only(pip_name, upgrade=True)
 
 
 def find_submodules(main_package):
