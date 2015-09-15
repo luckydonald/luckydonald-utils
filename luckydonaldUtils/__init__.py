@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 __author__ = 'luckydonald'
 
-VERSION = "0.018"
+VERSION = "0.019"
 
 from sys import version as python_version
 
