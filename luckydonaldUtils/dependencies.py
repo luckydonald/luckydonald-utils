@@ -14,7 +14,16 @@ except ImportError:
 #end try
 
 
-def import_or_install(package_name, pip_name):
+def import_or_install(package_name, pip_name=None):
+	"""
+	Trys to import an package.
+	If that fails it tries to install it via pip, using the given `pip_name` or if not given, the `package_name`.
+	:param package_name:  Package name to import. (E.g. "PIL")
+	:param pip_name:  The name to install it like `$pip install <pip_name>` would do. (E.g. "Pillow")
+	:return:
+	"""
+	if pip_name is None:
+		pip_name = package_name
 	# pytz.timzone -> from pytz import timezone -> package_name = pytz, from_package = [timezone]
 	imp = None
 	for try_i in [1,2,3]:
@@ -44,12 +53,17 @@ def import_only(package_name, module_list=None):
 
 	try:
 		imp = importlib.import_module(package_name)
-		if module_list and hasattr(imp, module_list):
-			imp = getattr(imp, module_list)
-			logger.debug("\"{module_list}\" is an attribute of \"{module_name}\".".format(module_name=package_name, module_list=module_list))
+		if module_list:
+			if hasattr(imp, module_list):
+				imp = getattr(imp, module_list)
+				logger.debug("\"{module_list}\" is an attribute of \"{module_name}\".".format(module_name=package_name, module_list=module_list))
+			else:
+				imp = importlib.import_module(package_name, package=module_list)
+				logger.debug("\"{module_list}\" is an module in \"{module_name}\".".format(module_name=package_name, module_list=module_list))
 		else:
 			imp = importlib.import_module(package_name, package=module_list)
-			logger.debug("\"{module_list}\" is an module in \"{module_name}\".".format(module_name=package_name, module_list=module_list))
+			logger.debug("module \"{module_name}\".".format(module_name=package_name))
+
 	except ImportError:
 		imp = importlib.import_module(package_name, package=module_list)
 	return imp
