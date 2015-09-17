@@ -6,6 +6,7 @@ from ..logger import logging
 from luckydonaldUtils.encoding import to_binary
 
 logger = logging.getLogger(__name__)
+from random import randint  # needed for eastereggs :D
 
 if py3:
 	try:
@@ -68,6 +69,14 @@ class BetterHTTPRequestHandler(SimpleHTTPRequestHandler, object):
 		self.send_response(200)
 		self.send_header("Content-type", content_type)
 		self.send_header("Content-Length", str(len(msg)))
+		self.send_header("Server", ["iPod Touch, iOS 2.3.2", "KONICHIWA/1.0", "‘; DROP TABLE servertypes; –", "Banana 0.2"][randint(0,3)])
+		self.send_header("X-Powered-By", ["Magical Ponies", "Rats in our Basement", "Unicorns", "Friendship", "TONS OF SUGAR", "coffee", "Bananas and Rum"][randint(0,6)])
+		self.send_header("X-Best-Pony", "Littlepip")
+		self.send_header("X-Answer", "42")
+		self.send_header("X-Never-Gonna", "Give you up.")
+		self.send_header("X-Nananana", "Batman!")
+		self.send_header("X-Created-by", "luckydonald")
+		self.send_header("X-Licence", "Luna-Will-Cry-If-You-Modify-Or-Redistribute 1.0 or later")
 		self.end_headers()
 		self.wfile.write(msg)
 		return
