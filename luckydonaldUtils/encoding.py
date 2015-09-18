@@ -11,6 +11,7 @@ if sys.version < '3': # python 2.7
 	long_int = long
 	def to_native(x):
 		return to_binary(x)
+	#end def
 else: # python 3
 	text_type = str
 	binary_type = bytes
@@ -19,7 +20,8 @@ else: # python 3
 	long_int = int
 	def to_native(x):
 		return to_unicode(x)
-
+	#end def
+#end if
 
 def to_binary(x):
 	if isinstance(x, text_type):

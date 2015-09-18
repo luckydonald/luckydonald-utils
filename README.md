@@ -14,7 +14,7 @@ pip install luckydonald-utils
 ####```luckydonaldUtils```
 - ```webserver``` (added in [v0.20](https://github.com/luckydonald/python-utils/releases/tag/v0.20))
 	- ```BetterHTTPRequestHandler```
-		- Like the ```BaseHTTPRequestHandler```, but without output to ```stderr```, *(why would you do that?!?)*. Instead it goes to loggers.
+		- Like the ```BaseHTTPRequestHandler```, but without output to ```stderr```, *(why would anyone do that?!?)*. Instead it goes to loggers.
 			- ```log_message``` now uses ```logger.info```
 			- ```log_request``` writes to ```logger.debug```, to not spam you on every request.
 			- ```log_error``` uses ```logger.error```
@@ -25,9 +25,10 @@ pip install luckydonald-utils
 			- returns nothing.
 		- Modified ```translate_path```: Now accepts local fitting paths automatically,
 		e.g. "/path/to/www-dir/foo.png" is valid if that folder exists. Now it won't change the path to "/path/to/www-dir/foo.png/path/to/www-dir/foo.png", like it did before.
-	
-	- ```start_a_webserver(handler, port, host="")```. 	Starts a ```TCPServer```, using the given ```handler```.
+		- Added a ```parse_POST``` function to get the post request's data fields returned.
+		
+	- ```start_a_webserver(handler, port, host="")```. 	Starts a ```HTTPServer```, using the given ```handler```.
 		- ```handler```: An handler instance, e.g. an ```BetterHTTPRequestHandler```
 		- ```port```: The port where to serve on. For example ```80``` or ```8080``` for HTTP (```80``` often needs root privileges).
 		- *```host```: Optional.* A host where to serve on. If an empty string ```""``` (default) is given, all incoming connections are allowed. (from localhost, from lan, from internet, etc.)
-		- returns: The ```TCPServer``` created.
+		- returns: The ```HTTPServer``` created.
