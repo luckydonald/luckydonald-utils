@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 __author__ = 'luckydonald'
 
 from random import randint  # needed for eastereggs :D
@@ -6,6 +7,7 @@ from random import randint  # needed for eastereggs :D
 from .. import py3
 from ..logger import logging
 from ..encoding import to_binary
+from ..eastereggs.headers import get_headers
 logger = logging.getLogger(__name__)
 
 
@@ -115,14 +117,11 @@ class BetterHTTPRequestHandler(SimpleHTTPRequestHandler, object):
 		self.send_response(200)
 		self.send_header("Content-type", content_type)
 		self.send_header("Content-Length", str(len(msg)))
-		self.send_header("Server", ["iPod Touch, iOS 2.3.2", "KONICHIWA/1.0", "'; DROP TABLE servertypes; -", "Banana 0.2"][randint(0,3)])
-		self.send_header("X-Powered-By", ["Magical Ponies", "Rats in our Basement", "Unicorns", "Friendship", "TONS OF SUGAR", "coffee", "Bananas and Rum"][randint(0,6)])
-		self.send_header("X-Best-Pony", "Littlepip")
-		self.send_header("X-Answer", "42")
-		self.send_header("X-Never-Gonna", "Give you up.")
-		self.send_header("X-Nananana", "Batman!")
+		for k, v in get_headers().iteritems():
+			self.send_header(k, v)
 		self.send_header("X-Backend-created-by", "luckydonald")
 		self.send_header("X-Licence", "Luna-Will-Cry-If-You-Modify-Or-Redistribute 1.0 or later")
+		self.send_header("X-Licence-URL", "flutterb.at/lwc-1-0")
 		self.end_headers()
 		self.wfile.write(msg)
 		return
