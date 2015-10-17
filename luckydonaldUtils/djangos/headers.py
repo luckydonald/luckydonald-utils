@@ -24,11 +24,11 @@ def headers(*headers_as_dict, **headers_as_kwargs):
 			response = fun(*args, **kwargs)
 			for arg in headers_as_dict:
 				if isinstance(arg, dict):
-					for k,v in headers_as_kwargs.iteritems():
+					for k,v in headers_as_kwargs.items():
 						response[k] = v
 				else:
 					raise TypeError("Parameter is not type dict but {}".format(type(arg)))
-			for kwarg_key, kwarg_value in headers_as_kwargs.iteritems():
+			for kwarg_key, kwarg_value in headers_as_kwargs.items():
 				if not isinstance(kwarg_value, str):
 					#try:
 					#	temp = str(kwarg_value)
