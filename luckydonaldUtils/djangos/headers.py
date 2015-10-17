@@ -46,6 +46,29 @@ def headers(*headers_as_dict, **headers_as_kwargs):
 		return wrapped_function
 	return headers_wrapper
 
+def header(name, value):
+	# View decorator that sets a response header.
+	#
+	# Example:
+	# @header('X-Powered-By', 'Django')
+	# def view(request, ...):
+	#     ....
+	#
+	# For class-based views use:
+	# @method_decorator(header('X-Powered-By', 'Django'))
+	# def get(self, request, ...)
+	#     ...
+	#
+	# Taken from https://djangosnippets.org/snippets/2895/
+	def decorator(func):
+		@wraps(func, assigned=available_attrs(func))
+		def inner(request, *args, **kwargs):
+			response = func(request, *args, **kwargs)
+			response[name] = value
+			return response
+		return inner
+	return decorator
+
 
 def easteregg_headers(func):
 	return headers(get_headers())(func)
