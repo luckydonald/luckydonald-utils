@@ -30,13 +30,15 @@ pip install luckydonald-utils
 	- ```start_a_webserver(handler, port, host="")```. 	Starts a ```HTTPServer```, using the given ```handler```.
 		- ```handler```: An handler instance, e.g. an ```BetterHTTPRequestHandler```
 		- ```port```: The port where to serve on. For example ```80``` or ```8080``` for HTTP (```80``` often needs root privileges).
-		- *```host```: Optional.* A host where to serve on. If an empty string ```""``` (default) is given, all incoming connections are allowed. (from localhost, from lan, from internet, etc.)
+		- *```host```: Optional.* A host where to serve on. If an empty string ```""``` (default) is given, all incoming connections are allowed. (you can connect from localhost, from lan, from internet, etc.)
 		- returns: The ```HTTPServer``` created.
 		
 - ```djangos```. Utilities for django.
 	- ```csrf``` (added in [v0.22](https://github.com/luckydonald/python-utils/releases/tag/v0.22))
 		- ```check_csrf()```: Manually checks the csrf. Returns ```True``` or ```False```.
 	- ```headers```  (added in [v0.23](https://github.com/luckydonald/python-utils/releases/tag/v0.23))
-		- ```@headers```: decorator to set headers.
-			Use with an dict ```@headers({'X-Powered-By': 'Magical Unicorns'})``` or as kwargs```@headers(X_Powered_By="Magical Unicorns")```
-		- ```@easteregg_headers```: Adds my favorite collection of easter egg headers.
+		- ```@header```: decorator to add/set a header. (added in [v0.24](https://github.com/luckydonald/python-utils/releases/tag/v0.24))     
+			Use like ```@header('X-Important-Number', '4458')```
+		- ```@headers```: decorator to set headers.    
+			Use with an dict ```@headers({'X-Powered-By': 'Magical Unicorns', 'X-Foo': 'Bar!'})``` or as kwargs```@headers(X_Powered_By="Magical Unicorns", X_Foo="Bar!")```
+		- ```@easteregg_headers```: Adds my favorite collection of easter egg headers.    
