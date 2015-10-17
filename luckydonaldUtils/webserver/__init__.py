@@ -117,7 +117,7 @@ class BetterHTTPRequestHandler(SimpleHTTPRequestHandler, object):
 		self.send_response(200)
 		self.send_header("Content-type", content_type)
 		self.send_header("Content-Length", str(len(msg)))
-		for k, v in get_headers().iteritems():
+		for k, v in get_headers().items():
 			self.send_header(k, v)
 		self.send_header("X-Backend-created-by", "luckydonald")
 		self.send_header("X-Licence", "Luna-Will-Cry-If-You-Modify-Or-Redistribute 1.0 or later")
