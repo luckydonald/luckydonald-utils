@@ -13,7 +13,7 @@ pip install luckydonald-utils
 *(not a complete list)*
 ####```luckydonaldUtils```
 - ```webserver``` (added in [v0.20](https://github.com/luckydonald/python-utils/releases/tag/v0.20))
-	- ```BetterHTTPRequestHandler```
+	- class ```BetterHTTPRequestHandler```
 		- Like the ```BaseHTTPRequestHandler```, but without output to ```stderr```, *(why would anyone do that?!?)*. Instead it goes to loggers.
 			- ```log_message``` now uses ```logger.info```
 			- ```log_request``` writes to ```logger.debug```, to not spam you on every request.
@@ -32,3 +32,11 @@ pip install luckydonald-utils
 		- ```port```: The port where to serve on. For example ```80``` or ```8080``` for HTTP (```80``` often needs root privileges).
 		- *```host```: Optional.* A host where to serve on. If an empty string ```""``` (default) is given, all incoming connections are allowed. (from localhost, from lan, from internet, etc.)
 		- returns: The ```HTTPServer``` created.
+		
+- ```djangos```. Utilities for django.
+	- ```csrf``` (added in [v0.22](https://github.com/luckydonald/python-utils/releases/tag/v0.22))
+		- ```check_csrf()```: Manually checks the csrf. Returns ```True``` or ```False```.
+	- ```headers```  (added in [v0.23](https://github.com/luckydonald/python-utils/releases/tag/v0.23))
+		- ```@headers```: decorator to set headers.
+			Use with an dict ```@headers({'X-Powered-By': 'Magical Unicorns'})``` or as kwargs```@headers(X_Powered_By="Magical Unicorns")```
+		- ```@easteregg_headers```: Adds my favorite collection of easter egg headers.
