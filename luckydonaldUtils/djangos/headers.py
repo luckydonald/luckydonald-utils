@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+from functools import wraps
 from luckydonaldUtils.eastereggs.headers import get_headers
+from django.utils.decorators import available_attrs
 
 __author__ = 'luckydonald'
 
@@ -20,6 +22,7 @@ def headers(*headers_as_dict, **headers_as_kwargs):
 	Modified from https://djangosnippets.org/snippets/275/
 	"""
 	def headers_wrapper(fun):
+		@wraps(fun, assigned=available_attrs(fun))
 		def wrapped_function(*args, **kwargs):
 			response = fun(*args, **kwargs)
 			for arg in headers_as_dict:
@@ -43,5 +46,6 @@ def headers(*headers_as_dict, **headers_as_kwargs):
 		return wrapped_function
 	return headers_wrapper
 
-def easteregg_headers():
-	return headers(get_headers())
+
+def easteregg_headers(func):
+	return headers(get_headers())(func)
