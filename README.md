@@ -42,3 +42,5 @@ pip install luckydonald-utils
 		- ```@headers```: decorator to set headers.    
 			Use with an dict ```@headers({'X-Powered-By': 'Magical Unicorns', 'X-Foo': 'Bar!'})``` or as kwargs```@headers(X_Powered_By="Magical Unicorns", X_Foo="Bar!")```
 		- ```@easteregg_headers```: Adds my favorite collection of easter egg headers.    
+	- ```responses``` (added in [v0.25](https://github.com/luckydonald/python-utils/releases/tag/v0.25))
+		- ```json(status=None, statusText=None, exception=None, content=None)```: 
