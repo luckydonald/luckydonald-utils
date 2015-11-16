@@ -43,4 +43,7 @@ pip install luckydonald-utils
 			Use with an dict ```@headers({'X-Powered-By': 'Magical Unicorns', 'X-Foo': 'Bar!'})``` or as kwargs```@headers(X_Powered_By="Magical Unicorns", X_Foo="Bar!")```
 		- ```@easteregg_headers```: Adds my favorite collection of easter egg headers.    
 	- ```responses``` (added in [v0.25](https://github.com/luckydonald/python-utils/releases/tag/v0.25))
-		- ```json(status=None, statusText=None, exception=None, content=None)```: 
+		- ```json_response(status=None, statusText=None, exception=None, content=None)```:    
+			Easier json Responses, also given Exception is rendered as json too.    
+		- ```@catch_exception```: (added in [v0.26](https://github.com/luckydonald/python-utils/releases/tag/v0.26))    
+	 		Can catch a exception and send the exception's message string with 500 header. 
