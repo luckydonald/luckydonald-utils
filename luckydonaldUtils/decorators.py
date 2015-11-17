@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 #TODO: py2 safe?
 
-def decorator_with_default_params(real_decorator, args, kwargs, default_args=[], default_kwargs={}):
+def decorator_with_default_params(real_decorator, args, kwargs, default_args=None, default_kwargs=None):
 	"""
 	This function makes it easy to build a parameterized decorator, having a default value.
 	Construct your decorator like this:
@@ -41,11 +41,12 @@ def decorator_with_default_params(real_decorator, args, kwargs, default_args=[],
 	if default_kwargs is None:
 		default_kwargs = {}
 	if args is not None and len(args) > 0 and callable(args[0]):
-		if len(args) == 1:  # @admin  or  test = admin(test)
-			if kwargs is None or len(kwargs) == 0:
-				return real_decorator(args[0], *default_args, **default_kwargs)
-			else:
-				return real_decorator(*args, **kwargs)
+		func = args[0]
+		if len(args) == 1:  # @admin  or  func = admin(func)
+			if kwargs is None or len(kwargs) == 0: # no arguments/kwargs
+				return real_decorator(func, *default_args, **default_kwargs)  # func = arg[0]
+			else:  # has kwargs
+				return real_decorator(*args, **kwargs) # args contains func.
 		else:  # test = admin(test, param)
 			return real_decorator(*args, **kwargs)
 	else:  # @admin(param)
@@ -53,7 +54,8 @@ def decorator_with_default_params(real_decorator, args, kwargs, default_args=[],
 			if kwargs is None or len(kwargs) == 0:
 				args = default_args
 				kwargs = default_kwargs
-		#endif
+		elif args[0] == Ellipsis: # so you can insert callables, after Ellipsis as first argument.
+			args = args[1:]
 		def real_decorator_param_provider(func):
 			return real_decorator(func, *args, **kwargs)
 		return real_decorator_param_provider  # it will call real_decorator(func) by its own

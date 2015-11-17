@@ -42,8 +42,22 @@ pip install luckydonald-utils
 		- ```@headers```: decorator to set headers.    
 			Use with an dict ```@headers({'X-Powered-By': 'Magical Unicorns', 'X-Foo': 'Bar!'})``` or as kwargs```@headers(X_Powered_By="Magical Unicorns", X_Foo="Bar!")```
 		- ```@easteregg_headers```: Adds my favorite collection of easter egg headers.    
-	- ```responses``` (added in [v0.25](https://github.com/luckydonald/python-utils/releases/tag/v0.25))
+		
+	- ```responses``` (added in [v0.25](https://github.com/luckydonald/python-utils/releases/tag/v0.25))    
 		- ```json_response(status=None, statusText=None, exception=None, content=None)```:    
-			Easier json Responses, also given Exception is rendered as json too.    
-		- ```@catch_exception```: (added in [v0.26](https://github.com/luckydonald/python-utils/releases/tag/v0.26))    
-	 		Can catch a exception and send the exception's message string with 500 header. 
+			Easier json Responses, also given Exception is rendered as json too.
+		- ```@catch_exception```: ([v0.26](https://github.com/luckydonald/python-utils/releases/tag/v0.26) only)    
+			With [v0.27](https://github.com/luckydonald/python-utils/releases/tag/v0.27), use ```@render_all_exceptions```, ```@render_DoOutputException```
+			or ```@render_specific_exception(exception_class, exception_render_func=None)```.    			
+		- ```@render_all_exceptions```: ([v0.27](https://github.com/luckydonald/python-utils/releases/tag/v0.27)+)    
+			Catches all exceptions and renders the exception ```e``` as ```HttpResponse(str(e), status=500)```.
+		- ```@render_DoOutputException```: ([v0.27](https://github.com/luckydonald/python-utils/releases/tag/v0.27)+)    
+			Like ```@render_all_exceptions```, but only renders a DoOutputException. Useful if something deep in the call stack want to fail with a message.
+		- ```@render_specific_exception(exception_class, exception_render_func=None)```: ([v0.27](https://github.com/luckydonald/python-utils/releases/tag/v0.27)+)    
+			Like ```@render_DoOutputException```, but you can specify the Exception you are expecting.      
+			Also you can optionally set a function to render that exception instead of using the default    
+			```    
+			def render(response, e):
+				return HttpResponse(str(e), status=500)
+			```    
+			
