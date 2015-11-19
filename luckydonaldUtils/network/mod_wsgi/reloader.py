@@ -45,7 +45,7 @@ _queue = Queue()
 _lock = threading.Lock()
 
 def warning(*objs):
-	print("WARNING: ", *objs, file=sys.stderr)
+	print(*objs, file=sys.stderr)
 
 def _restart(path):
 	_queue.put(True)
