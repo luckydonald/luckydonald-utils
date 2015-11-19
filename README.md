@@ -45,6 +45,9 @@ pip install luckydonald-utils
 #### ```network```
 -  ```ip```: Tools for ip addresses
 	- ```binary_ip_to_str(host)```: converts the binary ip to a string.
+- ```mod_wsgi```
+	-	```reloader```: Auto reloading capabilities for **mod_wsgi** environments. ([v0.28](https://github.com/luckydonald/python-utils/releases/tag/v0.28)+)    
+
 
 #### ```webserver```
 (added in [v0.20](https://github.com/luckydonald/python-utils/releases/tag/v0.20))    
