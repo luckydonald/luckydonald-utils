@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+"""
+>>> from luckydonaldUtils.eastereggs.quotes import get_quote
+>>> get_quote("de")
+>>> get_quote()
+"""
+
 from random import randint
 from weakreflist.weakreflist import WeakList
 from ..dependencies import import_or_install
@@ -20,13 +26,13 @@ QUOTES = [
 	"Ask your doctor",
 	"Awesome",
 	"20% cooler",
-	"Muffins!"
+	"Muffins!",
 	"Classy",
 	"Do not distribute",
 	"Don't look directly at the bugs",
 	"Free dental included",
 	"Gasp!",
-	{"de": "Keuch!"}
+	{"de": "Keuch!"},
 	"Google anlyticsed!",
 	{"en": "Günter was here", "de": "Günter war hier"},
 	"Hot tamale, hot hot tamale!",
