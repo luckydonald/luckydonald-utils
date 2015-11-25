@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 """
+NOT PY2 ready!
 >>> from luckydonaldUtils.eastereggs.quotes import get_quote
 >>> get_quote("de")
 >>> get_quote()
 """
 
 from random import randint
-from weakreflist.weakreflist import WeakList
 from ..dependencies import import_or_install
+import_or_install("weakreflist", "weakreflist")
+from weakreflist.weakreflist import WeakList  # pip install weakreflist
 
 __author__ = 'luckydonald'
-
-import weakreflist
 
 
 QUOTES = [
@@ -79,7 +79,7 @@ QUOTES_BY_LANGUAGE = {"en": WeakList()}
 """ Store them ordered. """
 for quote in QUOTES:
 	if isinstance(quote, dict):
-		for language, text in quote.items():  # todo: python 2
+		for language, text in quote.items():  # todo: python 2 iter_something()
 			if not language in QUOTES_BY_LANGUAGE:
 				QUOTES_BY_LANGUAGE[language] = WeakList()
 			#end if
@@ -89,7 +89,7 @@ for quote in QUOTES:
 #end for
 for quote in QUOTES:
 	if isinstance(quote, str):
-		for language in QUOTES_BY_LANGUAGE.iterkeys():
+		for language in QUOTES_BY_LANGUAGE.keys():  # todo: py2:viewkeys():
 			QUOTES_BY_LANGUAGE[language].append(quote)
 		#end for
 	#end if
