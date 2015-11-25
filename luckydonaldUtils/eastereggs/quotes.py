@@ -104,4 +104,4 @@ def get_quote(language="en"):
 	:return:
 	"""
 	qs = QUOTES_BY_LANGUAGE[language]
-	return qs[randint(0, len(qs))]
+	return qs[randint(0, len(qs)-1)]
