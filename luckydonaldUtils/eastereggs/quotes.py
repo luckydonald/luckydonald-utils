@@ -70,6 +70,14 @@ QUOTES = [
 	{"de": "Hier könnte Ihre Werbung stehen"},
 	"Pon <3",
 	{"en":"Pon3 is best musician"},
+	{"en":"Batteries not included.", "de": "Batterien nicht enthalten"},
+	{"de": "Abbildung ähnlich"},
+	{"de": "Serviervorschlag"},
+	{"en": "So kawaii"},
+	"Aloha",
+	{"de": "Anscheinend können Sie lesen", "en": "It seems you can read"},
+	"DINKELBERG!",
+	{"de": ".sträwkcür tsi txeT reseiD", "en": ".desrever si txet sihT"}
 	#{"de": ""},
 	#{"en": "", "de": ""},
 ]
@@ -105,3 +113,4 @@ def get_quote(language="en"):
 	"""
 	qs = QUOTES_BY_LANGUAGE[language]
 	return qs[randint(0, len(qs)-1)]
+#end def
