@@ -41,7 +41,13 @@ pip install luckydonald-utils
 - ```requests``` ([v0.28](https://github.com/luckydonald/python-utils/releases/tag/v0.28)+)
 	- ```check_csrf(request)```: Manually checks the csrf. Returns ```True``` or ```False```. (moved here in [v0.28](https://github.com/luckydonald/python-utils/releases/tag/v0.28))    
 	- ```GET_to_bool(request, key)```: Parses a GET parameter in the request as bool. ```"true"``` becomes ```True```, ```"false"``` becomes ```False```, ```"null"``` becomes ```None```.
-
+- ```middelware``` a collection.
+	- ```access```:
+		- ```AllowFromIPMiddleware```: [v0.31](https://github.com/luckydonald/python-utils/releases/tag/v0.31)+    
+			Allow only given IPs to access, else raises a `Http404` error. Is ignored when `DEBUG` is `True`.    
+			Set in the *settings.py* file: ```ALLOW_FROM = ["134.169.0.0/16"]```    
+			Include in your ```MIDDLEWARE_CLASSES```: ```"luckydonaldUtils.djangos.middleware.access.AllowFromIPMiddleware"```
+		
 #### ```network```
 -  ```ip```: Tools for ip addresses
 	- ```binary_ip_to_str(host)```: converts the binary ip to a string.
