@@ -77,7 +77,8 @@ QUOTES = [
 	"Aloha",
 	{"de": "Anscheinend können Sie lesen", "en": "It seems you can read"},
 	"DINKELBERG!",
-	{"de": ".sträwkcür tsi txeT reseiD", "en": ".desrever si txet sihT"}
+	#{"de": ".sträwkcür tsi txeT reseiD", "en": ".desrever si txet sihT"},
+	"The cake is a lie",
 	#{"de": ""},
 	#{"en": "", "de": ""},
 ]
