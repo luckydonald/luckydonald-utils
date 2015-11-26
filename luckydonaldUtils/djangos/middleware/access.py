@@ -4,7 +4,7 @@ __author__ = 'luckydonald'
 
 from django.conf import settings
 from django.core.urlresolvers import reverse, NoReverseMatch
-from django.http import Http404
+from django.http import HttpResponseForbidden
 from ...logger import logging  # pip install luckydonald-utils
 from ...dependencies import import_or_install
 logger = logging.getLogger(__name__)
@@ -46,10 +46,11 @@ class AllowFromIPMiddleware(object):
 			return  # allow
 		remote_addr = request.META.get('HTTP_X_REAL_IP', request.META.get('REMOTE_ADDR', None))
 		if any([remote_addr in ip for ip in self.buffered_ALLOW_FROM]):
-			if settings.DEBUG:
-				logger.warn("The IP {remote_addr} should not be allowed, but is served anyway because DEBUG=True.".format(remote_addr=remote_addr))
-				return  # allow
-			raise Http404  # forbid
+			return  # allow
+		if settings.DEBUG:
+			logger.warn("The IP {remote_addr} should not be allowed, but is served anyway because DEBUG=True.".format(remote_addr=remote_addr))
+			return  # allow
+		return HttpResponseForbidden("Your ip {ip} is not allowed.".format(ip=remote_addr))   # forbid
 			#end if DEBUG
 		#end if
 	#end def
