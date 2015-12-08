@@ -5,13 +5,14 @@ from ...eastereggs.headers import get_headers as get_easteregg_headers
 from ...logger import logging  # pip install luckydonald-utils
 logger = logging.getLogger(__name__)
 
+
 class EastereggHeadersMiddleware(object):
 	"""
 	Sets some funny headers.
 
 	Include in your `MIDDLEWARE_CLASSES: "luckydonaldUtils.djangos.middleware.headers.EastereggHeadersMiddleware"
 	"""
-	def process_request(self, response):
+	def process_response(self, request, response):
 		for header_key, header_value in get_easteregg_headers().items():
 			try:
 				if not isinstance(header_value, str):
@@ -24,6 +25,7 @@ class EastereggHeadersMiddleware(object):
 				logger.exception("Header error")
 				continue
 			# end try
-			return response
-
-	pass
+		# end for
+		return response
+	# end def
+# end class EastereggHeadersMiddleware
