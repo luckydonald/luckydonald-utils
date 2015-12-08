@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from functools import wraps
-from luckydonaldUtils.eastereggs.headers import get_headers
 from django.utils.decorators import available_attrs
+from ..eastereggs.headers import get_headers  as get_easteregg_headers
+
 
 __author__ = 'luckydonald'
 
@@ -71,4 +72,4 @@ def header(name, value):
 
 
 def easteregg_headers(func):
-	return headers(get_headers())(func)
+	return headers(get_easteregg_headers())(func)
