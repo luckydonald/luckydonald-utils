@@ -26,8 +26,12 @@ QUOTES = [
 	"Ask your doctor",
 	"Awesome",
 	"20% cooler",
+	"In 10 seconds flat",
+	"I just don't know what went wrong...",
+	"Liquid Pride",
 	"Muffins!",
-	"Classy",
+	'"[squeaks] [splatting] [magic zap] [magic zap] [sound of machinery] [magic zap]"',
+	{"en": "Classy"},
 	"Do not distribute",
 	"Don't look directly at the bugs",
 	"Free dental included",
@@ -84,26 +88,29 @@ QUOTES = [
 ]
 QUOTES_BY_LANGUAGE = {"en": WeakList()}
 
+def init_quotes():
+	""" Store them ordered. """
+	QUOTES_BY_LANGUAGE = {"en": WeakList()}
+	for quote in QUOTES:
+		if isinstance(quote, dict):
+			for language, text in quote.items():  # todo: python 2 iter_something()
+				if not language in QUOTES_BY_LANGUAGE:
+					QUOTES_BY_LANGUAGE[language] = WeakList()
+				#end if
+				QUOTES_BY_LANGUAGE[language].append(quote[language])
+			#end for
+		#end if
+	#end for
+	for quote in QUOTES:
+		if isinstance(quote, str):
+			for language in QUOTES_BY_LANGUAGE.keys():  # todo: py2:viewkeys():
+				QUOTES_BY_LANGUAGE[language].append(quote)
+			#end for
+		#end if
+	#end for
+#end def
 
-""" Store them ordered. """
-for quote in QUOTES:
-	if isinstance(quote, dict):
-		for language, text in quote.items():  # todo: python 2 iter_something()
-			if not language in QUOTES_BY_LANGUAGE:
-				QUOTES_BY_LANGUAGE[language] = WeakList()
-			#end if
-			QUOTES_BY_LANGUAGE[language].append(quote[language])
-		#end for
-	#end if
-#end for
-for quote in QUOTES:
-	if isinstance(quote, str):
-		for language in QUOTES_BY_LANGUAGE.keys():  # todo: py2:viewkeys():
-			QUOTES_BY_LANGUAGE[language].append(quote)
-		#end for
-	#end if
-#end for
-
+init_quotes()
 
 def get_quote(language="en"):
 	"""
@@ -115,3 +122,13 @@ def get_quote(language="en"):
 	qs = QUOTES_BY_LANGUAGE[language]
 	return qs[randint(0, len(qs)-1)]
 #end def
+
+class Quote(object):
+	text = None
+	url = None
+	def __init__(self, value, url):
+		self.text = value
+		self.url = url
+
+	def __str__(self):
+		return self.text
