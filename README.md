@@ -47,6 +47,11 @@ pip install luckydonald-utils
 			Allow only given IPs to access, else raises a `Http404` error. Is will be ignored when `DEBUG` is `True`, or `settings.ALLOW_FROM` is `None`.    
 			Set in the *settings.py* file: ```ALLOW_FROM = ["134.169.0.0/16"]```    
 			Include in your ```MIDDLEWARE_CLASSES```: ```"luckydonaldUtils.djangos.middleware.access.AllowFromIPMiddleware"```
+	- ```header```:
+		- ```EastereggHeadersMiddleware```: [v0.34](https://github.com/luckydonald/python-utils/releases/tag/v0.34)    
+			Sets some funny headers.    
+			Include in your ```MIDDLEWARE_CLASSES```: ```"luckydonaldUtils.djangos.middleware.headers.EastereggHeadersMiddleware"```
+
 
 #### ```iterators```
 All stuff related to list and iterators. 
