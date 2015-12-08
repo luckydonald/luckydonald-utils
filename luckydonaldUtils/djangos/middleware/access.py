@@ -3,7 +3,6 @@ __author__ = 'luckydonald'
 
 
 from django.conf import settings
-from django.core.urlresolvers import reverse, NoReverseMatch
 from django.core.exceptions import ImproperlyConfigured, MiddlewareNotUsed
 from django.http import HttpResponseForbidden
 from ...logger import logging  # pip install luckydonald-utils
