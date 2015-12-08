@@ -44,10 +44,19 @@ pip install luckydonald-utils
 - ```middelware``` a collection.
 	- ```access```:
 		- ```AllowFromIPMiddleware```: [v0.31](https://github.com/luckydonald/python-utils/releases/tag/v0.31)+    
-			Allow only given IPs to access, else raises a `Http404` error. Is ignored when `DEBUG` is `True`.    
+			Allow only given IPs to access, else raises a `Http404` error. Is will be ignored when `DEBUG` is `True`, or `settings.ALLOW_FROM` is `None`.    
 			Set in the *settings.py* file: ```ALLOW_FROM = ["134.169.0.0/16"]```    
 			Include in your ```MIDDLEWARE_CLASSES```: ```"luckydonaldUtils.djangos.middleware.access.AllowFromIPMiddleware"```
-		
+
+#### ```iterators```
+All stuff related to list and iterators. 
+
+- ```iter_with_i(iterator, start_i=0)```: (Added in [v0.34](https://github.com/luckydonald/python-utils/releases/tag/v0.34))    
+	Yields a tuple of the iterator result and an integer incrementing each time.    
+	```
+	for iterator_result, i in iter_with_i(["a","b"])
+	```
+
 #### ```network```
 -  ```ip```: Tools for ip addresses
 	- ```binary_ip_to_str(host)```: converts the binary ip to a string.
