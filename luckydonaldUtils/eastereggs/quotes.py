@@ -86,31 +86,35 @@ QUOTES = [
 	#{"de": ""},
 	#{"en": "", "de": ""},
 ]
-QUOTES_BY_LANGUAGE = {"en": WeakList()}
+QUOTES_BY_LANGUAGE = {"all": WeakList()}
+__did_init = [False]  # list is an access hack
+
 
 def init_quotes():
-	""" Store them ordered. """
-	QUOTES_BY_LANGUAGE = {"en": WeakList()}
+	"""
+	Store them ordered.
+
+	Will be called on module load.
+	"""
+	# reset QUOTES_BY_LANGUAGE
+	for key in list(QUOTES_BY_LANGUAGE):
+		del QUOTES_BY_LANGUAGE[key]
+	QUOTES_BY_LANGUAGE["all"] = WeakList()
+	# fill QUOTES_BY_LANGUAGE, with language first.
 	for quote in QUOTES:
-		if isinstance(quote, dict):
+		if isinstance(quote, dict):  # specific language(s)
 			for language, text in quote.items():  # todo: python 2 iter_something()
 				if not language in QUOTES_BY_LANGUAGE:
 					QUOTES_BY_LANGUAGE[language] = WeakList()
-				#end if
+				# end if
 				QUOTES_BY_LANGUAGE[language].append(quote[language])
-			#end for
-		#end if
-	#end for
-	for quote in QUOTES:
-		if isinstance(quote, str):
-			for language in QUOTES_BY_LANGUAGE.keys():  # todo: py2:viewkeys():
-				QUOTES_BY_LANGUAGE[language].append(quote)
-			#end for
-		#end if
-	#end for
-#end def
-
-init_quotes()
+			# end for
+		elif isinstance(quote, str):
+			QUOTES_BY_LANGUAGE["all"].append(quote)
+		# end if
+	# end for
+	__did_init[0] = True  # list is an access hack
+# end def
 
 def get_quote(language="en"):
 	"""
@@ -119,16 +123,34 @@ def get_quote(language="en"):
 	:param language: default: "en"
 	:return:
 	"""
-	qs = QUOTES_BY_LANGUAGE[language]
-	return qs[randint(0, len(qs)-1)]
-#end def
+	if not __did_init[0]:
+		init_quotes()
+	quotes_language = QUOTES_BY_LANGUAGE[language]
+	quotes_universal = QUOTES_BY_LANGUAGE["all"]
+	length_universal = len(quotes_universal)
+	index = randint(0, (length_universal + len(quotes_language))-1)
+	if index < length_universal:
+		return quotes_universal[index]
+	else:
+		return quotes_language[index-length_universal]
+	# end if
+# end def
+
+init_quotes()
+
 
 class Quote(object):
+	"""
+	Unused by now.
+	"""
 	text = None
 	url = None
+
 	def __init__(self, value, url):
 		self.text = value
 		self.url = url
 
 	def __str__(self):
 		return self.text
+	# end def __str__
+# end class Quote
