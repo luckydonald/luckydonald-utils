@@ -73,7 +73,8 @@ All stuff related to list and iterators.
 (added in [v0.20](https://github.com/luckydonald/python-utils/releases/tag/v0.20))    
 
 - class ```BetterHTTPRequestHandler```
-	- Like the ```BaseHTTPRequestHandler```, but without output to ```stderr```, *(why would anyone do that?!?)*. Instead it goes to loggers.
+	- Like the [```BaseHTTPRequestHandler```](https://docs.python.org/2/library/basehttpserver.html), but without output to ```stderr```, *(why would anyone do that?!?)*. Instead it goes to loggers. Also some helpfull things.
+	- Changed to use [logging](https://docs.python.org/3/library/logging.html)
 		- ```log_message``` now uses ```logger.info```
 		- ```log_request``` writes to ```logger.debug```, to not spam you on every request.
 		- ```log_error``` uses ```logger.error```
