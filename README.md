@@ -1,4 +1,4 @@
-# python-utils
+# luckydonald-utils
 ###### A collection of utilities I use across different python projects.
 
 Install with pip:
