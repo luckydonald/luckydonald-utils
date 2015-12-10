@@ -1,4 +1,4 @@
-# python-utils
+# luckydonald-utils
 ###### A collection of utilities I use across different python projects.
 
 Install with pip:
@@ -109,4 +109,3 @@ All stuff related to list and iterators.
 	- ```port```: The port where to serve on. For example ```80``` or ```8080``` for HTTP (```80``` often needs root privileges).
 	- *```host```: Optional.* A host where to serve on. If an empty string ```""``` (default) is given, all incoming connections are allowed. (you can connect from localhost, from lan, from internet, etc.)
 	- returns: The ```HTTPServer``` created.
-	
