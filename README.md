@@ -7,7 +7,7 @@ pip install luckydonald-utils
 ```    
  
 
-(Released on [PyPI](https://pypi.python.org/pypi/luckydonald-utils) [(Github mirror)](https://github.com/luckydonald/python-utils/releases/))
+(Released on [![PyPI](https://img.shields.io/pypi/v/pytg.svg)](https://pypi.python.org/pypi/luckydonald-utils) [(Github mirror)](https://github.com/luckydonald/python-utils/releases/))
 
 ## ```luckydonaldUtils``` Documentation:
 *(not a complete list)* 
