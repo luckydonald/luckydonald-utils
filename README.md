@@ -52,6 +52,18 @@ pip install luckydonald-utils
 			Sets some funny headers.    
 			Include in your ```MIDDLEWARE_CLASSES```: ```"luckydonaldUtils.djangos.middleware.headers.EastereggHeadersMiddleware"```
 
+#### ```functions```
+Information about calling functions (Added in [v0.35](https://github.com/luckydonald/python-utils/releases/tag/v0.35)+)
+
+- ```@caller```: Functions decorated with this will be called with an `call` kwarg, containing information about the function itself, and the caller.
+    If the caller could not be fetched correctly, the `caller`s attributes all will be `None`.
+
+- ```@deprecated```: Decorator to mark functions as deprecated. 
+    A warning will be logged when the function is used.
+
+- ```@gone```: Decorator to mark functions as gone. 
+    A NotImplementedError will be emitted when the function is used.
+    
 
 #### ```iterators```
 All stuff related to list and iterators. 
@@ -90,3 +102,4 @@ All stuff related to list and iterators.
 	- ```port```: The port where to serve on. For example ```80``` or ```8080``` for HTTP (```80``` often needs root privileges).
 	- *```host```: Optional.* A host where to serve on. If an empty string ```""``` (default) is given, all incoming connections are allowed. (you can connect from localhost, from lan, from internet, etc.)
 	- returns: The ```HTTPServer``` created.
+	
