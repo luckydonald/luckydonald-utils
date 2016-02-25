@@ -11,9 +11,16 @@ pip install luckydonald-utils
 
 ## ```luckydonaldUtils``` Documentation:
 *(not a complete list)* 
+
+#### ```clazzes```
+Related to class manipulations. (Added in [v0.35](https://github.com/luckydonald/python-utils/releases/tag/v0.35))
+
+- ```Singleton```: Metaclass to use, if only the one (the same) instance of a class is needed.
     
-####```djangos```
-###### Utilities for django.
+    
+#### ```djangos```
+Utilities for django.
+
 - ```csrf``` ([v0.22](https://github.com/luckydonald/python-utils/releases/tag/v0.22)-[27](https://github.com/luckydonald/python-utils/releases/tag/v0.27). Merged into ```djangos.requests``` in [v0.28](https://github.com/luckydonald/python-utils/releases/tag/v0.28))
 - ```headers```  (added in [v0.23](https://github.com/luckydonald/python-utils/releases/tag/v0.23))
 	- ```@header```: decorator to add/set a header. (added in [v0.24](https://github.com/luckydonald/python-utils/releases/tag/v0.24))     
@@ -53,7 +60,7 @@ pip install luckydonald-utils
 			Include in your ```MIDDLEWARE_CLASSES```: ```"luckydonaldUtils.djangos.middleware.headers.EastereggHeadersMiddleware"```
 
 #### ```functions```
-Information about calling functions (Added in [v0.35](https://github.com/luckydonald/python-utils/releases/tag/v0.35)+)
+Information about calling functions (Added in [v0.35](https://github.com/luckydonald/python-utils/releases/tag/v0.35))
 
 - ```@caller```: Functions decorated with this will be called with an `call` kwarg, containing information about the function itself, and the caller.
     If the caller could not be fetched correctly, the `caller`s attributes all will be `None`.
