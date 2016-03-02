@@ -144,7 +144,7 @@ class NoBuiltins(object):
         :type  allowed_vars: dict
 
         """
-        assert isinstance(allowed_builtins, dict)
+        assert isinstance(allowed_builtins, list)
         self.allowed_builtins = tuple(allowed_builtins)  # tuples are not modifiable.
         if allowed_functions is None:
             allowed_functions = {}
