@@ -4,7 +4,7 @@
 
     Python 3:
     apply with keyword argument in the base-class list:
-    >>> class Exampe(object, metaclass = Singleton):
+    >>> class Example(object, metaclass = Singleton):
     >>>    pass
 
     Python 2.7:
@@ -12,7 +12,6 @@
     >>> class Exampe(object):
     >>>    __metaclass__ = Singleton
     >>>    pass
-
 """
 
 
