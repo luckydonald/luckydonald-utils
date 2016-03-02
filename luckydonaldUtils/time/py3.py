@@ -1,11 +1,6 @@
 # -*- coding: utf-8 -*-
 # noinspection
-
 __author__ = 'luckydonald'
-
-from luckydonaldUtils.logger import logging  # pip install luckydonald-utils
-logger = logging.getLogger(__name__)
-
 
 def get_local_time(time:datetime.datetime, time_zone:str=None) -> datetime.datetime:
 	if time_zone is None:

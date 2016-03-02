@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-__author__ = 'luckydonald'
-
 from .dependencies import upgrade
+
+__author__ = 'luckydonald'
 
 upgrade("luckydonald-utils")
