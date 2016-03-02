@@ -85,19 +85,24 @@ All stuff related to list and iterators.
 #### ```interactions```
 Interact with the user.
 
-- ```safe_eval (user_input, no_builtins_object=NoBuiltins(eval_safe_builtin_list))```: (Added in [v0.37](https://github.com/luckydonald/python-utils/releases/tag/v0.37))   
+- ```safe_eval (user_input, no_builtins_object=NoBuiltins(eval_safe_builtin_list, eval_safe_builtin_mapping))```: (Added in [v0.37](https://github.com/luckydonald/python-utils/releases/tag/v0.37))   
     Tries to make a safe execution of user inputted python code. Per default uses a `interactions.NoBuiltins` object
     with `interactions.eval_safe_builtin_list` as allowed commands.
      - `user_input`: the string
      - `no_builtins_object`: a `NoBuiltins` object, initialized with `interactions.eval_safe_builtin_list`
 
-- ```NoBuiltins (allowed_builtins, allowed_vars=None)```: (Added in [v0.37](https://github.com/luckydonald/python-utils/releases/tag/v0.37))   
+- ```NoBuiltins (allowed_builtins, allowed_functions=None, allowed_vars=None)```: (Added in [v0.37](https://github.com/luckydonald/python-utils/releases/tag/v0.37))   
     Used to allow custom variables.
      - `allowed_builtins`: List of allowed buildins (strings)
+     - `allowed_functions`: Dict with names of functions and the functions to be called.
      - `allowed_vars`: Given variables. A Mapping with a dict.
     
 - ```eval_safe_builtin_list```: (Added in [v0.37](https://github.com/luckydonald/python-utils/releases/tag/v0.37))   
     A default list of builtin commands/variables considered 'safe'.
+   
+- ```eval_safe_builtin_mapping```: (Added in [v0.37](https://github.com/luckydonald/python-utils/releases/tag/v0.37))   
+    A default list of builtin functions/variables, which are not at `__builtin__`s root level, but mapped as if.
+    They are mathematical functions considered 'safe'.
 
 
 #### ```network```

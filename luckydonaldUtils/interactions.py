@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-__author__ = 'luckydonald'
-
 import getpass
+import math
+
+__author__ = 'luckydonald'
 
 try:
     input = raw_input
@@ -113,10 +114,15 @@ def password(prompt=None, default=None):
 ################################################
 
 # make a list of safe functions
-eval_safe_builtin_list = ['math', 'acos', 'asin', 'atan', 'atan2', 'ceil', 'cos', 'cosh',
-             'degrees', 'e', 'exp', 'fabs', 'floor', 'fmod', 'frexp', 'hypot',
-             'ldexp', 'log', 'log10', 'modf', 'pi', 'pow', 'radians', 'sin',
-             'sinh', 'sqrt', 'tan', 'tanh']
+eval_safe_builtin_list = ["math"]
+eval_safe_builtin_mapping = {'acos': math.acos, 'asin': math.asin, 'atan': math.atan,
+                                  'atan2': math.atan2, 'ceil': math.ceil, 'cos': math.cos, 'cosh': math.cosh,
+                                  'degrees': math.degrees, 'e': math.e, 'exp': math.exp, 'fabs': math.fabs,
+                                  'floor': math.floor, 'fmod': math.fmod, 'frexp': math.frexp, 'hypot': math.hypot,
+                                  'ldexp': math.ldexp, 'log': math.log, 'log10': math.log10, 'modf': math.modf,
+                                  'pi': math.pi, 'pow': math.pow, 'radians': math.radians, 'sin': math.sin,
+                                  'sinh': math.sinh, 'sqrt': math.sqrt, 'tan': math.tan, 'tanh': math.tanh
+}
 
 
 class NotAllowed(Exception):
@@ -128,15 +134,22 @@ class NotAllowed(Exception):
 
 
 class NoBuiltins(object):
-    def __init__(self, allowed_builtins, allowed_vars=None):
+    def __init__(self, allowed_builtins, allowed_functions=None, allowed_vars=None):
         """
-        :param allowed_buildins: List with names of allowed buildins.
-        :type  allowed_buildins: list[str]
+        :param allowed_builtins: List with names of functions.
+        :type  allowed_builtins: list[str]
+        :param allowed_functions: Dict with names of functions and the functions to be called.
+        :type  allowed_functions: dict
         :param allowed_vars: Dict with allowed variables.
         :type  allowed_vars: dict
 
         """
-        self.allowed_buildins = tuple(allowed_builtins)  # tuples are not modifiable.
+        assert isinstance(allowed_builtins, dict)
+        self.allowed_builtins = tuple(allowed_builtins)  # tuples are not modifiable.
+        if allowed_functions is None:
+            allowed_functions = {}
+        assert isinstance(allowed_functions, dict)
+        self.allowed_functions = allowed_functions
         if allowed_vars is None:
             allowed_vars = {}
         assert isinstance(allowed_vars, dict)
@@ -146,18 +159,20 @@ class NoBuiltins(object):
     def __getitem__(self, item):
         if item in self.var_store:
             return self.var_store[item]
-        if item in self.allowed_buildins:
+        if item in self.allowed_functions:
+            return self.allowed_functions[item]
+        if item in self.allowed_builtins:
             return __builtins__[item]
         raise NotAllowed(
             "{item} is not allowed, the supported commands are {allowed_funcs}, "
             "allowed variables are {allowed_vars}.".format(
-                item=item, allowed_funcs=self.allowed_buildins, allowed_vars=self.var_store.keys()
+                item=item, allowed_funcs=self.allowed_builtins, allowed_vars=self.var_store.keys()
             ))
     # end def
 # end class
 
 
-def safe_eval(user_input, no_builtins_object=NoBuiltins(eval_safe_builtin_list)):
+def safe_eval(user_input, no_builtins_object=NoBuiltins(eval_safe_builtin_list, eval_safe_builtin_mapping)):
     """
     Evals the `user_input` string.
 
