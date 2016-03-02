@@ -163,10 +163,12 @@ class NoBuiltins(object):
             return self.allowed_functions[item]
         if item in self.allowed_builtins:
             return __builtins__[item]
+        all = list(self.var_store.keys())
+        all.extend(self.allowed_functions)
         raise NotAllowed(
             "{item} is not allowed, the supported commands are {allowed_funcs}, "
             "allowed variables are {allowed_vars}.".format(
-                item=item, allowed_funcs=self.allowed_builtins, allowed_vars=self.var_store.keys()
+                item=item, allowed_funcs=all, allowed_vars=self.var_store.keys()
             ))
     # end def
 # end class
