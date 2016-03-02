@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-__author__ = 'luckydonald'
-
 from setuptools import setup
 from luckydonaldUtils import VERSION
 from luckydonaldUtils.dependencies import find_submodules
 
+__author__ = 'luckydonald'
 long_description = """A collection of utilities I use across different projects"""
 
 # http://peterdowns.com/posts/first-time-with-pypi.html
@@ -31,6 +30,7 @@ setup(
     url="https://github.com/luckydonald/python-utils",
     install_requires=install_requires,
     long_description=long_description,
+    test_suite = 'nose.collector',
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
