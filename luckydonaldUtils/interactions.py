@@ -137,6 +137,8 @@ class NoBuiltins(object):
 
         """
         self.allowed_buildins = tuple(allowed_builtins)  # tuples are not modifiable.
+        if allowed_vars is None:
+            allowed_vars = {}
         assert isinstance(allowed_vars, dict)
         self.var_store = allowed_vars
     # end def
@@ -148,7 +150,7 @@ class NoBuiltins(object):
             return __builtins__[item]
         raise NotAllowed(
             "{item} is not allowed, the supported commands are {allowed_funcs}, "
-            "allowed variables are {allowed_vars}".format(
+            "allowed variables are {allowed_vars}.".format(
                 item=item, allowed_funcs=self.allowed_buildins, allowed_vars=self.var_store.keys()
             ))
     # end def
