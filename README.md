@@ -111,7 +111,13 @@ Interact with the user.
 - ```mod_wsgi```
 	-	```reloader```: Auto reloading capabilities for **mod_wsgi** environments. ([v0.28](https://github.com/luckydonald/python-utils/releases/tag/v0.28)+)    
 
+#### ```regex```
+Package of some regular expressions I found useful.
 
+- ```urls.github.GITHUB_FILE_REGEX```: ([v0.38](https://github.com/luckydonald/python-utils/releases/tag/v0.38)+)
+    Matches github urls pointing to files or directories.
+    
+    
 #### ```webserver```
 (added in [v0.20](https://github.com/luckydonald/python-utils/releases/tag/v0.20))    
 
