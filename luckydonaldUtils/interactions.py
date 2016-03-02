@@ -186,3 +186,9 @@ def safe_eval(user_input, no_builtins_object=NoBuiltins(eval_safe_builtin_list, 
     assert isinstance(no_builtins_object, NoBuiltins)
     result = eval(user_input, {"__builtins__": no_builtins_object}, no_builtins_object)
     return result
+
+
+"""
+>>> safe_eval("log10(12)")
+1.0791812460476249
+"""
