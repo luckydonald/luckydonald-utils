@@ -37,4 +37,21 @@ class Test(unittest.TestCase):
             # end if
         # end for
     # end def
+
+    def test_github_link_match_groups(self):
+        input = "https://github.com/luckydonald/luckydonald-utils/blob/3888e7e6967e8b9b80245300321ddd2c19eff391/" \
+                "luckydonaldUtils/eastereggs/headers.py#L12-L13"
+        m = GITHUB_FILE_REGEX.match(input)
+        print(repr(m.groupdict()))
+        self.assertEqual(m.group("user"),    "luckydonald", "user")
+        self.assertEqual(m.group("repo"),    "luckydonald-utils", "repo")
+        self.assertIn("path", m.groupdict(), "path")
+        self.assertEqual(m.group("path"),    "blob/3888e7e6967e8b9b80245300321ddd2c19eff391/luckydonaldUtils/eastereggs/headers.py", "path")
+        self.assertEqual(m.group("kind"),    "blob", "kind")
+        self.assertEqual(m.group("branch"),  "3888e7e6967e8b9b80245300321ddd2c19eff391", "branch")
+        self.assertEqual(m.group("file"),    "luckydonaldUtils/eastereggs/headers.py", "file")
+        self.assertIn("hash", m.groupdict(), "hash")
+        self.assertEqual(m.group("hash"),    "L12-L13", "hash")
+    # end def
 # end class
+
