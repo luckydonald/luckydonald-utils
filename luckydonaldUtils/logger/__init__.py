@@ -41,6 +41,7 @@ class ColoredFormatter(_logging.Formatter):
 
         def prepare_color(self, color_number):
             return ('%s%dm') % (self.color_prefix, color_number)
+
         # end def
 
         def colored(self, record):
@@ -49,44 +50,52 @@ class ColoredFormatter(_logging.Formatter):
             """
 
             color = self.mapping.get(record.levelname, 'default')
-            clr   = self.colors[color]
+            clr = self.colors[color]
 
-            filepart = record.treadName + ": " if hasattr(record, "treadName") and record.treadName != "MainTread" else ""
+            filepart = record.treadName + ": " if hasattr(record,
+                                                          "treadName") and record.treadName != "MainTread" else ""
             filepart += record.name if record.name else ""
             filepart += "." + record.funcName + ": " if record.funcName != "<module>" else ": "
-            filepart = filepart.join([self.prepare_color(94), self.prepare_color(39)]) #  Light blue ,  Default foreground color
+            filepart = filepart.join(
+                [self.prepare_color(94), self.prepare_color(39)])  # Light blue ,  Default foreground color
             formatter = dict(
-                all_off=self.prepare_color(0),		  # Reset all attributes
-                color_on=self.prepare_color(clr),     #  Color as given/from lookup
-                color_off=self.prepare_color(39),     #   Default foreground color
-                inverse_on=self.prepare_color(7),     #    Reverse (invert the foreground and background colors)
-                inverse_off=self.prepare_color(27),   #     Reset reverse
-                background_off=self.prepare_color(49),#      Default background color)
+                all_off=self.prepare_color(0),  # Reset all attributes
+                color_on=self.prepare_color(clr),  # Color as given/from lookup
+                color_off=self.prepare_color(39),  # Default foreground color
+                inverse_on=self.prepare_color(7),  # Reverse (invert the foreground and background colors)
+                inverse_off=self.prepare_color(27),  # Reset reverse
+                background_off=self.prepare_color(49),  # Default background color)
             )
             lines = []
             level = "{:8}".format(record.levelname)
-            level_filler = "{:{}}".format("",len(level))
+            level_filler = "{:{}}".format("", len(level))
             lines_ = record.message.splitlines()
-            first_line = True  if len(lines_) > 1 else  None
+            first_line = True if len(lines_) > 1 else  None
             for line in lines_:
-                if first_line is None: # single line
-                    lines.append("{color_on}{inverse_on}{level}{inverse_off}{color_off} {filepart}{color_on}{message}{color_off}{background_off}{all_off}".format(filepart=filepart, level=level,message=line, **formatter))
+                if first_line is None:  # single line
+                    lines.append(
+                        "{color_on}{inverse_on}{level}{inverse_off}{color_off} {filepart}{color_on}{message}{color_off}{background_off}{all_off}".format(
+                            filepart=filepart, level=level, message=line, **formatter))
                     break
-                elif first_line: # first line
-                    lines.append("{color_on}{inverse_on}{level}{inverse_off}{color_off} {filepart}{all_off}".format(filepart=filepart, level=level,message=line, **formatter))
-                lines.append("{color_on}{inverse_on}{level_filler}{inverse_off}{color_off} {color_on}{message}{color_off}{background_off}{all_off}".format(level_filler=level_filler,message=line, **formatter))
+                elif first_line:  # first line
+                    lines.append("{color_on}{inverse_on}{level}{inverse_off}{color_off} {filepart}{all_off}".format(
+                        filepart=filepart, level=level, message=line, **formatter))
+                lines.append(
+                    "{color_on}{inverse_on}{level_filler}{inverse_off}{color_off} {color_on}{message}{color_off}{background_off}{all_off}".format(
+                        level_filler=level_filler, message=line, **formatter))
                 first_line = False
             # end for
             return "\n".join(lines)
-        # end def
+            # end def
 
     colored = Color().colored
-    #firstpart = _logging.Formatter("%(levelname)s: %(threadName)s %(name)s.%(funcName)s: %(message)s")
+
+    # firstpart = _logging.Formatter("%(levelname)s: %(threadName)s %(name)s.%(funcName)s: %(message)s")
     def format(self, record):
         super(ColoredFormatter, self).format(record)
-        #if record.threadName == "MainThread":
-        #	pass
-        #part1 = self.firstpart.format(record)
+        # if record.threadName == "MainThread":
+        # 	pass
+        # part1 = self.firstpart.format(record)
         s = self._fmt % record.__dict__  # py3: s = self.formatMessage(record)
         if record.exc_text:
             if s[-1:] != "\n":
@@ -111,7 +120,8 @@ class ColoredFormatter(_logging.Formatter):
 
 # noinspection PyProtectedMember,PyProtectedMember
 class _LoggingWrapper(object):
-    SUCCESS = 25 # between WARNING and INFO
+    SUCCESS = 25  # between WARNING and INFO
+
     def __init__(self):
         _logging.addLevelName(self.SUCCESS, 'SUCCESS')
 
@@ -119,22 +129,23 @@ class _LoggingWrapper(object):
         """
         You provide a String, and get a level int
         :param level_string: The level.
-        :type  level_stirng: str
+        :type  level_string: str
         :return: level
         :rtype : int
         :raises KeyError: if the level does not exists.
         """
         return {
-            "NOTSET":_logging.NOTSET,
-            "DEBUG":_logging.DEBUG,
-            "INFO":_logging.INFO,
-            "SUCCESS":self.SUCCESS,
-            "WARNING":_logging.WARNING,
-            "WARN":_logging.WARN, # = WARNING
-            "ERROR":_logging.ERROR,
-            "FATAL":_logging.FATAL, # = CRITICAL
-            "CRITICAL":_logging.CRITICAL,
-            } [level_string]
+            "NOTSET": _logging.NOTSET,
+            "DEBUG": _logging.DEBUG,
+            "INFO": _logging.INFO,
+            "SUCCESS": self.SUCCESS,
+            "WARNING": _logging.WARNING,
+            "WARN": _logging.WARN,  # = WARNING
+            "ERROR": _logging.ERROR,
+            "FATAL": _logging.FATAL,  # = CRITICAL
+            "CRITICAL": _logging.CRITICAL,
+        }[level_string]
+
     def __call__(self, logger_name):
         """
         alias to logger.getLogger(logger_name)
@@ -220,9 +231,10 @@ class _LoggingWrapper(object):
             return self.success
         elif item == "SUCCESS":
             return self.SUCCESS
-        # end if
+            # end if
             pass
         else:
             return getattr(_logging, item)
+
 
 logging = _LoggingWrapper()
