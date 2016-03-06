@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from luckydonaldUtils.regex.urls.github import GITHUB_FILE_REGEX
-
-from collections import OrderedDict
 import unittest
+from collections import OrderedDict
+
+from luckydonaldUtils.regex.github import FILE_URL_REGEX
 __author__ = 'luckydonald'
 
 
@@ -28,7 +28,7 @@ class Test(unittest.TestCase):
 
     def test_github_links(self):
         for input, output in self.tests.items():
-            result = GITHUB_FILE_REGEX.search(input)
+            result = FILE_URL_REGEX.search(input)
             print ("\nInput   : {inp}\nexpected: {exp}\ngot     : {got}".format(inp=input, exp=output, got=result))
             if output is None:
                 self.assertIsNone(result, msg="Should not find anything.")
@@ -41,7 +41,7 @@ class Test(unittest.TestCase):
     def test_github_link_match_groups(self):
         input = "https://github.com/luckydonald/luckydonald-utils/blob/3888e7e6967e8b9b80245300321ddd2c19eff391/" \
                 "luckydonaldUtils/eastereggs/headers.py#L12-L13"
-        m = GITHUB_FILE_REGEX.match(input)
+        m = FILE_URL_REGEX.match(input)
         print(repr(m.groupdict()))
         self.assertEqual(m.group("user"),    "luckydonald", "user")
         self.assertEqual(m.group("repo"),    "luckydonald-utils", "repo")

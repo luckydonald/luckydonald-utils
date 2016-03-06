@@ -6,7 +6,11 @@ __author__ = 'luckydonald'
 
 REPO_NAME_REGEX = re.compile("([a-zA-Z0-9_.-]+)")
 
-GITHUB_FILE_REGEX = re.compile(  # https://regex101.com/r/qK6uN9/7
+AT_USERNAME_REGEX = re.compile(  # https://regex101.com/r/eJ6cA4/
+    "(?:\s|^|\.|,|:|\?|!|¡|¿)@(?!-)((?:[a-zA-Z0-9]|-(?!-))+[a-zA-Z0-9])(?![^\x00-\x7F])(?:$|[^a-zA-Z0-9\-_])"
+)
+
+FILE_URL_REGEX = re.compile(  # https://regex101.com/r/qK6uN9
     "\\b(?P<url>https?://github.com/(?P<user>[a-zA-Z0-9_-]+)/(?P<repo>[a-zA-Z0-9_.-]+)/?"
     "(?P<path>(?:(?P<kind>blob|tree)/(?P<branch>[a-zA-Z0-9_%-]+))/?(?P<file>[^\s#]*)/?)?)"
     "(?:#(?P<hash>[-;/?:@&=+$,_.!~*'()%0-9a-zA-Z]*))?(?:\\s|$)", flags=re.IGNORECASE
@@ -22,3 +26,6 @@ Matching groups:
         - file: the rest of the filepath (from root of that branch, can be empty)
       - hash: Can be non-existent or empty. Everything behind the #.
 """
+
+
+

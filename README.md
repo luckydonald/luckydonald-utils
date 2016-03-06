@@ -114,8 +114,22 @@ Interact with the user.
 #### ```regex```
 Package of some regular expressions I found useful.
 
-- ```urls.github.GITHUB_FILE_REGEX```: ([v0.38](https://github.com/luckydonald/python-utils/releases/tag/v0.38)+)
-    Matches github urls pointing to files or directories.
+- ```github```
+    - ```REPO_NAME_REGEX```: Repo name validation. (Since<sup>[1](#1)</sup> [v0.40](https://github.com/luckydonald/python-utils/releases/tag/v0.40))
+    - ```AT_USERNAME_REGEX```: Searches @usernames.  (Since [v0.40](https://github.com/luckydonald/python-utils/releases/tag/v0.40))
+    - ```FILE_URL_REGEX```: Matches github urls pointing to files or directories.(Since<sup>[1](#1)</sup> [v0.40](https://github.com/luckydonald/python-utils/releases/tag/v0.40))
+    Matching groups:
+        - url: the complete url
+            - user: git user or organisation
+            - repo: the repository
+            - path: When existent, this is not the project page (root of master)
+                - kind: blob or tree
+                - branch: the name of the branch (kind=tree), or the commit hash (kind=blob)
+            - file: the rest of the filepath (from root of that branch, can be empty)
+        - hash: Can be non-existent or empty. Everything behind the #.
+    
+            
+
     
     
 #### ```webserver```
@@ -141,3 +155,9 @@ Package of some regular expressions I found useful.
 	- *```host```: Optional.* A host where to serve on. If an empty string ```""``` (default) is given, all incoming connections are allowed. (you can connect from localhost, from lan, from internet, etc.)
 	- returns: The ```HTTPServer``` created.
 	
+
+<hr>
+#### Notes
+1. <a name="1">*`regex.github.REPO_NAME_REGEX` and `regex.github.FILE_URL_REGEX` where already present in [v0.38](https://github.com/luckydonald/python-utils/releases/tag/v0.38) as `regex.urls.github.REPO_NAME_REGEX` and `regex.urls.github.GITHUB_FILE_REGEX`.*</a>
+2. <a name="2">**</a>
+    
