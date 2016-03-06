@@ -1,6 +1,6 @@
 # luckydonald-utils
 ###### A collection of utilities I use across different python projects.
-
+[![Build Status](https://travis-ci.org/luckydonald/luckydonald-utils.svg?branch=master)](https://travis-ci.org/luckydonald/luckydonald-utils)
 Install with pip:
 ```shell
 pip install luckydonald-utils
