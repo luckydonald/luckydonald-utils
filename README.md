@@ -116,7 +116,7 @@ Package of some regular expressions I found useful.
 
 - ```github```
     - ```REPO_NAME_REGEX```: Repo name validation. (Since<sup>[1](#1)</sup> [v0.40](https://github.com/luckydonald/python-utils/releases/tag/v0.40))
-    - ```AT_USERNAME_REGEX```: Searches @usernames.  (Since [v0.40](https://github.com/luckydonald/python-utils/releases/tag/v0.40))
+    - ```AT_USERNAME_REGEX```: Searches @usernames.  (Since [v0.40](https://github.com/luckydonald/python-utils/releases/tag/v0.40); added match group `user` in [v0.41](https://github.com/luckydonald/python-utils/releases/tag/v0.41))
     - ```FILE_URL_REGEX```: Matches github urls pointing to files or directories.(Since<sup>[1](#1)</sup> [v0.40](https://github.com/luckydonald/python-utils/releases/tag/v0.40))
     Matching groups:
         - url: the complete url
