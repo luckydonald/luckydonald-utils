@@ -98,11 +98,11 @@ class Test(unittest.TestCase):
     def test_user_regex(self):
         for input, output in self.user_to_test.items():
             result = AT_USERNAME_REGEX.search(input)
-            print ("\nInput   : {inp}\nexpected: {exp}\ngot     : {got}".format(inp=input, exp=output, got=result))
+            print ("\nInput   : {inp}\nexpected: {exp}\ngot     : {got}".format(inp=input, exp=output, got=result.group("user") if result else None))
             if output is None:
                 self.assertIsNone(result, msg="Should not find anything.")
             else:
-                self.assertIsNotNone(result, msg="Should find a @user.")
+                self.assertEqual(output, result.group("user"), msg="Should find a @user.")
             # end if
         # end for
 # end class

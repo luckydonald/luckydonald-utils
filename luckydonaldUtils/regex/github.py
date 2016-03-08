@@ -7,7 +7,7 @@ __author__ = 'luckydonald'
 REPO_NAME_REGEX = re.compile("([a-zA-Z0-9_.-]+)")
 
 AT_USERNAME_REGEX = re.compile(  # https://regex101.com/r/eJ6cA4/
-    "(?:\s|^|\.|,|:|\?|!|¡|¿)@(?!-)((?:[a-zA-Z0-9]|-(?!-))+[a-zA-Z0-9])(?![^\x00-\x7F])(?:$|[^a-zA-Z0-9\-_])"
+    "(?:\s|^|\.|,|:|\?|!|¡|¿)@(?!-)(?P<user>(?:[a-zA-Z0-9]|-(?!-))+[a-zA-Z0-9])(?![^\x00-\x7F])(?:$|[^a-zA-Z0-9\-_])"
 )
 
 FILE_URL_REGEX = re.compile(  # https://regex101.com/r/qK6uN9
