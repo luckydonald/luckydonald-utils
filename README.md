@@ -1,13 +1,22 @@
 # luckydonald-utils
 ###### A collection of utilities I use across different python projects.
 [![Build Status](https://travis-ci.org/luckydonald/luckydonald-utils.svg?branch=master)](https://travis-ci.org/luckydonald/luckydonald-utils)
-Install with pip:
-```shell
-pip install luckydonald-utils
-```    
- 
-
 (Released on [![PyPI](https://img.shields.io/pypi/v/pytg.svg)](https://pypi.python.org/pypi/luckydonald-utils) [(Github mirror)](https://github.com/luckydonald/python-utils/releases/))
+
+### Install    
+`$` `pip install luckydonald-utils`    
+
+### Update 
+Via pip:
+`$` `pip install --upgrade luckydonald-utils`    
+
+Using the package:
+`$` `python -m luckydonaldUtils.selfupdate`    
+
+From python interpreter:
+```python
+from luckydonaldUtils import selfupdate
+```
 
 ## ```luckydonaldUtils``` Documentation:
 *(not a complete list)* 
