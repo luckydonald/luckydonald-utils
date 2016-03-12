@@ -30,7 +30,7 @@ setup(
     url="https://github.com/luckydonald/python-utils",
     install_requires=install_requires,
     long_description=long_description,
-    test_suite = 'nose.collector',
+    # test_suite = 'nose.collector',
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",

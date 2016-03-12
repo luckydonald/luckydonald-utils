@@ -13,6 +13,7 @@ matrix:
 
 install:
   - 'python setup.py install'
-  - 'pip install nose'
+  - 'pip install nose2'
+  - 'which python'
 
-script: 'nosetests'
+script: 'nose2'
