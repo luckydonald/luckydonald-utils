@@ -64,13 +64,13 @@ class Test(unittest.TestCase):
     user_to_test["@test.hey"] = "test"
     user_to_test["mail@example.com"] = None
     user_to_test["mail @example.com"] = "example"
-    user_to_test["hey.@exple.How are you?I am fine!"] = "exple"
+    user_to_test["hey.@exple.How are you?I am fine!"] = "exple"  # yeah, that's a typo
     user_to_test["\@escaped_not_a_user"] = None
 
     def test_github_links(self):
         for input, output in self.urls_to_test.items():
             result = FILE_URL_REGEX.search(input)
-            print ("\nInput   : {inp}\nexpected: {exp}\ngot     : {got}".format(inp=input, exp=output, got=result))
+            print ("\nInput   : {inp}\nexpected: {exp}\ngot     : {got}".format(inp=input, exp="REGEX" if output else "None", got=result))
             if output is None:
                 self.assertIsNone(result, msg="Should not find anything.")
             else:
