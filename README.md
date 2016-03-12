@@ -1,17 +1,12 @@
 # luckydonald-utils
 ###### A collection of utilities I use across different python projects.
 [![Build Status](https://travis-ci.org/luckydonald/luckydonald-utils.svg?branch=master)](https://travis-ci.org/luckydonald/luckydonald-utils)
-([![PyPI](https://img.shields.io/pypi/v/luckydonald-utils.svg)](https://pypi.python.org/pypi/luckydonald-utils)
+[![PyPI](https://img.shields.io/pypi/v/luckydonald-utils.svg)](https://pypi.python.org/pypi/luckydonald-utils)
+
+[Documentation](#luckydonaldutils-documentation)
 
 ### Install    
 `$` `pip install luckydonald-utils`    
-
-### Install from source
-- Download release from [PyPi](https://pypi.python.org/pypi/luckydonald-utils) or [Github](https://github.com/luckydonald/python-utils/releases/),
-or clone the latest code from Github:
-    `$` `git clone https://github.com/luckydonald/luckydonald-utils.git && cd luckydonald-utils`    
-- Navigate into the `luckydonaldUtils` folder and run 
-    `$` `python setup.py install`
 
 
 ### Update 
@@ -25,6 +20,14 @@ From python interpreter:
 ```python
 from luckydonaldUtils import selfupdate
 ```
+
+### Install from source
+- Get the source
+    - Download a release from [PyPi](https://pypi.python.org/pypi/luckydonald-utils) or [Github](https://github.com/luckydonald/python-utils/releases/),
+    - or clone the latest code from Github:
+    `$` `git clone https://github.com/luckydonald/luckydonald-utils.git && cd luckydonald-utils`    
+- Navigate into the `luckydonaldUtils` folder and run 
+    `$` `python setup.py install`
 
 ### Update from source
 - If you manually downloaded your version, just follow the install steps again using a new version.
