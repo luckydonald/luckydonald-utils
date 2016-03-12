@@ -1,36 +1,34 @@
 language: python
+sudo: false
+cache:
+  directories:
+  - $HOME/.cache/pip
+
 python:
-  - 2.7
-  - 3.2
-  - 3.4
-  - 3.5
-  - pypy
-  - pypy3
-  - nightly
-  - nightly3
-
-matrix:
-  allow_failures:
-    - python:
-      - nightly
-      - nightly3
-
-install:
-  - 'python setup.py install'
-  - 'pip install nose2'
-  - 'which python'
-
-script: 'nose2'
-
-# deploy:
-#   provider: pypi
-#   user: luckydonald
-#   password:
-#     #secure:
-#   on:
-#     tags: true
-#     distributions: sdist bdist_wheel
-#     repo: luckydonald/luckydonald-utils
+- 2.7
+- 3.2
+- 3.4
+- 3.5
+- pypy
+- pypy3
+- nightly
 
 matrix:
   fast_finish: true
+
+install:
+- python setup.py install
+- pip install nose2
+- which python
+
+script: nose2
+
+deploy:
+  provider: pypi
+  user: luckydonald
+  password:
+    secure: w6eVa/vKJaSYlEsVD8U+aT39czXlsf/v9TLx5P3+QxN78YdGE0mWdvlajLWuz5zMqAUokrr8/JEvYgzQuVQ0KxOZWBOee3Rj4afjZAxKSquTxPxJ7CGboDx0pDmvbxwtT84LHSB+3JKP8Ur9mDRThXkdME/UAWfJ8fTxflCRRhb6WxMQ466n7TI8a1JENu3qAq17+WFajYd+5tAER1vV7zK6ca4+DjePUpaBrdAKATSthGN0T4YFavS3K1Aqw4RmI8hO/RpNf3CETgYX+IOQ5zJPO+v8c5VSEwr4mYW4GbXm/7h8bsshLUPPygE4H0WKnaao92sVX8UayoedSTpycjij5OqVE5LqWblFD0obP8DyU9Vj5AITzz1WQMkLxJzssXxZn3OSlSnta4igPmJ9f0AD0XFKMYCE4uFyVWnEaNRdVjClif98fYZ5cRIs8zFZWWeiSXQ4ybE9SiB/npdSdJsfaBvFitMXEiAeLaLlKDcjs88rTt6Kay4cX/kEPS+OQCX/LANEXLazLx24FR0ndMwrSNsQop9KlWxcV+xgHa8m5gR+irpVo6+T1s2EbKghuXxazNiOYOJOyChjUsA9iFYiXExRsYflP8uT9CnLqjYdpIggIz1SBjPYJySg8XF/jetU1S+jdgWB3MP4SvbjlkF9lj5lI8edBxqO6OLaB/Q=
+  on:
+    tags: true
+    distributions: sdist bdist_wheel
+    repo: luckydonald/luckydonald-utils
