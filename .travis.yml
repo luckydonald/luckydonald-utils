@@ -5,11 +5,15 @@ python:
   - 3.4
   - 3.5
   - pypy
+  - pypy3
   - nightly
+  - nightly3
 
 matrix:
   allow_failures:
-    - python: nightly
+    - python:
+      - nightly
+      - nightly3
 
 install:
   - 'python setup.py install'
@@ -17,3 +21,16 @@ install:
   - 'which python'
 
 script: 'nose2'
+
+# deploy:
+#   provider: pypi
+#   user: luckydonald
+#   password:
+#     #secure:
+#   on:
+#     tags: true
+#     distributions: sdist bdist_wheel
+#     repo: luckydonald/luckydonald-utils
+
+matrix:
+  fast_finish: true

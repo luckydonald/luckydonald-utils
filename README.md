@@ -1,10 +1,18 @@
 # luckydonald-utils
 ###### A collection of utilities I use across different python projects.
 [![Build Status](https://travis-ci.org/luckydonald/luckydonald-utils.svg?branch=master)](https://travis-ci.org/luckydonald/luckydonald-utils)
-(Released on [![PyPI](https://img.shields.io/pypi/v/pytg.svg)](https://pypi.python.org/pypi/luckydonald-utils) [(Github mirror)](https://github.com/luckydonald/python-utils/releases/))
+([![PyPI](https://img.shields.io/pypi/v/luckydonald-utils.svg)](https://pypi.python.org/pypi/luckydonald-utils)
 
 ### Install    
 `$` `pip install luckydonald-utils`    
+
+### Install from source
+- Download release from [PyPi](https://pypi.python.org/pypi/luckydonald-utils) or [Github](https://github.com/luckydonald/python-utils/releases/),
+or clone the latest code from Github:
+    `$` `git clone https://github.com/luckydonald/luckydonald-utils.git && cd luckydonald-utils`    
+- Navigate into the `luckydonaldUtils` folder and run 
+    `$` `python setup.py install`
+
 
 ### Update 
 Via pip:
@@ -17,6 +25,12 @@ From python interpreter:
 ```python
 from luckydonaldUtils import selfupdate
 ```
+
+### Update from source
+- If you manually downloaded your version, just follow the install steps again using a new version.
+- If you cloned the code, navigate into the `luckydonaldUtils` folder and run 
+    `$` `git pull && python setup.py install`
+    
 
 ## ```luckydonaldUtils``` Documentation:
 *(not a complete list)* 
