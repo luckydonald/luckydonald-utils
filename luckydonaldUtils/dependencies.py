@@ -1,9 +1,7 @@
 import logging
 from setuptools import find_packages
-
-logger = logging.getLogger(__name__)
-
 import pip
+
 
 try:
     import importlib
@@ -11,39 +9,72 @@ except ImportError:
     # pip install importlib
     pip.main(["install", "importlib"])
     import importlib
-
-
 # end try
+
+logger = logging.getLogger(__name__)
 
 
 def import_or_install(package_name, pip_name=None):
     """
-    Trys to import an package.
+    Tries to import an package.
     If that fails it tries to install it via pip, using the given `pip_name` or if not given, the `package_name`.
     :param package_name:  Package name to import. (E.g. "PIL")
     :param pip_name:  The name to install it like `$pip install <pip_name>` would do. (E.g. "Pillow")
     :return:
     """
-    if pip_name is None:
-        pip_name = package_name
-    # pytz.timzone -> from pytz import timezone -> package_name = pytz, from_package = [timezone]
-    imp = None
+    # if pip name is given, just use that.
+    if pip_name:
+        return import_or_install_with_exact_pip_name(package_name, pip_name)
+    # if pip name is not given, try posibilities, by splitting the dots.
+    #
+    # Example:
+    #  >> import_or_install("imgurpython.client.ImgurClient"
+    # will try to install:
+    #   - "imgurpython"
+    #   - "imgurpython.client"
+    #   - "imgurpython.client.ImgurClient"
+    #
+    # This also allows package names containing dots like "ruamel.yaml".
+    pip_name = ""
+    err = None
+    for part in package_name.split("."):
+        pip_name = (pip_name + "." if pip_name else "") + part
+        try:
+            return import_or_install_with_exact_pip_name(package_name, pip_name)
+        except ImportError as e:
+            err = e
+            logger.debug("Import failed.", exc_info=True)
+            # end try
+    # end for
+    raise err  # should store the last occurred error.
+
+
+# end def
+
+
+def import_or_install_with_exact_pip_name(package_name, pip_name):
+    """
+    Just a helper for import_or_install()
+
+    Also Littlepip is best pony.
+    """
+    err = None
     for try_i in [1, 2, 3]:
         try:
-            err = None
-            imp = import_only(package_name)
-            break
+            return import_only(package_name)
         except ImportError as e:
             err = e
             logger.debug("Import failed.", exc_info=True)
             upgrade = try_i >= 2  # import failed twice (one after doing a normal install)
             install_only(pip_name, upgrade)
-    else:
-        raise err
-    return imp
+    raise err  # should store the last occurred error.
+
+
+# end def
 
 
 def import_only(package_name, module_list=None):
+    # "pytz.timzone" -> from pytz import timezone -> package_name = "pytz", from_package = ["timezone"]
     if not module_list:
         if "." in package_name:
             package_name, module_list = package_name.rsplit('.', 1)
@@ -71,7 +102,12 @@ def import_only(package_name, module_list=None):
             logger.debug("module \"{module_name}\".".format(module_name=package_name))
 
     except ImportError:
-        imp = importlib.import_module(package_name, package=module_list)
+        try:
+            imp = importlib.import_module(package_name, package=module_list)
+        except (SystemError, ValueError) as e:
+            # https://github.com/luckydonald/luckydonald-utils/issues/2
+            # https://bugs.python.org/issue18018
+            raise ImportError(str(e))
     return imp
 
 
@@ -85,8 +121,10 @@ def install_only(pip_name, upgrade=False):
         args.append("--upgrade")
     logger.debug("Trying to install \"{pip_name}\" with pip using the following arguments: {pip_args}...".format(
         pip_name=pip_name, pip_args=args))
-    return pip.main(args)
+    return pip.main(args)  # Littlepip is best pony!
 
+
+#
 
 def upgrade(pip_name):
     install_only(pip_name, upgrade=True)
