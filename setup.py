@@ -25,7 +25,7 @@ setup(
     author="luckydonald",
     author_email="code@luckydonald.de",
     description=long_description,
-    license="GPLv3+",
+    license="GPLv2+",
     keywords="luckydonald utils utilities utility python dependencies dependency download progress bar encoding files interactions json update store text xml time network logger color images webserver django CSRF headers eastereggs",
     url="https://github.com/luckydonald/python-utils",
     install_requires=install_requires,
