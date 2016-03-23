@@ -70,7 +70,7 @@ class Test(unittest.TestCase):
     def test_github_links(self):
         for input, output in self.urls_to_test.items():
             result = FILE_URL_REGEX.search(input)
-            print ("\nInput   : {inp}\nexpected: {exp}\ngot     : {got}".format(inp=input, exp="REGEX" if output else "None", got=result))
+            print ("\nInput   : {inp}\nexpected: {exp}\ngot     : {got}".format(inp=input, exp="MATCH" if output else "None", got=result))
             if output is None:
                 self.assertIsNone(result, msg="Should not find anything.")
             else:
