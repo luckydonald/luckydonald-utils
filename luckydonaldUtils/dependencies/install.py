@@ -1,13 +1,16 @@
-import logging
+# -*- coding: utf-8 -*-
+from .pip_interface import pip_install
+from luckydonaldUtils.logger import logging
 from setuptools import find_packages
-import pip
 
+__author__ = 'luckydonald'
+logger = logging.getLogger(__name__)
 
 try:
     import importlib
 except ImportError:
     # pip install importlib
-    pip.main(["install", "importlib"])
+    pip_install(["importlib"])
     import importlib
 # end try
 
@@ -116,15 +119,13 @@ def install_only(pip_name, upgrade=False):
                 "If that fails, install it manually:\n"
                 "pip install {pip_name}\n"
                 "".format(pip_name=pip_name, install_or_upgrade="Upgrading" if upgrade else "Installing"))
-    args = ["install", pip_name, "--verbose"]
+    args = [pip_name, "--verbose"]
     if upgrade and "--upgrade" not in args:
         args.append("--upgrade")
     logger.debug("Trying to install \"{pip_name}\" with pip using the following arguments: {pip_args}...".format(
         pip_name=pip_name, pip_args=args))
-    return pip.main(args)  # Littlepip is best pony!
+    return pip_install(args)
 
-
-#
 
 def upgrade(pip_name):
     install_only(pip_name, upgrade=True)
