@@ -89,7 +89,7 @@ Utilities for django.
 #### ```files```
 Collection of things which are file related.
 
-- ```mkdir_p(path)```: like `mkdir -p`
+- ```mkdir_p(path)```: like `mkdir -p` [v0.43](https://github.com/luckydonald/python-utils/releases/tag/v0.43)
 
 
 #### ```functions```
