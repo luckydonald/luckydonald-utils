@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
 from .dependencies import import_or_install
 
+import os
+import sys
+import errno
+import logging
 import tempfile
 import mimetypes  # get mime types/suffix for DL.
-
-import os
-import errno  # exist_ok workaround
-
-# open_folder()
 import subprocess
-import sys
-import logging
 magic = import_or_install("magic", "python-magic")  # pip install python-magic
 
 __author__ = 'luckydonald'
@@ -72,6 +69,20 @@ def do_a_filename(input_file_name):
     logger.debug("Filename '{old_filename}' is now '{new_filename}'.".format(old_filename=input_file_name,
                                                                              new_filename=output_file_name))
     return output_file_name
+
+
+def mkdir_p(path):
+    """
+    like mkdir -p
+    """
+    try:
+        os.makedirs(path)
+    except OSError as exc:  # Python >2.5
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise
+
 
 
 """
