@@ -3,7 +3,7 @@ import logging as _logging
 import sys
 
 __author__ = 'luckydonald'
-__all__ = ["logging", "ColoredFormatter"]
+__all__ = ["logging", "ColoredFormatter", "ColoredStreamHandler"]
 
 
 class ColoredFormatter(_logging.Formatter):
@@ -128,6 +128,7 @@ class ColoredStreamHandler(_logging.StreamHandler):
     def __init__(self, stream=None):
         super(ColoredStreamHandler, self).__init__(stream)
         self.formatter = ColoredFormatter()
+
 
 # noinspection PyProtectedMember,PyProtectedMember
 class _LoggingWrapper(object):
