@@ -86,6 +86,12 @@ Utilities for django.
 			Include in your ```MIDDLEWARE_CLASSES```: ```"luckydonaldUtils.djangos.middleware.headers.EastereggHeadersMiddleware"```
 
 
+#### ```files```
+Collection of things which are file related.
+
+- ```mkdir_p(path)```: like `mkdir -p`
+
+
 #### ```functions```
 Information about calling functions (Added in [v0.35](https://github.com/luckydonald/python-utils/releases/tag/v0.35))
 
