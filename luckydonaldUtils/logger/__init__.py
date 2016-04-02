@@ -118,6 +118,17 @@ class ColoredFormatter(_logging.Formatter):
         return self.colored(record)
 
 
+class ColoredStreamHandler(_logging.StreamHandler):
+    """
+    Like the normal StreamHandler,
+    but it automatically sets
+    `self.formatter = ColoredFormatter()`
+    """
+
+    def __init__(self, stream=None):
+        super(ColoredStreamHandler, self).__init__(stream)
+        self.formatter = ColoredFormatter()
+
 # noinspection PyProtectedMember,PyProtectedMember
 class _LoggingWrapper(object):
     SUCCESS = 25  # between WARNING and INFO
@@ -171,9 +182,7 @@ class _LoggingWrapper(object):
         if stream is None:
             import sys
             stream = sys.stdout
-        handler = _logging.StreamHandler(stream=stream)
-        formatter = ColoredFormatter()
-        handler.setFormatter(formatter)
+        handler = ColoredStreamHandler(stream=stream)
         logger.addHandler(handler)
         if level:
             logger.setLevel(level)
