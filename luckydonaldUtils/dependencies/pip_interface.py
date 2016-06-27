@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 from luckydonaldUtils.logger import logging
 
-__author__ = 'luckydonald'
-logger = logging.getLogger(__name__)
 
 from luckydonaldUtils.logger import logging
-# Littlepip is best pony!
 from pip.commands.install import InstallCommand
 from pip.baseparser import ConfigOptionParser
 from pip.exceptions import PipError
 from pip.utils import get_prog
 
-logger = logging.getLogger(__name__)
+# Littlepip is best pony!
+
 __author__ = 'luckydonald'
+
+logger = logging.getLogger(__name__)
+
 install_cmd = InstallCommand()
 
 
