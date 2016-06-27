@@ -14,6 +14,11 @@ class ColoredFormatter(_logging.Formatter):
         """
         # Color codes: http://misc.flogisoft.com/bash/tip_colors_and_formatting
 
+        def __init__(self, formatter):
+            self.formatter = formatter
+
+        # end def
+
         colors = {
             'default': 39,
             'black': 30,
@@ -55,47 +60,62 @@ class ColoredFormatter(_logging.Formatter):
             filepart = record.treadName + ": " if hasattr(record,
                                                           "treadName") and record.treadName != "MainTread" else ""
             filepart += record.name if record.name else ""
-            filepart += "." + record.funcName + ": " if record.funcName != "<module>" else ": "
-            filepart = filepart.join(
-                [self.prepare_color(94), self.prepare_color(39)])  # Light blue ,  Default foreground color
+            filepart += "." + record.funcName if record.funcName != "<module>" else ""
             formatter = dict(
                 all_off=self.prepare_color(0),  # Reset all attributes
                 color_on=self.prepare_color(clr),  # Color as given/from lookup
                 color_off=self.prepare_color(39),  # Default foreground color
                 inverse_on=self.prepare_color(7),  # Reverse (invert the foreground and background colors)
                 inverse_off=self.prepare_color(27),  # Reset reverse
-                background_off=self.prepare_color(49),  # Default background color)
+                background_off=self.prepare_color(49),  # Default background color
+                file_color_on=self.prepare_color(94),  # Light blue
             )
             lines = []
-            level = "{:8}".format(record.levelname)
+            timestamp = " " + record.asctime if record.asctime else ""
+            timestamp_filler = " " * len(timestamp)
+            level = "{level:8}".format(level=record.levelname)
             level_filler = "{:{}}".format("", len(level))
+
             lines_ = record.message.splitlines()
             first_line = True if len(lines_) > 1 else  None
             for line in lines_:
                 if first_line is None:  # single line
                     lines.append(
-                        "{color_on}{inverse_on}{level}{inverse_off}{color_off} {filepart}{color_on}{message}{color_off}{background_off}{all_off}".format(
-                            filepart=filepart, level=level, message=line, **formatter))
+                        "{color_on}{inverse_on}{level}{inverse_off}{color_on}{date}{color_off} {file_color_on}{filepart}:{color_off} {color_on}{message}{color_off}{background_off}{all_off}".format(
+                            filepart=filepart, level=level, message=line, date=timestamp, **formatter))
                     break
                 elif first_line:  # first line
-                    lines.append("{color_on}{inverse_on}{level}{inverse_off}{color_off} {filepart}{all_off}".format(
-                        filepart=filepart, level=level, message=line, **formatter))
+                    lines.append(
+                        "{color_on}{inverse_on}{level}{inverse_off}{color_on}{date}{color_off} {file_color_on}{filepart}:{color_off} {all_off}".format(
+                            filepart=filepart, level=level, message=line, date=timestamp, **formatter))
                 lines.append(
                     "{color_on}{inverse_on}{level_filler}{inverse_off}{color_off} {color_on}{message}{color_off}{background_off}{all_off}".format(
-                        level_filler=level_filler, message=line, **formatter))
+                        level_filler=level_filler, message=line, date=timestamp, date_filler=timestamp_filler,
+                        **formatter))
                 first_line = False
             # end for
             return "\n".join(lines)
             # end def
 
-    colored = Color().colored
+    def __init__(self, date_formatter=None):
+        super(ColoredFormatter, self).__init__(datefmt=date_formatter)
+        self.color_instance = self.Color(self)
 
-    # firstpart = _logging.Formatter("%(levelname)s: %(threadName)s %(name)s.%(funcName)s: %(message)s")
+    def colored(self, record):
+        return self.color_instance.colored(record)
+
+    # end def
+
+
     def format(self, record):
         super(ColoredFormatter, self).format(record)
         # if record.threadName == "MainThread":
         # 	pass
         # part1 = self.firstpart.format(record)
+        if self.usesTime():
+            record.asctime = self.formatTime(record, self.datefmt)
+        else:
+            record.asctime = ""
         s = self._fmt % record.__dict__  # py3: s = self.formatMessage(record)
         if record.exc_text:
             if s[-1:] != "\n":
@@ -117,6 +137,11 @@ class ColoredFormatter(_logging.Formatter):
         record.message = s
         return self.colored(record)
 
+    # end def
+
+    def usesTime(self):
+        return bool(self.datefmt)
+
 
 class ColoredStreamHandler(_logging.StreamHandler):
     """
@@ -125,9 +150,9 @@ class ColoredStreamHandler(_logging.StreamHandler):
     `self.formatter = ColoredFormatter()`
     """
 
-    def __init__(self, stream=None):
+    def __init__(self, stream=None, date_formatter=None):
         super(ColoredStreamHandler, self).__init__(stream)
-        self.formatter = ColoredFormatter()
+        self.formatter = ColoredFormatter(date_formatter=date_formatter)
 
 
 # noinspection PyProtectedMember,PyProtectedMember
@@ -166,16 +191,26 @@ class _LoggingWrapper(object):
         """
         return self.getLogger(logger_name)
 
-    def add_colored_handler(self, logger_name=None, stream=None, level=None):
+    def add_colored_handler(self, logger_name=None, stream=None, level=None, date_formatter=None):
         """
         Register a logger handler to colorfull print the messages.
 
         If stream is specified, the instance will use it for logging output; otherwise, sys.stdout will be used.
 
-        :param logger_name: the name of the logger you want to register the printing to.
-        Probably you should use __name__ , to use your package's logger, "root" will force all loggers to output. DO NOT use this in librarys.
+        If you supply a date_formatter, there will also be printed a date/time for the logged messages.
+        Uses python `time.strftime` time formating, see https://docs.python.org/library/time.html#time.strftime
 
-        :param stream: An output stream. Default: sys.stdout
+        :keyword logger_name: the name of the logger you want to register the printing to.
+                              Probably you should use __name__ , to use your package's logger,
+                              "root" will force all loggers to output.
+        :type    logger_name: str
+
+        :keyword stream: An output stream. Default: sys.stdout
+
+        :keyword date_formatter: Apply a format for time output. If `None` is given, no time gets printed.
+                               Something like "%Y-%m-%d %H:%M:%S". Uses python `time.strftime` time formating,
+                               see https://docs.python.org/library/time.html#time.strftime
+        :type    date_formatter: str
 
         :return: None
         """
@@ -183,7 +218,7 @@ class _LoggingWrapper(object):
         if stream is None:
             import sys
             stream = sys.stdout
-        handler = ColoredStreamHandler(stream=stream)
+        handler = ColoredStreamHandler(stream=stream, date_formatter=date_formatter)
         logger.addHandler(handler)
         if level:
             logger.setLevel(level)
