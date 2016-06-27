@@ -1,10 +1,20 @@
 # -*- coding: utf-8 -*-
-from .pip_interface import pip_install
 from luckydonaldUtils.logger import logging
+
+try:
+    from .pip_interface import pip_install
+except ImportError as e:
+    logger = logging.getLogger(__name__)
+    logger.warn("Could not apply logger workaround. Falling back to using pip directly.")
+    from .pip_interface_fallback import pip_install
+# end try
+
 from setuptools import find_packages
 
-__author__ = 'luckydonald'
 logger = logging.getLogger(__name__)
+
+
+__author__ = 'luckydonald'
 
 try:
     import importlib
