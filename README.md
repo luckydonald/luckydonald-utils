@@ -103,7 +103,41 @@ Information about calling functions (Added in [v0.35](https://github.com/luckydo
 
 - ```@gone```: Decorator to mark functions as gone. 
     A NotImplementedError will be emitted when the function is used.
-    
+ 
+#### ```holder```
+###### (Added in [v0.45](https://github.com/luckydonald/python-utils/releases/tag/v0.45))
+Caches a result, and returns it. Useful in if statements.
+
+In python it is not possible to store the result of an expression in a variable while being inside of an `if`:
+
+```python
+if (temp=do_something()) == 42:
+    foo(temp)
+```
+
+And storing it before is not an option?
+(you have a very resources-expensive call, or changing values, or are in an `elif`)
+
+```python
+temp = do_something()
+temp2 = do_something_else()
+if temp == 42:
+    foo(temp)
+elif temp2:
+    foo2(temp2)
+```
+
+Somebody need to **hold** that result for you:
+
+```python
+from luckydonaldUtils.holder import Holder
+h = Holder()
+if h(do_something()) == 42:
+    foo(h())
+elif h(do_something_else()):
+    foo2(h())
+```
+That's what `Holder` is for.
 
 #### ```iterators```
 All stuff related to list and iterators. 
