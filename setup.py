@@ -26,7 +26,9 @@ setup(
     author_email="code@luckydonald.de",
     description=long_description,
     license="GPLv2+",
-    keywords="luckydonald utils utilities utility python dependencies dependency download progress bar encoding files interactions json update store text xml time network logger color images webserver django CSRF headers eastereggs",
+    keywords="luckydonald utils utilities utility python dependencies dependency download progress bar encoding files "
+             "interactions json update store text xml time network logger color images webserver django CSRF headers "
+             "eastereggs decorator holder assert raise is None",
     url="https://github.com/luckydonald/luckydonald-utils",
     install_requires=install_requires,
     long_description=long_description,
