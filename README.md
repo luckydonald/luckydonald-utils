@@ -84,6 +84,11 @@ Utilities for django.
 		- ```EastereggHeadersMiddleware```: [v0.34](https://github.com/luckydonald/python-utils/releases/tag/v0.34)    
 			Sets some funny headers.    
 			Include in your ```MIDDLEWARE_CLASSES```: ```"luckydonaldUtils.djangos.middleware.headers.EastereggHeadersMiddleware"```
+#### ```exceptions```
+Exception related stuff.
+
+- ```assert_or_raise(value, expected_type_clazz_or_tuple, *more_clazzes, exception_clazz=TypeError)```: [v0.46](https://github.com/luckydonald/python-utils/releases/tag/v0.46)+
+    A better `assert(isinstance(a, B)` because it supports `None` (as well as some other types except tuple or list), and an nice exception text.
 
 
 #### ```files```

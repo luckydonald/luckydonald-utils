@@ -11,11 +11,6 @@ except ImportError as e:
 
 from setuptools import find_packages
 
-logger = logging.getLogger(__name__)
-
-
-__author__ = 'luckydonald'
-
 try:
     import importlib
 except ImportError:
@@ -24,6 +19,7 @@ except ImportError:
     import importlib
 # end try
 
+__author__ = 'luckydonald'
 logger = logging.getLogger(__name__)
 
 
@@ -41,7 +37,7 @@ def import_or_install(package_name, pip_name=None):
     # if pip name is not given, try posibilities, by splitting the dots.
     #
     # Example:
-    #  >> import_or_install("imgurpython.client.ImgurClient"
+    #  >> import_or_install("imgurpython.client.ImgurClient")
     # will try to install:
     #   - "imgurpython"
     #   - "imgurpython.client"
