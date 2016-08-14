@@ -1,7 +1,16 @@
 # -*- coding: utf-8 -*-
-from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured, MiddlewareNotUsed
-from django.http import HttpResponseForbidden
+try:
+    from django.conf import settings
+    from django.core.exceptions import ImproperlyConfigured, MiddlewareNotUsed
+    from django.http import HttpResponseForbidden
+except ImportError:  # pragma nocover
+    from ...dependencies import import_or_install
+
+    settings = import_or_install("django.conf.settings", "django")
+    ImproperlyConfigured = import_or_install("django.ore.exceptions.ImproperlyConfigured", "django")
+    MiddlewareNotUsed = import_or_install("django.ore.exceptions.MiddlewareNotUsed", "django")
+    HttpResponseForbidden = import_or_install("django.http.HttpResponseForbidden", "django")
+# end try
 from ...logger import logging  # pip install luckydonald-utils
 from ...dependencies import import_or_install
 

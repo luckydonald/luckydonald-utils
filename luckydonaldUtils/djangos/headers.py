@@ -1,6 +1,14 @@
 # -*- coding: utf-8 -*-
 from functools import wraps
-from django.utils.decorators import available_attrs
+
+try:
+    from django.utils.decorators import available_attrs
+except ImportError:  # pragma nocover
+    from ..dependencies import import_or_install
+
+    available_attrs = import_or_install("django.utils.decorators.available_attrs", "django")
+# end try
+
 from ..eastereggs.headers import get_headers  as get_easteregg_headers
 
 __author__ = 'luckydonald'

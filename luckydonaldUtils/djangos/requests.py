@@ -2,7 +2,14 @@
 """
 Tools to use with django's HttpRequests.
 """
-from django.middleware.csrf import CsrfViewMiddleware
+try:
+    from django.middleware.csrf import CsrfViewMiddleware
+except ImportError:  # pragma nocover
+    from ..dependencies import import_or_install
+
+    CsrfViewMiddleware = import_or_install("django.middleware.csrf.CsrfViewMiddleware", "django")
+# end try
+
 
 __author__ = 'luckydonald'
 

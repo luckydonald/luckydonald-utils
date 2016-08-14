@@ -3,8 +3,12 @@
 
 from ..dependencies import import_or_install
 
-Image = import_or_install("PIL.Image", "Pillow")  # pip install Pillow
-# from PIL import Image
+try:
+    from PIL import Image
+except ImportError:  # pragma nocover
+    Image = import_or_install("PIL.Image", "Pillow")  # pip install Pillow
+# end try
+
 __author__ = 'luckydonald'
 
 

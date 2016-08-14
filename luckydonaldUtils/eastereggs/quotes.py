@@ -9,7 +9,11 @@ NOT PY2 ready!
 from random import randint
 from ..dependencies import import_or_install
 
-WeakList = import_or_install("weakreflist.weakreflist.WeakList", "weakreflist")  # pip install weakreflist
+try:
+    from weakreflist.weakreflist import WeakList
+except ImportError:  # pragma nocover
+    WeakList = import_or_install("weakreflist.weakreflist.WeakList", "weakreflist")  # pip install weakreflist
+# end try
 
 __author__ = 'luckydonald'
 
