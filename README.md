@@ -93,9 +93,23 @@ Exception related stuff.
 
 #### ```files```
 Collection of things which are file related.
+(This exist structure since [v0.47](https://github.com/luckydonald/python-utils/releases/tag/v0.47))
 
-- ```mkdir_p(path)```: like `mkdir -p` [v0.43](https://github.com/luckydonald/python-utils/releases/tag/v0.43)
-
+- `files.basics` [v0.47](https://github.com/luckydonald/python-utils/releases/tag/v0.47)+
+    - `mkdir_p(path)` like `mkdir -p` [v0.43](https://github.com/luckydonald/python-utils/releases/tag/v0.43)
+    - `open_folder(folder_path)` tries to open a folder in your system's browser
+    - `open_file_folder(file_path)` tries to open a folder, and select the given file in your system's browser
+- `files.mime` [v0.47](https://github.com/luckydonald/python-utils/releases/tag/v0.47)+
+    - `guess_extension(mime)` Shortcut for getting extension to a given mime string.
+    - `get_file_mime(file_path=None, file_url=None)` Shortcut to get the mime from either
+    - `get_byte_mime(bytes)` Shortcut to get a mime from bytes in a variable.
+    - `get_file_suffix(file_path=None, file_url=None)` This calls `get_file_mime()` to get the mime, and then calls `guess_extension()`.
+- `files.name` [v0.47](https://github.com/luckydonald/python-utils/releases/tag/v0.47)+
+    - `do_a_filename(input_file_name)` Bad attempt to make file names better, by replacing some characters. This is no escaping.
+- `files.temp` [v0.47](https://github.com/luckydonald/python-utils/releases/tag/v0.47)+
+    - `gettempdir(temp_folder_name="luckydonald-utils")` Gets/creates a folder in the temporary files of the system.
+- `files.tree` [v0.47](https://github.com/luckydonald/python-utils/releases/tag/v0.47)+
+    - `tree(directory, padding="", print_files=False, level=-1, print_it=True)` (New in [v0.47](https://github.com/luckydonald/python-utils/releases/tag/v0.47))
 
 #### ```functions```
 Information about calling functions (Added in [v0.35](https://github.com/luckydonald/python-utils/releases/tag/v0.35))
@@ -104,7 +118,13 @@ Information about calling functions (Added in [v0.35](https://github.com/luckydo
     If the caller could not be fetched correctly, the `caller`s attributes all will be `None`.
 
 - ```@deprecated```: Decorator to mark functions as deprecated. 
-    A warning will be logged when the function is used.
+    A warning will be logged when the function is used. 
+    With [v0.47](https://github.com/luckydonald/python-utils/releases/tag/v0.47) you can specify a message.
+    ```python
+    @deprecated("Reason goes here")
+    def foo():
+        pass
+    ```
 
 - ```@gone```: Decorator to mark functions as gone. 
     A NotImplementedError will be emitted when the function is used.
