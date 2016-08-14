@@ -2,20 +2,39 @@
 
 import base64
 from .dependencies import import_or_install
-# from usersettings import Settings
-Settings = import_or_install("usersettings.Settings", "usersettings")  # pip install usersettings
-# from Crypto import Random
-Random = import_or_install("Crypto.Random", "pycrypto")   # pip install pycrypto
-# from Crypto.Cipher import AES
-AES = import_or_install("Crypto.Cipher.AES", "pycrypto")  # pip install pycrypto
-# from Crypto.Hash import MD5
-MD5 = import_or_install("Crypto.Hash.MD5", "pycrypto")    # pip install pycrypto
+
+try:
+    from usersettings import Settings
+except ImportError:  # pragma nocover
+    Settings = import_or_install("usersettings.Settings", "usersettings")  # pip install usersettings
+# end try
+
+try:
+    from Crypto import Random
+    from Crypto.Cipher import AES
+    from Crypto.Hash import MD5
+except ImportError:  # pragma nocover
+    Random = import_or_install("Crypto.Random", "pycrypto")  # pip install pycrypto
+    AES = import_or_install("Crypto.Cipher.AES", "pycrypto")  # pip install pycrypto
+    MD5 = import_or_install("Crypto.Hash.MD5", "pycrypto")  # pip install pycrypto
+# end try
 
 __author__ = 'luckydonald'
 
 BS = 16
-pad = lambda s: s + (BS - len(s) % BS) * chr(BS - len(s) % BS)
-un_pad = lambda s: s[:-ord(s[len(s) - 1:])]
+
+
+def pad(s):
+    return s + (BS - len(s) % BS) * chr(BS - len(s) % BS)
+
+
+# end def
+
+def un_pad(s):
+    return s[:-ord(s[len(s) - 1:])]
+
+
+# end def
 
 
 class Store(object):

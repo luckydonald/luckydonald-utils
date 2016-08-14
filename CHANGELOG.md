@@ -24,7 +24,9 @@ Changelog
     def foo():
         pass
     ```
-
+- Cleaned up imports.
+    - Also there now is a `dependencies-full.txt` file, listing all dependencies which might be needed.
+        Should now be a complete list.
 0.46
 ----
 - Fixed selfupdate. Closes [#5](https://github.com/luckydonald/luckydonald-utils/issues/5).

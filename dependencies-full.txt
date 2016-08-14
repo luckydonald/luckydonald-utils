@@ -1,0 +1,8 @@
+python-magic  # files.mime
+progressbar33  # download
+requests  # download
+usersettings  # store
+Crypto  # store
+django  # djangos
+weakreflist  # djangos.middleware.access
+Pillow  # images.color

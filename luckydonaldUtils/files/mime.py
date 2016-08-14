@@ -2,7 +2,7 @@ from ..dependencies import import_or_install
 
 try:
     import magic
-except ImportError:
+except ImportError:  # pragma nocover
     magic = import_or_install("magic", "python-magic")  # pip install python-magic
 # end try
 import mimetypes

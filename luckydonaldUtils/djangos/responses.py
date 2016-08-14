@@ -1,7 +1,16 @@
 # -*- coding: utf-8 -*-
-from django.http import JsonResponse, HttpResponse
-from django.conf import settings
-from django.utils.decorators import available_attrs
+try:
+    from django.http import JsonResponse, HttpResponse
+    from django.conf import settings
+    from django.utils.decorators import available_attrs
+except ImportError:  # pragma nocover
+    from ..dependencies import import_or_install
+
+    available_attrs = import_or_install("django.utils.decorators.available_attrs", "django")
+    JsonResponse = import_or_install("django.http.JsonResponse", "django")
+    HttpResponse = import_or_install("django.http.HttpResponse", "django")
+    settings = import_or_install("django.conf.settings", "django")
+# end try
 from functools import wraps
 from ..logger import logging  # pip install luckydonald-utils
 
