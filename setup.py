@@ -12,7 +12,7 @@ long_description = """A collection of utilities I use across different projects"
 
 main_package = 'luckydonaldUtils'
 
-install_requires = ["pip", "setuptools"]  # both should be installed by default.
+install_requires = ["pip", "setuptools", "DictObject"]  # both should be installed by default.
 try:
     import importlib
 except ImportError:
