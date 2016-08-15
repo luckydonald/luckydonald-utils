@@ -218,9 +218,14 @@ Package of some regular expressions I found useful.
                 - branch: the name of the branch (kind=tree), or the commit hash (kind=blob)
             - file: the rest of the filepath (from root of that branch, can be empty)
         - hash: Can be non-existent or empty. Everything behind the #.
-    
-            
 
+#### ```text```
+
+String manipulation, etc.
+
+- `split_in_parts(string, parts, strict=False)`: [v0.48](https://github.com/luckydonald/python-utils/releases/tag/v0.48)+  Splits a string in given `parts` pieces.
+
+    
     
     
 #### ```webserver```

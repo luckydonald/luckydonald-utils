@@ -7,12 +7,12 @@ CHARS_ESCAPED = ["\\\\", "\\n", "\\r", "\\t", "\\b", "\\a", "\\'"]
 
 def text_split(text, limit, max_parts=None):
     """
-    Split a text usefull.
-    Prefer splitting at linebreaks, sentences, words.
+    Split a text, each part less or equal to `limit`. Prefer splitting at linebreaks, sentences and lastly words.
 
     :type text: str
     :type limit: int
-    :param max_parts: If not None: In how many parts it should be splitted. The last element might be longer as the given limit.
+    :param max_parts: If not None: In how many parts it should be split.
+                      The last element might be longer as the given limit.
     :type  max_parts: None | int
     :return:
     """
@@ -87,6 +87,67 @@ def text_split(text, limit, max_parts=None):
             unicode_i += len(char.encode('utf-8'))
     # end for
     return [text]
+
+
+# end def
+
+
+def split_in_parts(string, parts, strict=False):
+    """
+    Splits a string in given `parts` pieces.
+    If string is a list, which has not exactly `parts` items, it will be joined and split afterwards.
+
+    Examples:
+
+      >>> split_in_parts('abc', 3)
+      ['a', 'b', 'c']
+      >>> split_in_parts('abcd', 3)
+      ['a', 'bc', 'd']
+      >>> split_in_parts('abcde', 3)
+      ['ab', 'c', 'de']
+      >>> split_in_parts('abcdef', 3)
+      ['ab', 'cd', 'ef']
+      >>>split_in_parts("abcdefgh", 3)
+      ['abc', 'de', 'fgh']
+      >>>split_in_parts('║╠╚ ', 4)
+      ['║', '╠', '╚', ' ']
+      >>>split_in_parts('ab', 4)
+      ['', 'a', 'b', '']
+      >>>split_in_parts('║╟╙╴⚠', 5)
+      ['║', '╟', '╙', '╴', '⚠']
+
+    :param string: the string to split
+    :param parts: how many parts
+    :param strict: if it should only have parts which are all same length.
+
+    :return: list of strings
+    """
+    if isinstance(string, list):
+        if len(string) == parts:
+            return string
+        # end if
+        string = "".join(string)
+    # end if
+    length = len(string)
+    slice_size = length / parts
+    if strict and length % parts != 0:
+        raise ValueError("In strict mode you need a string which can be split in {parts} equal pieces.".format(
+            parts=parts
+        ))
+    part_pos = [0]
+    for i in range(0, parts):  # parts = 3 -> for [1, 2]
+        part_pos.append(round(slice_size * (i + 1)))
+    # end for
+    # print(part_pos)
+    part_pos[1] = round(part_pos[1])
+    strings = []
+    for i in range(parts):
+        strings.append(string[part_pos[i]:part_pos[i + 1]])
+    # end for
+    return strings
+
+
+# end def
 
 
 # end def
