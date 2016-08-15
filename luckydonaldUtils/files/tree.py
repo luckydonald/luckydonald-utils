@@ -30,36 +30,48 @@ def tree_linux(directory, padding="", print_files=False):
         return_string += padding * level + pieces[-1] + symbol
         print(padding * level + pieces[-1] + symbol)
         # end for
-
-
 # end def
 
 
-def tree(directory, padding="", print_files=False, level=-1, print_it=True):
+def tree(directory, padding="", print_files=False, level=-1, print_it=True, space=1,
+         tree_letters=["║", "╟", "╙", "╴", "⚠"]):
+    """
+    Displays a tree of a folder the sub-folders. Pptionally with files.
+    :param directory: The path of the folder
+    :param padding: What to put in front of the line
+    :param print_files: weather it should include files, too.
+    :param level: how many level it should print. -1 means unlimited.
+    :param print_it: if it should print it, or just return the string.
+    :param space: How many lines should be between files (in lines). Default: 1
+    :param tree_letters: Pure ascii variant: "|++-". You can use a string instead of a list.
+    :return:
+    """
+    from ..text import split_in_parts
+    tree_letters = split_in_parts(tree_letters, 5)
+    # print(tree_letters)
     return_string = ""
-    string = padding[:-1] + '+-' + basename(abspath(directory)) + '/'
-    if print_it:
-        print(string)
+    if space < 0:
+        space = 0
     # end if
-    return_string += string + "\n"
     if level != -1:
         if level == 0:
             return return_string
         level -= 1
     # end if
     padding += ' '
-    files = []
-    if print_files:
-        try:
+    try:
+        if print_files:
             files = listdir(directory)
-        except PermissionError:
-            files = PermissionError
-    else:
-        files = [x for x in listdir(directory) if isdir(directory + sep + x)]
+        else:
+            files = [x for x in listdir(directory) if isdir(directory + sep + x)]
+            # end if
+    except PermissionError:
+        files = PermissionError
+    # end try
     count = 0
     if files == PermissionError:
-        string = padding + '|' + '\n'
-        string += padding + 'X- PERMISSION DENIED'
+        string = (padding + tree_letters[0] + '\n') * space
+        string += padding + tree_letters[2] + (tree_letters[3] if space == 0 else tree_letters[4]) + 'PERMISSION DENIED'
         if print_it:
             print(string)
         # end if
@@ -67,28 +79,44 @@ def tree(directory, padding="", print_files=False, level=-1, print_it=True):
         files = []
     for file in files:
         count += 1
-        string = padding + '|'
-        if print_it:
-            print(string)
-        # end if
-        return_string += string + "\n"
-        path = directory + sep + file
-        if isdir(path):
-            if count == len(files):  # last one
-                return_string += tree(path, padding + ' ', print_files, level=level)
-            else:
-                return_string += tree(path, padding + '|', print_files, level=level)
-        else:
-            string = padding + '+-' + file
+        string = padding + tree_letters[0]
+        for i in range(space):
             if print_it:
                 print(string)
             # end if
             return_string += string + "\n"
+        # end for
+        path = directory + sep + file
+        if count == len(files):
+            node = tree_letters[2] + tree_letters[3]
+        else:
+            node = tree_letters[1] + tree_letters[3]
+        # end if
+        if isdir(path):
+            if count == len(files):  # last one
+                return_string += echo(padding + tree_letters[2] + tree_letters[3] + basename(abspath(path)) + '/',
+                                      print_files)
+                return_string += tree(path, padding + "  ", print_files, level=level, space=space)
+            else:
+                return_string += echo(padding + tree_letters[1] + tree_letters[3] + basename(abspath(path)) + '/',
+                                      print_files)
+                return_string += tree(path, padding + tree_letters[0] + ' ', print_files, level=level, space=space)
+                # end if
+        else:
+            string = padding + node + file
+            return_string += echo(string, print_files)
     return return_string
 
 
 # end def
 
+
+def echo(msg, should_print):
+    if should_print:
+        print(msg)
+    # end if
+    return msg + '\n'
+# end def
 
 def usage():
     from sys import argv
@@ -106,6 +134,8 @@ PATH    Path to process''' % basename(argv[0])
 def main(*args):
     if not args:
         from sys import argv as args
+    else:
+        args = [__file__].extend(args)  # args[0] is the program
     if len(args) == 1:
         print(usage())
     elif len(args) == 2:

@@ -20,7 +20,7 @@ install_cmd = InstallCommand()
 def pip_install(*args):
     # # pip.create_main_parser()
     # pip.basecommand.Command.__init__
-    args = [x for x in args]
+    args = args[:]
     parser_kw = {
         'usage': install_cmd.usage,
         'prog': '%s %s' % (get_prog(), install_cmd.name),
@@ -31,7 +31,7 @@ def pip_install(*args):
         'isolated': False,
     }
     parser = ConfigOptionParser(**parser_kw)
-    options, parsed_args = parser.parse_args()
+    options, parsed_args = parser.parse_args(args=args)
     try:
         status = install_cmd.run(options, parsed_args)
         if isinstance(status, int):

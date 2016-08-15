@@ -7,3 +7,4 @@ delete-compiled-shit:
 
 upload:
 	python setup.py sdist upload -r pypi
+	git push
