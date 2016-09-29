@@ -1,9 +1,12 @@
 import functools
 import inspect
 import logging
+from datetime import datetime, timedelta
+
 logger = logging.getLogger(__name__)
 
 __author__ = 'luckydonald'
+__all__ = ["caller", "deprecated", "gone", "cached"]
 
 
 def caller(func):
@@ -112,5 +115,52 @@ def gone(func):
 
     # end def
     return new_func
+# end def
+
+
+def cached(max_age=None):
+    """
+    Cache a function.
+    You can specify a max_age (:class:`datetime.timedelta`) after when the function will be called again.
+
+    Note: Only works with jsonable args and kwargs.
+
+    :keyword max_age: timedelta of how long we should keep the cache. None means forever.
+    :type    max_age: None or timedelta
+    """
+    # http://stackoverflow.com/a/30698822/3423324
+    # _format = {"returns": "I am a return value!!", "max_age": timedelta(seconds=60), "last_hit": datetime.now()}
+    memo = {}
+    import json
+
+    def func_wrapper(function, **decorator_kwargs):
+        def wrapper(*args, **kwargs):
+            args_key = json.dumps([args, kwargs])
+            now = datetime.now()
+            if "max_age" in decorator_kwargs:
+                max_age_ = decorator_kwargs["max_age"]
+            else:
+                max_age_ = max_age
+            if (args_key) in memo.keys():
+                logger.debug(memo[args_key])
+                if not max_age_ or now - memo[args_key]["last_hit"] < memo[args_key]["max_age"]:
+                    return memo[args_key]["returns"]
+                    # end if
+            # end if
+            res = function(*args, **kwargs)
+            memo[args_key] = {"returns": res, "last_hit": now, "max_age": max_age_}
+            return res
+
+        return wrapper
+
+    try:
+        is_callable = callable(max_age)
+    except (SyntaxError, NameError):
+        is_callable = inspect.isfunction(max_age) or inspect.isbuiltin(max_age)
+    # end try
+    if is_callable:  # max_age was not provided, max_age is actually our function to decorate
+        func = max_age
+        return func_wrapper(func, max_age=None)
+    return func_wrapper  # else: max_age is max_age, we need to return a decorator accepting the function
 
 # end def
