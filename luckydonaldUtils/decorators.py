@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-__author__ = 'luckydonald'
-
 from luckydonaldUtils.logger import logging  # pip install luckydonald-utils
+
+__author__ = 'luckydonald'
 logger = logging.getLogger(__name__)
 
+from .functions import *  # because everyone searches for the decorators in this file ... lel.
 
 #TODO: py2 safe?
 
@@ -59,3 +60,5 @@ def decorator_with_default_params(real_decorator, args, kwargs, default_args=Non
         def real_decorator_param_provider(func):
             return real_decorator(func, *args, **kwargs)
         return real_decorator_param_provider  # it will call real_decorator(func) by its own
+
+# end def

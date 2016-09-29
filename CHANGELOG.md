@@ -1,5 +1,10 @@
 Changelog
 =========
+0.49
+----
+- Added `@cached(max_age=None)` decorator.
+- Also decorators can be accessed form the `.decorators` import
+
 0.48
 ----
 - Improvements in `tree`, and `dependencies`.

@@ -117,6 +117,8 @@ Information about calling functions (Added in [v0.35](https://github.com/luckydo
 - ```@caller```: Functions decorated with this will be called with an `call` kwarg, containing information about the function itself, and the caller.
     If the caller could not be fetched correctly, the `caller`s attributes all will be `None`.
 
+- ```@cached```: [v0.49](https://github.com/luckydonald/python-utils/releases/tag/v0.49) Decorator to cache function return values (based on *args and **kwargs). You can specify a `datetime.timedelta` in `max_age` after which that function will be called again.
+ 
 - ```@deprecated```: Decorator to mark functions as deprecated. 
     A warning will be logged when the function is used. 
     With [v0.47](https://github.com/luckydonald/python-utils/releases/tag/v0.47) you can specify a message.
