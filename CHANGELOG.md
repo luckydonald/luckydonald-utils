@@ -1,5 +1,9 @@
 Changelog
 =========
+0.50
+----
+- Bugfix: Fixed `@cached` decorator, to work with non jsonable cases, like the`self` attribute in classes. Should be more reliable overall.
+ 
 0.49
 ----
 - Added `@cached(max_age=None)` decorator.
