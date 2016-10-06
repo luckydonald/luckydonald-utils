@@ -316,9 +316,10 @@ class _LoggingWrapper(object):
         else:
             return getattr(_logging, item)
             # end def
-
-
 # end class
+
+
+logging = _LoggingWrapper()
 
 
 class LevelByNameFilter(object):
@@ -408,8 +409,4 @@ class LevelByNameFilter(object):
         # end if
         return False
         # end def
-
-
 # end class
-
-logging = _LoggingWrapper()
