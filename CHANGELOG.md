@@ -1,5 +1,16 @@
 Changelog
 =========
+0.51
+----
+Logger update:
+- `def add_colored_handler(...)`: added `filter` parameter. It will be applied to the handler.
+- `def test_logger_levels(...)`: 
+    - added `name` parameter to test with a name other then that function.
+    - added `force_all_levels` parameter to test with setting the logger to `DEBUG` level first.
+- `def getLoglevelInt(...)`: Now allows you to input numbers, too (both as str or as int).
+- `def getLoglevelInt(...)`: Now allows you to input numbers, too (both as str or as int).
+- New `class LevelByNameFilter`: You can specify the names and set levels of files you want to log.
+
 0.50
 ----
 - Bugfix: Fixed `@cached` decorator, to work with non jsonable cases, like the`self` attribute in classes. Should be more reliable overall.
