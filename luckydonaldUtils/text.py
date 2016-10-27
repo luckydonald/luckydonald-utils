@@ -87,6 +87,28 @@ def text_split(text, limit, max_parts=None):
             unicode_i += len(char.encode('utf-8'))
     # end for
     return [text]
+# end def
+
+
+def is_sentence_end(char):
+    return char in ".?!"
+
+
+# end def
+
+
+def is_sentence_part_end(char):
+    return char in ",:;"
+
+
+# end def
+
+
+def is_word_separator(char):
+    return char in [
+        " ", "\n", ".", ",", "?", "!", "@", "#", "$", ":", ";", "-", "<", ">", "[", "]",
+        "(", ")", "{", "}", "=", "/", "+", "%", "&", "^", "*", "'", "\"", "`", "´", "„", "”", "~", "|"
+    ]
 
 
 # end def
@@ -145,43 +167,39 @@ def split_in_parts(string, parts, strict=False):
         strings.append(string[part_pos[i]:part_pos[i + 1]])
     # end for
     return strings
-
-
 # end def
-
-
-# end def
-"""
-        if len(text)> MAX_TEXT_LENGTH:
-            last_space = text.rfind(" ", MAX_TEXT_LENGTH-40, MAX_TEXT_LENGTH)
-            last_newline = text.rfind("\n", MAX_TEXT_LENGTH-40, MAX_TEXT_LENGTH)
-            if abs(last_newline-last_space) < 20:
-                split_at = last_newline
-            else:
-                split_at = last_space
-            assert split_at <= MAX_TEXT_LENGTH
-            self.text = text[:split_at]
-            next_text = text[split_at+1:] # omit the space or newline.
-            logger.debug("Splitted {num} character long message text to {len_a} and {len_b}.".format(
-                num=len(text), len_a=len(self.text), len_b=len(next_text)))
-            self._next_msg = TextMessage(next_text, receiver)
-"""
-
-
-def is_sentence_end(char):
-    return char in ".?!"
-
-
-def is_sentence_part_end(char):
-    return char in ",:;"
-
-
-def is_word_separator(char):
-    return char in [" ", "\n", ".", ",", "?", "!", "@", "#", "$", ":", ";", "-", "<", ">", "[", "]", "(", ")", "{", "}",
-                    "=", "/", "+", "%", "&", "^", "*", "'", "\"", "`", "~", "|"]
 
 
 def escape(string):
     for i in range(0, 7):
         string = string.replace(CHARS_UNESCAPED[i], CHARS_ESCAPED[i])
     return string
+
+
+# end def
+
+
+def cut_paragraphs(text, length=200) -> str:
+    """
+    This limits a paragraph to a given length.
+    :param text:
+    :param length:
+    :return:
+    """
+    if len(text) == length:
+        return text
+    short = text[:length]
+    last_sentence_ending = max(short.rfind(x) for x in ["\n", "...", ";", ":", "!", "?", "."])
+    if last_sentence_ending > 0 and length - last_sentence_ending < 20:  # limit it to max. removing 20 characters,
+        # else try something different.
+        return short[:last_sentence_ending + 1]
+    from .holder import Holder
+    h = Holder()
+    if h(short.rfind(",", 0, -3)) > 0 and h() < length - 3:
+        return short[:h() + 1] + "..."
+    if h(short.rfind(" ", 0, -3)) > 0:
+        return short[:h()] + "..."
+    # fallback if nothing splittable was found.
+    return text[:-3] + "..."  # will just cut it.
+
+# end def
