@@ -1,5 +1,10 @@
 Changelog
 =========
+0.52
+----
+From Bonbot:
+- added `def cut_paragraphs(...)`: cut text down to a specified lenght. 
+
 0.51
 ----
 Logger update:
