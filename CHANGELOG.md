@@ -1,5 +1,12 @@
 Changelog
 =========
+0.53
+----
+- Added methods in `luckydonaldUtils.interactions` to see if a string is `True` or `False`
+    - `def string_is_yes(...)`: checks for a true-ish value and return `False` otherwise
+    -  and `def string_y_n(...)`: expects y/n (case insensitive)
+- Renamed `def assert_or_raise(...)` to `def assert_type_or_raise(...)` in  `luckydonaldUtils.exceptions` (the old name as an alias to keep backwards compatibility, but it will warn you every time)
+
 0.52
 ----
 From Bonbot:
