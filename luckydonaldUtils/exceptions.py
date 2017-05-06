@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import warnings
 
 __author__ = 'luckydonald'
 
 logger = logging.getLogger(__name__)
 
 
-def assert_or_raise(value, expected_type_clazz_or_tuple, *more_clazzes, exception_clazz=TypeError):
+def assert_type_or_raise(value, expected_type_clazz_or_tuple, *more_clazzes, exception_clazz=TypeError):
     """
     A better `assert(isinstance(a, B)` because it supports `None` (as well as some other types except tuple or list), and an nice exception text.
 
@@ -115,3 +116,12 @@ def assert_or_raise(value, expected_type_clazz_or_tuple, *more_clazzes, exceptio
             # end for
 
 # end def assert_or_raise
+
+
+def assert_or_raise(*args, **kwargs):
+    warnings.warn("The `luckydonaldUtils.exceptions.assert_or_raise` method is deprecated, "
+                  "use `assert_type_or_raise` instead", DeprecationWarning, 2)
+    logger.warn("Deprecated: `luckydonaldUtils.exceptions.assert_or_raise` was renamed to `assert_type_or_raise`.")
+    return assert_type_or_raise(*args, **kwargs)
+
+# end def
