@@ -11,6 +11,65 @@ except NameError:
 raw_input = input
 
 
+def string_y_n(string, default=None):
+    """
+    Strict mapping of a given string to a boolean.
+
+    If it is `'y'` or `'Y'`, `True` is returned.
+    If it is `'n'` or `'N'`, `True` is returned.
+    If it is empty or None (evaluates to False), and `default` is set, `default` is returned.
+    Else a `ValueError` is raised.
+
+    :param string: The input
+    :type  string: str
+
+    :param default: default result for empty input
+    :type  default: None | bool
+
+    :raises ValueError: If it is not any of ['y', 'Y', 'n', 'N']
+    :return: result (True/False/default)
+    :rtype:  bool
+    """
+    if not string and default is not None:
+        return default
+    if string not in ['y', 'Y', 'n', 'N']:
+        raise ValueError('Please enter y or n.')
+    if string == 'y' or string == 'Y':
+        return True
+    if string == 'n' or string == 'N':
+        return False
+        # end if
+
+
+# end if
+
+
+def string_is_yes(string, default=None):
+    """
+    Mapping of a given string to a boolean.
+
+    If it is empty or None (evaluates to False), and `default` is set, `default` is returned.
+    If the lowercase of the string is any of ['y', '1', 'yes', 'true', 'ja'], it will return `True`.
+    Else it will return `False`
+
+    :param string: The input
+    :type  string: str
+
+    :param default: default result for empty input
+    :type  default: None | bool
+
+    :return: result (True/False/default)
+    :rtype:  bool
+    """
+    if not string and default is not None:
+        return default
+    # end if
+    return string.lower() in ['y', '1', 'yes', 'true', 'ja']
+
+
+# end if
+
+
 # modified from http://code.activestate.com/recipes/541096-prompt-the-user-for-confirmation/
 def confirm(prompt=None, default=False):
     """prompts for yes or no response from the user. Returns True for yes and
@@ -44,16 +103,11 @@ def confirm(prompt=None, default=False):
     # end if
     while True:
         ans = input(prompt)
-        if not ans and default is not None:
-            return default
-        if ans not in ['y', 'Y', 'n', 'N']:
-            print('Please enter y or n.')
+        try:
+            return string_y_n(ans)
+        except ValueError as e:
+            print(str(e))
             continue
-        if ans == 'y' or ans == 'Y':
-            return True
-        if ans == 'n' or ans == 'N':
-            return False
-        # end if
     # end while
 # end def
 
