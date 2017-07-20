@@ -1,6 +1,6 @@
 Changelog
 =========
-0.54 (not released yet)
+0.54
 ----
 - Added optional `parameter_name` to `assert_type_or_raise`.
 - Added `lcut` and `rcut`, fixed `split_in_parts`.
