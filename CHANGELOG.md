@@ -1,5 +1,10 @@
 Changelog
 =========
+0.54
+----
+- Added optional `parameter_name` to `assert_type_or_raise`.
+- Updated related doctests.
+
 0.53
 ----
 - Added methods in `luckydonaldUtils.interactions` to see if a string is `True` or `False`
