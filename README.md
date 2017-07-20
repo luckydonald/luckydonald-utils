@@ -87,7 +87,7 @@ Utilities for django.
 #### ```exceptions```
 Exception related stuff.
 
-- ```assert_or_raise(value, expected_type_clazz_or_tuple, *more_clazzes, exception_clazz=TypeError)```: [v0.46](https://github.com/luckydonald/python-utils/releases/tag/v0.46)+
+- ```assert_type_or_raise(value, expected_type_clazz_or_tuple, *more_clazzes, exception_clazz=TypeError, parameter_name=None)```: Since <sup>[2](#2)</sup> [v0.53](https://github.com/luckydonald/python-utils/releases/tag/v0.53); Added `parameter_name` parameter in [v54](https://github.com/luckydonald/python-utils/releases/tag/v54).
     A better `assert(isinstance(a, B)` because it supports `None` (as well as some other types except tuple or list), and an nice exception text.
 
 
@@ -210,16 +210,18 @@ Package of some regular expressions I found useful.
 - ```github```
     - ```REPO_NAME_REGEX```: Repo name validation. (Since<sup>[1](#1)</sup> [v0.40](https://github.com/luckydonald/python-utils/releases/tag/v0.40))
     - ```AT_USERNAME_REGEX```: Searches @usernames.  (Since [v0.40](https://github.com/luckydonald/python-utils/releases/tag/v0.40); added match group `user` in [v0.41](https://github.com/luckydonald/python-utils/releases/tag/v0.41))
-    - ```FILE_URL_REGEX```: Matches github urls pointing to files or directories.(Since<sup>[1](#1)</sup> [v0.40](https://github.com/luckydonald/python-utils/releases/tag/v0.40))
+    - ```FILE_URL_REGEX```: Matches github urls pointing to files or directories.(Since<sup>[1](#1)</sup> [v0.40](https://github.com/luckydonald/python-utils/releases/tag/v0.40); added match group `protocol` in [v54](https://github.com/luckydonald/python-utils/releases/tag/v54))
+    - ```SIMPLE_URL_REGEX```: Matches github urls. (Added in [v0.54](https://github.com/luckydonald/python-utils/releases/tag/v0.54)+)
     Matching groups:
         - url: the complete url
+            - protocol: `'https://'` or `'http://'` or empty/non-existent
             - user: git user or organisation
             - repo: the repository
             - path: When existent, this is not the project page (root of master)
                 - kind: blob or tree
                 - branch: the name of the branch (kind=tree), or the commit hash (kind=blob)
             - file: the rest of the filepath (from root of that branch, can be empty)
-        - hash: Can be non-existent or empty. Everything behind the #.
+        - hash: Can be non-existent or empty. Everything behind the '#'
 
 #### ```text```
 
@@ -255,7 +257,9 @@ String manipulation, etc.
 	
 
 <hr>
+
 #### Notes
+
 1. <a name="1">*`regex.github.REPO_NAME_REGEX` and `regex.github.FILE_URL_REGEX` where already present in [v0.38](https://github.com/luckydonald/python-utils/releases/tag/v0.38) as `regex.urls.github.REPO_NAME_REGEX` and `regex.urls.github.GITHUB_FILE_REGEX`.*</a>
-2. <a name="2">**</a>
-    
+2. <a name="2">*`exceptions.assert_type_or_raise` was already present in [v0.46](https://github.com/luckydonald/python-utils/releases/tag/v0.46) as `exceptions.assert_or_raise`.*</a>
+3. <a name="3">**</a>
