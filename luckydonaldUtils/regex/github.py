@@ -28,5 +28,5 @@ FILE_URL_REGEX = re.compile(  # https://regex101.com/r/qK6uN9/14
           - kind: blob or tree
           - branch: the name of the branch (kind=tree), or the commit hash (kind=blob)
         - file: the rest of the filepath (from root of that branch, can be empty)
-      - hash: Can be non-existent or empty. Everything behind the #.
+      - hash: Can be non-existent or empty. Everything behind the '#'
 """
