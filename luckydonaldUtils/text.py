@@ -1,4 +1,11 @@
 # -*- coding: utf-8 -*-
+try:
+    from .encoding import text_type, native_type
+except (ImportError, SystemError):
+    # non-relative imports to enable doctests
+    from luckydonaldUtils.encoding import binary_type, text_type
+# end if
+
 __author__ = 'luckydonald'
 
 CHARS_UNESCAPED = ["\\", "\n", "\r", "\t", "\b", "\a", "'"]
@@ -116,8 +123,8 @@ def is_word_separator(char):
 
 def split_in_parts(string, parts, strict=False):
     """
-    Splits a string in given `parts` pieces.
-    If string is a list, which has not exactly `parts` items, it will be joined and split afterwards.
+    Splits a string in `parts` amount of pieces.
+    If `string` is a :class:`list`, which has not exactly `parts` items, it will be joined and split afterwards.
 
     Examples:
 
@@ -129,14 +136,62 @@ def split_in_parts(string, parts, strict=False):
       ['ab', 'c', 'de']
       >>> split_in_parts('abcdef', 3)
       ['ab', 'cd', 'ef']
-      >>>split_in_parts("abcdefgh", 3)
+      >>> split_in_parts("abcdefgh", 3)
       ['abc', 'de', 'fgh']
-      >>>split_in_parts('║╠╚ ', 4)
+      >>> split_in_parts('║╠╚ ', 4)
       ['║', '╠', '╚', ' ']
-      >>>split_in_parts('ab', 4)
+      >>> split_in_parts('ab', 4)
       ['', 'a', 'b', '']
-      >>>split_in_parts('║╟╙╴⚠', 5)
+      >>> split_in_parts('ab', 3)
+      ['a', '', 'b']
+      >>> split_in_parts('║╟╙╴⚠', 5)
       ['║', '╟', '╙', '╴', '⚠']
+      
+      >>> split_in_parts(['a','b','c'], 3)  # list with right amount of parts, unchanged
+      ['a', 'b', 'c']
+      >>> split_in_parts(['aa','b','c'], 3)  # list with  right amount of parts, unchanged
+      ['aa', 'b', 'c']
+      >>> split_in_parts(['a','b','c','d'], 3)  # list with wrong amount of parts, joined + splitted
+      ['a', 'bc', 'd']
+      >>> split_in_parts(['aa','b','c','d'], 3)  # list with wrong amount of parts, joined + splitted
+      ['aa', 'b', 'cd']
+      
+      >>> split_in_parts([], 0)  # empty list with right amount of parts, unchanged
+      []
+      >>> split_in_parts([], 1)  # empty list with wrong amount of parts, empty string generated
+      ['']
+      >>> split_in_parts([], 2)  # empty list with wrong amount of parts, empty string generated
+      ['', '']
+      
+      >>> split_in_parts("abc", 3, strict=True)  # strict mode, fitting `parts` parameter
+      ['a', 'b', 'c']
+      >>> split_in_parts("abc", 4, strict=True)  # strict mode, wrong `parts` parameter
+      Traceback (most recent call last):
+      ...
+      ValueError: In strict mode you need a string which can be split in 4 equal pieces.
+      >>> split_in_parts("abcdef", 2, strict=True)  # strict mode, wrong `parts` parameter
+      ['abc', 'def']
+      
+      >>> split_in_parts(['a','b','c'], 3, strict=True)  # list with right amount of parts, unchanged
+      ['a', 'b', 'c']
+      >>> split_in_parts(['aa','b','c'], 3, strict=True)  # list with  right amount of parts, but not equal length
+      Traceback (most recent call last):
+      ...
+      ValueError: In strict mode you need a list where all 3 items have equal length.
+      >>> split_in_parts(['aaa','bbb','ccc','ddd'], 3, strict=True)  # list with wrong amount of parts, joined + splitted
+      ['aaab', 'bbcc', 'cddd']
+      >>> split_in_parts(['aa','b','c','d'], 3, strict=True)  # list with wrong amount of parts, joined + splitted
+      Traceback (most recent call last):
+      ...
+      ValueError: In strict mode you need a string which can be split in 3 equal pieces.
+    
+      >>> split_in_parts([], 0, strict=True)  # empty list with right amount of parts, unchanged
+      []
+      >>> split_in_parts([], 1, strict=True)  # empty list with wrong amount of parts, empty string generated
+      ['']
+      >>> split_in_parts([], 2, strict=True)  # empty list with wrong amount of parts, empty string generated
+      ['', '']
+      
 
     :param string: the string to split
     :param parts: how many parts
@@ -146,6 +201,14 @@ def split_in_parts(string, parts, strict=False):
     """
     if isinstance(string, list):
         if len(string) == parts:
+            if strict and len(string) != 0:
+                length = len(string[0])
+                if any(len(item) != length for item in string):  # length wrong in some element
+                    raise ValueError("In strict mode you need a list where all {parts} items have equal length.".format(
+                        parts=parts
+                    ))
+                    # end if  length wrong
+            # end if strict
             return string
         # end if
         string = "".join(string)
@@ -156,6 +219,7 @@ def split_in_parts(string, parts, strict=False):
         raise ValueError("In strict mode you need a string which can be split in {parts} equal pieces.".format(
             parts=parts
         ))
+    # end if
     part_pos = [0]
     for i in range(0, parts):  # parts = 3 -> for [1, 2]
         part_pos.append(round(slice_size * (i + 1)))
@@ -201,5 +265,93 @@ def cut_paragraphs(text, length=200) -> str:
         return short[:h()] + "..."
     # fallback if nothing splittable was found.
     return text[:-3] + "..."  # will just cut it.
+# end def
+
+
+def lcut(input_string, part_to_cut):
+    """
+    Cuts away a `part_to_cut` from the beginning of the `input_string`.
+    If your `input_string` is no text type, it will be returned unchanged.
+    
+    
+    Examples: 
+        
+        >>> lcut("foobar", "foo")
+        'bar'
+        
+        >>> lcut("foobar", "batz")
+        'foobar'
+        
+        >>> lcut(False, "False")
+        False
+        
+        >>> lcut(u"foobar", u"foo") == u"bar"  # unicode
+        True
+        
+        >>> lcut(b"foobar", b"foo") == b"bar"  # binary
+        True
+        
+        >>> lcut(b"foobar", u"foo") == b"bar"  # binary vs unicode  # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+        ...
+        TypeError: startswith first arg must be bytes or a tuple of bytes, not str
+
+    
+    :param input_string: Your complete string you want to cut stuff from
+    :param part_to_cut: What you want to cut away from the start, if found.
+    :return: 
+    """
+    if not isinstance(input_string, (text_type, binary_type)):  # non-text
+        return input_string
+    # end if
+    if input_string.startswith(part_to_cut):
+        return input_string[len(part_to_cut):]
+    # end if
+    return input_string
+
+
+# end def
+
+
+def rcut(input_string, part_to_cut):
+    """
+    Cuts away a `part_to_cut` from the end of the `input_string`.
+    If your `input_string` is no text type, it will be returned unchanged.
+    
+    
+    Examples: 
+        
+        >>> rcut("foobar", "bar")
+        'foo'
+        
+        >>> rcut("foobar", "batz")
+        'foobar'
+        
+        >>> rcut(False, "False")
+        False
+        
+        >>> rcut(u"foobar", u"bar") == u"foo"  # unicode
+        True
+        
+        >>> rcut(b"foobar", b"bar") == b"foo"  # binary
+        True
+        
+        >>> rcut(b"foobar", u"bar") == b"foo"  # binary vs unicode  # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+        ...
+        TypeError: endswith first arg must be bytes or a tuple of bytes, not str
+
+
+    :param input_string: Your complete string you want to cut stuff from
+    :param part_to_cut: What you want to cut away from the start, if found.
+    :return: 
+    """
+    if not isinstance(input_string, (text_type, binary_type)):  # non-text
+        return input_string
+    # end if
+    if input_string.endswith(part_to_cut):
+        return input_string[:len(part_to_cut)]
+    # end if
+    return input_string
 
 # end def
