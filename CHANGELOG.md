@@ -5,6 +5,9 @@ Changelog
 - Added optional `parameter_name` to `assert_type_or_raise`.
 - Added `lcut` and `rcut`, fixed `split_in_parts`.
 - Updated related tests. Full test coverage for those.
+- Fixed github `FILE_URL_REGEX`, the full match included a whitespace at the end. Also made the protocol `http(s)://` optional.
+- Added github `SIMPLE_URL_REGEX`, to cheaply match github urls.
+
 
 0.53
 ----
