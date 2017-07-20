@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 try:
-    from .encoding import text_type, native_type
+    from .encoding import binary_type, text_type
 except (ImportError, SystemError):
     # non-relative imports to enable doctests
     from luckydonaldUtils.encoding import binary_type, text_type
