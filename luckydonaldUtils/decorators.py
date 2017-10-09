@@ -10,7 +10,7 @@ from .functions import *  # because everyone searches for the decorators in this
 
 def decorator_with_default_params(real_decorator, args, kwargs, default_args=None, default_kwargs=None):
     """
-    This function makes it easy to build a parameterized decorator, having a default value.
+    This function makes it easy to build a parametrized decorator, having a default value.
     Construct your decorator like this:
 
     >>> def decorator(*d_args, **d_kwargs): # d_args with d like decorator

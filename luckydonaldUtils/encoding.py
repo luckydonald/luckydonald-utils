@@ -11,7 +11,6 @@ if sys.version < '3':  # python 2.7
     unicode_type = text_type  # because I can't remember to use text_type
     long_int = long
 
-
     def to_native(x):
         return to_binary(x)
         # end def
@@ -22,13 +21,11 @@ else:  # python 3
     unicode_type = text_type
     long_int = int
 
-
     def to_native(x):
         return to_unicode(x)
         # end def
-
-
 # end if
+
 
 def to_binary(x):
     if isinstance(x, text_type):
@@ -37,6 +34,10 @@ def to_binary(x):
         return x
     else:
         return to_binary(str(x))  # str() can fail.  # do i need bytes() here with py3 (because ascii and stuff?) ?
+        # end if
+
+
+# end def
 
 
 def to_unicode(x):
@@ -46,3 +47,6 @@ def to_unicode(x):
         return x
     else:
         return to_unicode(str(x))  # str() can fail.
+        # end if
+
+# end def
