@@ -353,5 +353,4 @@ def rcut(input_string, part_to_cut):
         return input_string[:len(part_to_cut)]
     # end if
     return input_string
-
 # end def
