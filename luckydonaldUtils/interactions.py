@@ -2,6 +2,13 @@
 import getpass
 import math
 
+try:
+    from .exceptions import assert_type_or_raise
+except (ImportError, SystemError):
+    # non-relative imports to enable doctests
+    from luckydonaldUtils.exceptions import assert_type_or_raise
+# end try
+
 __author__ = 'luckydonald'
 
 try:
@@ -76,15 +83,15 @@ def confirm(prompt=None, default=False):
     False for no.
 
     'resp' should be set to the default value assumed by the caller when
-    user simply types ENTER.
-
-    >>> confirm(prompt='Create Directory?', default=True)
+    user simply presses ENTER.
+    
+    >>> confirm(prompt='Create Directory?', default=True)  # doctest: +SKIP
     Create Directory? [y]|n:
     True
-    >>> confirm(prompt='Create Directory?', default=False)
+    >>> confirm(prompt='Create Directory?', default=False)  # doctest: +SKIP
     Create Directory? [n]|y:
     False
-    >>> confirm(prompt='Create Directory?', default=False)
+    >>> confirm(prompt='Create Directory?', default=False)  # doctest: +SKIP
     Create Directory? [n]|y: y
     True
 
@@ -169,13 +176,14 @@ def password(prompt=None, default=None):
 
 # make a list of safe functions
 eval_safe_builtin_list = ["math"]
-eval_safe_builtin_mapping = {'acos': math.acos, 'asin': math.asin, 'atan': math.atan,
-                                  'atan2': math.atan2, 'ceil': math.ceil, 'cos': math.cos, 'cosh': math.cosh,
-                                  'degrees': math.degrees, 'e': math.e, 'exp': math.exp, 'fabs': math.fabs,
-                                  'floor': math.floor, 'fmod': math.fmod, 'frexp': math.frexp, 'hypot': math.hypot,
-                                  'ldexp': math.ldexp, 'log': math.log, 'log10': math.log10, 'modf': math.modf,
-                                  'pi': math.pi, 'pow': math.pow, 'radians': math.radians, 'sin': math.sin,
-                                  'sinh': math.sinh, 'sqrt': math.sqrt, 'tan': math.tan, 'tanh': math.tanh
+eval_safe_builtin_function_list = {
+    'acos': math.acos, 'asin': math.asin, 'atan': math.atan,
+    'atan2': math.atan2, 'ceil': math.ceil, 'cos': math.cos, 'cosh': math.cosh,
+    'degrees': math.degrees, 'e': math.e, 'exp': math.exp, 'fabs': math.fabs,
+    'floor': math.floor, 'fmod': math.fmod, 'frexp': math.frexp, 'hypot': math.hypot,
+    'ldexp': math.ldexp, 'log': math.log, 'log10': math.log10, 'modf': math.modf,
+    'pi': math.pi, 'pow': math.pow, 'radians': math.radians, 'sin': math.sin,
+    'sinh': math.sinh, 'sqrt': math.sqrt, 'tan': math.tan, 'tanh': math.tanh
 }
 
 
@@ -188,7 +196,8 @@ class NotAllowed(Exception):
 
 
 class NoBuiltins(object):
-    def __init__(self, allowed_builtins, allowed_functions=None, allowed_vars=None):
+    def __init__(self, allowed_builtins=eval_safe_builtin_list, allowed_functions=eval_safe_builtin_function_list,
+                 allowed_vars=None):
         """
         :param allowed_builtins: List with names of functions.
         :type  allowed_builtins: list[str]
@@ -228,19 +237,22 @@ class NoBuiltins(object):
 # end class
 
 
-def safe_eval(user_input, no_builtins_object=NoBuiltins(eval_safe_builtin_list, eval_safe_builtin_mapping)):
+def safe_eval(user_input, allowed_values=NoBuiltins(eval_safe_builtin_list, eval_safe_builtin_function_list)):
     """
     Evals the `user_input` string.
 
-    The NoBuiltins raises a `NotAllowed` Exception when the command is not allowed.
     :param user_input:
-    :param no_builtins_object:
+    :param allowed_values: NoBuiltins object
+    :type  allowed_values: NoBuiltins
     :param question:
     :return:
+    :raises NotAllowed: The :class:`NoBuiltins` raises a :class:`NotAllowed` Exception when the command is not allowed.
     """
+    assert_type_or_raise(user_input, str)
     assert isinstance(user_input, str)
-    assert isinstance(no_builtins_object, NoBuiltins)
-    result = eval(user_input, {"__builtins__": no_builtins_object}, no_builtins_object)
+    assert_type_or_raise(allowed_values, NoBuiltins)
+    assert isinstance(allowed_values, NoBuiltins)
+    result = eval(user_input, {"__builtins__": allowed_values}, allowed_values)
     return result
 
 
