@@ -80,25 +80,32 @@ class ColoredFormatter(_logging.Formatter):
             timestamp_filler = " " * len(timestamp)
 
             # Process / Thread names
-            process_thread_part = ""
+            process_thread_part = process_thread_part_filler = ""
             has_process = hasattr(record, "processName") and record.processName != "MainProcess"
-            has_thread = hasattr(record, "treadName") and record.treadName != "MainTread"
+            has_thread = hasattr(record, "threadName") and record.threadName != "MainThread"
 
             if has_process:
-                process_thread_part += record.processName
+                process_thread_part += "{inverse_on}{file_color_on}{thread}{inverse_off}".format(
+                    thread=record.processName, **formatter)
             # end if
             if has_process and has_thread:
-                process_thread_part += " | "
+                process_thread_part += " ".format(**formatter)
             # end if
             if has_thread:
-                process_thread_part += record.treadName
+                process_thread_part += "{inverse_on}{file_color_on}{process}{inverse_off}".format(
+                    process=record.threadName, **formatter)
             # end if
             if has_process or has_thread and len(timestamp) > 1:
-                # process_thread_part += ": "
+                # inject the formatting here, as empty formatting without text would break
+                process_thread_part_filler = " " * len(process_thread_part)
+                process_thread_part = "{file_color_on}{inverse_on}{process_thread_part}{inverse_off}".format(
+                    process_thread_part=process_thread_part, **formatter
+                )
                 # abuse {date} to contain a space for us. Because a blue colored space is still a space.
                 timestamp += " "  # so the file don't immediatly follows after the date.
                 timestamp_filler += " "
             # end if
+
 
             # original message
             lines_ = record.message.splitlines()
@@ -106,19 +113,19 @@ class ColoredFormatter(_logging.Formatter):
             for line in lines_:
                 if first_line is None:  # single line
                     lines.append(
-                        "{color_on}{inverse_on}{level}{inverse_off}{color_on}{date}{color_off}{file_color_on}{inverse_on}{process_thread_part}{inverse_off} {file_color_on}{filepart}:{color_off} {color_on}{message}{color_off}{background_off}{all_off}".format(
+                        "{color_on}{inverse_on}{level}{inverse_off}{color_on}{date}{color_off}{file_color_on}{process_thread_part} {file_color_on}{filepart}:{color_off} {color_on}{message}{color_off}{background_off}{all_off}".format(
                             filepart=filepart, level=level, message=line, date=timestamp,
                             process_thread_part=process_thread_part, **formatter))
                     break
                 elif first_line:  # first line
                     lines.append(
-                        "{color_on}{inverse_on}{level}{inverse_off}{color_on}{date}{color_off} {file_color_on}{filepart}:{color_off} {all_off}".format(
+                        "{color_on}{inverse_on}{level}{inverse_off}{color_on}{date}{color_off}{file_color_on}{process_thread_part} {file_color_on}{filepart}:{color_off} {all_off}".format(
                             filepart=filepart, level=level, message=line, date=timestamp,
                             process_thread_part=process_thread_part, **formatter))
                 lines.append(
                     "{color_on}{inverse_on}{level_filler}{inverse_off}{color_off} {color_on}{message}{color_off}{background_off}{all_off}".format(
                         level_filler=level_filler, message=line, date=timestamp, date_filler=timestamp_filler,
-                        process_thread_part=process_thread_part,
+                        process_thread_part=process_thread_part, process_thread_part_filler=process_thread_part_filler,
                         **formatter))
                 first_line = False
             # end for
@@ -438,3 +445,11 @@ class LevelByNameFilter(object):
         return False
         # end def
 # end class
+
+        # # Test code to get a threaded logger:
+        # from luckydonaldUtils.logger import logging;import threading; from time import sleep;
+        # def lel():
+        #     logger.debug(threading.current_thread().name)
+        #     logging.test_logger_levels(),logger.critical("littlepip is\nBEST\npony!")
+        # # end def
+        # logger = logging.add_colored_handler(level=logging.DEBUG, date_formatter="%Y-%m-%d %H:%M:%S"); lel();sleep(1);thread=threading.Thread(target=lel);thread.start();thread.join()
