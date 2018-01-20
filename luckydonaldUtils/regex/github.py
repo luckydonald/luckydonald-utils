@@ -11,7 +11,7 @@ AT_USERNAME_REGEX = re.compile(  # https://regex101.com/r/eJ6cA4/
 )
 
 SIMPLE_URL_REGEX = re.compile(
-    r"(?:https?://(?:www\.)?|www\.|(?<=\s))github.com/[^\s]+")  # https://regex101.com/r/gH8xM9/4
+    r"(?:https?://(?:www\.)?|www\.|^|(?<=\s))github.com/[^\s]+")  # https://regex101.com/r/gH8xM9/4
 """ :const:`SIMPLE_URL_REGEX`: A very simple url regex """
 
 FILE_URL_REGEX = re.compile(  # https://regex101.com/r/qK6uN9/15
