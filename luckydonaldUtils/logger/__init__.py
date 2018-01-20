@@ -56,11 +56,6 @@ class ColoredFormatter(_logging.Formatter):
 
             color = self.mapping.get(record.levelname, 'default')
             clr = self.colors[color]
-
-            filepart = record.treadName + ": " if hasattr(record,
-                                                          "treadName") and record.treadName != "MainTread" else ""
-            filepart += record.name if record.name else ""
-            filepart += "." + record.funcName if record.funcName != "<module>" else ""
             formatter = dict(
                 all_off=self.prepare_color(0),  # Reset all attributes
                 color_on=self.prepare_color(clr),  # Color as given/from lookup
@@ -71,26 +66,59 @@ class ColoredFormatter(_logging.Formatter):
                 file_color_on=self.prepare_color(94),  # Light blue
             )
             lines = []
-            timestamp = " " + record.asctime if record.asctime else ""
-            timestamp_filler = " " * len(timestamp)
+
+            # log level
             level = "{level:8}".format(level=record.levelname)
             level_filler = "{:{}}".format("", len(level))
 
+            # file/function name
+            filepart = record.name if record.name else ""
+            filepart += "." + record.funcName if record.funcName != "<module>" else ""
+
+            # date
+            timestamp = " " + record.asctime if record.asctime else ""
+            timestamp_filler = " " * len(timestamp)
+
+            # Process / Thread names
+            process_thread_part = ""
+            has_process = hasattr(record, "processName") and record.processName != "MainProcess"
+            has_thread = hasattr(record, "treadName") and record.treadName != "MainTread"
+
+            if has_process:
+                process_thread_part += record.processName
+            # end if
+            if has_process and has_thread:
+                process_thread_part += " | "
+            # end if
+            if has_thread:
+                process_thread_part += record.treadName
+            # end if
+            if has_process or has_thread and len(timestamp) > 1:
+                # process_thread_part += ": "
+                # abuse {date} to contain a space for us. Because a blue colored space is still a space.
+                timestamp += " "  # so the file don't immediatly follows after the date.
+                timestamp_filler += " "
+            # end if
+
+            # original message
             lines_ = record.message.splitlines()
             first_line = True if len(lines_) > 1 else  None
             for line in lines_:
                 if first_line is None:  # single line
                     lines.append(
-                        "{color_on}{inverse_on}{level}{inverse_off}{color_on}{date}{color_off} {file_color_on}{filepart}:{color_off} {color_on}{message}{color_off}{background_off}{all_off}".format(
-                            filepart=filepart, level=level, message=line, date=timestamp, **formatter))
+                        "{color_on}{inverse_on}{level}{inverse_off}{color_on}{date}{color_off}{file_color_on}{inverse_on}{process_thread_part}{inverse_off} {file_color_on}{filepart}:{color_off} {color_on}{message}{color_off}{background_off}{all_off}".format(
+                            filepart=filepart, level=level, message=line, date=timestamp,
+                            process_thread_part=process_thread_part, **formatter))
                     break
                 elif first_line:  # first line
                     lines.append(
                         "{color_on}{inverse_on}{level}{inverse_off}{color_on}{date}{color_off} {file_color_on}{filepart}:{color_off} {all_off}".format(
-                            filepart=filepart, level=level, message=line, date=timestamp, **formatter))
+                            filepart=filepart, level=level, message=line, date=timestamp,
+                            process_thread_part=process_thread_part, **formatter))
                 lines.append(
                     "{color_on}{inverse_on}{level_filler}{inverse_off}{color_off} {color_on}{message}{color_off}{background_off}{all_off}".format(
                         level_filler=level_filler, message=line, date=timestamp, date_filler=timestamp_filler,
+                        process_thread_part=process_thread_part,
                         **formatter))
                 first_line = False
             # end for
