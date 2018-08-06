@@ -452,4 +452,4 @@ class LevelByNameFilter(object):
         #     logger.debug(threading.current_thread().name)
         #     logging.test_logger_levels(),logger.critical("littlepip is\nBEST\npony!")
         # # end def
-        # logger = logging.add_colored_handler(level=logging.DEBUG, date_formatter="%Y-%m-%d %H:%M:%S"); lel();sleep(1);thread=threading.Thread(target=lel);thread.start();thread.join()
+# logger = logging.add_colored_handler(level=logging.DEBUG, date_formatter="%Y-%m-%d %H:%M:%S");logging.add_colored_handler(level=logging.DEBUG); lel();sleep(1);thread=threading.Thread(target=lel);thread.start();thread.join()
