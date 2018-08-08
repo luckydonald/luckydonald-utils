@@ -222,6 +222,8 @@ Package of some regular expressions I found useful.
                 - branch: the name of the branch (kind=tree), or the commit hash (kind=blob)
             - file: the rest of the filepath (from root of that branch, can be empty)
         - hash: Can be non-existent or empty. Everything behind the '#'
+- ```url```
+    - ```URL_REGEX```: Matching URLs. Based on [dperini's MIT licensed Gist](https://gist.github.com/dperini/729294#gistcomment-1296121) (Since<sup>[1](#1)</sup> [v0.58](https://github.com/luckydonald/python-utils/releases/tag/v0.58))
 
 #### ```text```
 
