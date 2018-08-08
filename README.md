@@ -223,7 +223,7 @@ Package of some regular expressions I found useful.
             - file: the rest of the filepath (from root of that branch, can be empty)
         - hash: Can be non-existent or empty. Everything behind the '#'
 - ```url```
-    - ```URL_REGEX```: Matching URLs. Based on [dperini's MIT licensed Gist](https://gist.github.com/dperini/729294#gistcomment-1296121) (Since<sup>[1](#1)</sup> [v0.58](https://github.com/luckydonald/python-utils/releases/tag/v0.58))
+    - ```URL_REGEX```: Matching URLs. Based on [dperini's MIT licensed Gist](https://gist.github.com/dperini/729294#gistcomment-1296121) (Added in [v0.58](https://github.com/luckydonald/python-utils/releases/tag/v0.58))
 
 #### ```text```
 
@@ -231,8 +231,14 @@ String manipulation, etc.
 
 - `split_in_parts(string, parts, strict=False)`: [v0.48](https://github.com/luckydonald/python-utils/releases/tag/v0.48)+  Splits a string in given `parts` pieces.
 
-    
-    
+#### ```compat```  [v0.58](https://github.com/luckydonald/python-utils/releases/tag/v0.58)
+
+Detecting versions and stuff. For string compatibility use `.encoding`.
+
+- ```py2```: `True` if is python 2, `False` otherwise.
+- ```py3```: `True` if is python 3, `False` otherwise.
+
+
     
 #### ```webserver```
 (added in [v0.20](https://github.com/luckydonald/python-utils/releases/tag/v0.20))    
