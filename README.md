@@ -117,6 +117,7 @@ Utilities for flask.
 
 - `flasks.routing`
     - `route_for`: Basically `flask.url_for` in reverse. You give a url, it gives you the route and the required arguments.
+    - `get_safe_next`: Checks if the specified `url` in like a `?next=<url>` parameter is part of our registered routes, and thus seems safe to redirect to.
 - `flasks.launcher`
     - `Launcher`: Allow `flask`'s auto-reload to survive syntax errors and similar exceptions, also show them in the browser.
 
