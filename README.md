@@ -117,7 +117,8 @@ Utilities for flask.
 
 - `flasks.routing`
     - `route_for`: Basically `flask.url_for` in reverse. You give a url, it gives you the route and the required arguments.
-
+- `flasks.launcher`
+    - `Launcher`: Allow `flask`'s auto-reload to survive syntax errors and similar exceptions, also show them in the browser.
 
 #### ```functions```
 Information about calling functions (Added in [v0.35](https://github.com/luckydonald/python-utils/releases/tag/v0.35))
