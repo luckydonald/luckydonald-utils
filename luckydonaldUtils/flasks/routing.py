@@ -77,33 +77,43 @@ def route_for(url, is_full_url=False):
 # end def
 
 
-def get_safe_next(next_param=None, next_is_full_url=True, allow_self=False, old_referrer_must_match=False,
+def get_safe_next(url=None, full_url_only=True, allow_self=False, old_referrer_must_match=False,
                   generate_url=True):
     """
-    :param next_param: The value for the next url. Defaults to `request.args.get('next')`.
-    :param next_is_full_url: If the next url should be a full url, with `http://www.domain.com/` and whatnot.
-    :param allow_self: If redirect to self is valid. Default: `False`.
+    Checks if the specified ``url`` in like a ``?next=`` parameter is part of our registered routes,
+    and thus seems safe to redirect to.
 
-    :param old_referrer_must_match: Default: `False`. Don't check referrer.
-                                    `True` to require it to resolve to the same endpoint as `next` does.
-                                    A `str` to require it to match that endpoint.
+    Additionally you can choose:
+
+    - if you want to require the value to be a full url, with protocol, domain, etc. (``full_url_only``),
+    - if you want to allow redirect to the same page again which might cause a redirect loop (``allow_self``),
+    - if you need the http referrer the browser sent to match the next ``url``,
+      i.e. it goes back to the previous url (``old_referrer_must_match``)
+
+    :param url: The value for the next url. Defaults to ``request.args.get('next')``.
+    :param full_url_only: If the next url should be a full url, with ``http://www.domain.com/`` and whatnot.
+    :param allow_self: If redirect to self is valid. Default: ``False``.
+
+    :param old_referrer_must_match: Default: ``False``. Don't check referrer.
+                                    ``True`` to require it to resolve to the same endpoint as ``next`` does.
+                                    A ``str`` to require it to match that endpoint.
 
     :type  old_referrer_must_match: bool|str
 
-    :param generate_url: If we should return an url string (`True`), or just the (`route`, `params`) tuple (`False`).
+    :param generate_url: If we should return an url string (``True``), or just the (``route``, ``params``) tuple (``False``).
     :type  generate_url: bool
 
-    :return:
+    :return: If anything goes wrong, or you get no match, ``None`` is returned. Else, if ``generate_url`` is ``True``, you get an url string you can redirect to, or if ``generate_url`` is ``False`` you get a tuple in the form ``(endpoint, arguments)``.
     :rtype: None | str | tuple of (str, dict)
     """
-    if not next_param:
-        next_param = request.args.get('next', None)
+    if not url:
+        url = request.args.get('next', None)
     # end if
-    if not next_param:
+    if not url:
         logger.debug('No next parameter.')
         return None
     # end if
-    param_route = route_for(next_param, is_full_url=next_is_full_url)
+    param_route = route_for(url, is_full_url=full_url_only)
     if not param_route:
         logger.debug('No route found for next parameter.')
         return None
