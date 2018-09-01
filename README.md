@@ -93,7 +93,7 @@ Exception related stuff.
 
 #### ```files```
 Collection of things which are file related.
-(This exist structure since [v0.47](https://github.com/luckydonald/python-utils/releases/tag/v0.47))
+(This structure exists since [v0.47](https://github.com/luckydonald/python-utils/releases/tag/v0.47))
 
 - `files.basics` [v0.47](https://github.com/luckydonald/python-utils/releases/tag/v0.47)+
     - `mkdir_p(path)` like `mkdir -p` [v0.43](https://github.com/luckydonald/python-utils/releases/tag/v0.43)
@@ -110,6 +110,14 @@ Collection of things which are file related.
     - `gettempdir(temp_folder_name="luckydonald-utils")` Gets/creates a folder in the temporary files of the system.
 - `files.tree` [v0.47](https://github.com/luckydonald/python-utils/releases/tag/v0.47)+
     - `tree(directory, padding="", print_files=False, level=-1, print_it=True)` (New in [v0.47](https://github.com/luckydonald/python-utils/releases/tag/v0.47))
+
+#### ```flasks```
+Utilities for flask.
+[v0.59](https://github.com/luckydonald/python-utils/releases/tag/v0.59)+
+
+- `flasks.routing`
+    - `route_for`: Basically `flask.url_for` in reverse. You give a url, it gives you the route and the required arguments.
+
 
 #### ```functions```
 Information about calling functions (Added in [v0.35](https://github.com/luckydonald/python-utils/releases/tag/v0.35))
