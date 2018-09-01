@@ -86,7 +86,7 @@ class Launcher(object):
         self.kwargs = kwargs
         self.main = None
         self.did_fail = False
-        self.exception = (None, None, None)
+        self.exception = None
 
     # end def
 
@@ -96,9 +96,11 @@ class Launcher(object):
     # end def
 
     def __exit__(self, exc_type, exc_value, traceback):
-        logger.exception('could not load app code:')
-        self.main = None
-        self.exception = (exc_type, exc_value, traceback)
+        if exc_type:
+            logger.exception('could not load app code:')
+            self.main = None
+            self.exception = (exc_type, exc_value, traceback)
+        # end if
         return True  # suppress the exception  # https://docs.python.org/3/whatsnew/2.6.html#writing-context-managers
 
     # end def
@@ -200,8 +202,6 @@ class Launcher(object):
         self.main.app.debug = self.kwargs.get('debug', False)
         self.main.app.errorhandler(500)(self.error_handler(text, status))
         self.main.app.errorhandler(404)(self.error_handler(text, status))
-        # main.app.run(use_reloader=True, debug=True)
-
     # end def
 
     def error_handler(self, text='App not started', status=500):
@@ -224,17 +224,18 @@ class Launcher(object):
             if request.args.get('__debugger__') == 'yes' and request.args.get('cmd') == "resource":
                 return d.get_resource(request, request.args.get('f'))
             # end if
-            exc_type, exc_value, traceback = self.exception
-            if exc_type:
+
+            if self.exception:
+                exc_type, exc_value, traceback = self.exception
                 tb = Traceback(exc_type, exc_value, traceback)
                 html = tb.render_full(evalex=False, secret=None, evalex_trusted=False)
-                html = html.replace('</head>', '<style>.footer, .pastemessage {display: none}</style></head>')
+                html = html.replace('</head>', '<style>.footer,.pastemessage{display:none}</style></head>')
                 return html, status
             # end if
             return error_handler_inner_simple(e)
 
+        # end def
         return error_handler_inner
-
     # end def
 
     @staticmethod
