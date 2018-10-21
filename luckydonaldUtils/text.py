@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 try:
     from .encoding import binary_type, text_type
 except (ImportError, SystemError):
@@ -99,15 +100,11 @@ def text_split(text, limit, max_parts=None):
 
 def is_sentence_end(char):
     return char in ".?!"
-
-
 # end def
 
 
 def is_sentence_part_end(char):
     return char in ",:;"
-
-
 # end def
 
 
@@ -116,8 +113,6 @@ def is_word_separator(char):
         " ", "\n", ".", ",", "?", "!", "@", "#", "$", ":", ";", "-", "<", ">", "[", "]",
         "(", ")", "{", "}", "=", "/", "+", "%", "&", "^", "*", "'", "\"", "`", "´", "„", "”", "~", "|"
     ]
-
-
 # end def
 
 
@@ -238,8 +233,6 @@ def escape(string):
     for i in range(0, 7):
         string = string.replace(CHARS_UNESCAPED[i], CHARS_ESCAPED[i])
     return string
-
-
 # end def
 
 
@@ -308,8 +301,6 @@ def lcut(input_string, part_to_cut):
         return input_string[len(part_to_cut):]
     # end if
     return input_string
-
-
 # end def
 
 
@@ -353,4 +344,68 @@ def rcut(input_string, part_to_cut):
         return input_string[:len(part_to_cut)]
     # end if
     return input_string
+# end def
+
+
+def cut(input_string, part_to_cut):
+    return lcut(rcut(input_string, part_to_cut), part_to_cut)
+
+
+# end def
+
+
+def convert_to_underscore(name):
+    """
+    'someFunctionWhateverMateYoLOLLel' -> 'some_Function_Whatever'
+
+    >>> convert_to_underscore('test123isThisWorkingXXX')
+    'test_123_is_This_Working_XXX'
+
+    >>> convert_to_underscore('XXXNightmaremoonXXX')
+    'XXX_Nightmaremoon_XXX'
+
+    >>> convert_to_underscore('Hunter2')
+    'Hunter_2'
+
+    >>> convert_to_underscore('HDMI2GardenaGartenschlauchAdapter')
+    'HDMI_2_Gardena_GartenschlauchAdapter'
+
+    >>> convert_to_underscore('test23')
+    'test_23'
+
+    >>> convert_to_underscore('LEL24')
+    'LEL_24'
+
+    >>> convert_to_underscore('LittlepipIsBestPony11111')
+    'Littlepip_Is_Best_Pony_11111'
+
+    >>> convert_to_underscore('4458test')
+    '4458_test'
+
+    >>> convert_to_underscore('4458WUT')
+    '4458_WUT'
+
+    >>> convert_to_underscore('xXx4458xXx')
+    'x_Xx_4458_x_Xx'
+
+    >>> convert_to_underscore('XxX4458XxX')
+    'Xx_X_4458_Xx_X'
+
+    """
+    RE_c_0 = re.compile(r'([A-Za-z])([0-9]+)')
+    RE_0_c = re.compile(r'([0-9]+)([A-Za-z])')
+    RE_x_Cc = re.compile(r'([^0-9])([A-Z][a-z0-9]+)')
+    RE_c_C = re.compile(r'([a-z0-9])([A-Z])')
+
+    # print = str
+    # print(1, name)
+    name = RE_c_0.sub(r'\1_\2', name)
+    # print(2, name)
+    name = RE_0_c.sub(r'\1_\2', name)
+    # print(3, name)
+    name = RE_x_Cc.sub(r'\1_\2', name)
+    # print(4, name)
+    name = RE_c_C.sub(r'\1_\2', name)
+    # print(5, name)
+    return name
 # end def
