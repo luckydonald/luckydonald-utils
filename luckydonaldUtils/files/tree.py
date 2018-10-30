@@ -36,7 +36,7 @@ def tree_linux(directory, padding="", print_files=False):
 def tree(directory, padding="", print_files=False, level=-1, print_it=True, space=1,
          tree_letters=["║", "╟", "╙", "╴", "⚠"]):
     """
-    Displays a tree of a folder the sub-folders. Pptionally with files.
+    Displays a tree of a folder the sub-folders. Optionally with files.
     :param directory: The path of the folder
     :param padding: What to put in front of the line
     :param print_files: weather it should include files, too.
@@ -106,8 +106,6 @@ def tree(directory, padding="", print_files=False, level=-1, print_it=True, spac
             string = padding + node + file
             return_string += echo(string, print_files)
     return return_string
-
-
 # end def
 
 
@@ -118,16 +116,15 @@ def echo(msg, should_print):
     return msg + '\n'
 # end def
 
+
 def usage():
     from sys import argv
-    return '''Usage: %s [-f] [<LEVELS>] <PATH>
+    return '''Usage: {SCRIPTNAME} [-f] [<LEVELS>] <PATH>
 Print tree structure of path specified.
 Options:
 -f      Print files as well as directories
 LEVELS  How many levels to print. -1 means unlimited
-PATH    Path to process''' % basename(argv[0])
-
-
+PATH    Path to process'''.format(SCRIPTNAME=basename(argv[0]))
 # end def
 
 
