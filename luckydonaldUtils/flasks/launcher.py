@@ -87,6 +87,7 @@ class Launcher(object):
         self.main = None
         self.did_fail = False
         self.exception = None
+        self._files = set()
 
     # end def
 
@@ -97,12 +98,14 @@ class Launcher(object):
 
     def __exit__(self, exc_type, exc_value, traceback):
         if exc_type:
+            from werkzeug.debug.tbtools import Traceback
             logger.exception('could not load app code:')
             self.main = None
-            self.exception = (exc_type, exc_value, traceback)
+            tb = Traceback(exc_type, exc_value, traceback)
+            self.exception = tb
+            self._files.update(frame.filename for frame in tb.frames if frame and frame.filename)
         # end if
         return True  # suppress the exception  # https://docs.python.org/3/whatsnew/2.6.html#writing-context-managers
-
     # end def
 
     def __call__(self, main):
@@ -177,6 +180,7 @@ class Launcher(object):
                 main_file = os.path.abspath(sys.modules['__main__'].__file__)
                 print(main_file)
                 self.kwargs['extra_files'].extend([x.absolute() for x in Path(main_file).rglob("*.py")])
+                self.kwargs['extra_files'].extend(self._files)
                 self.kwargs['debug'] = True
             # end if
             self.run_app()
@@ -191,7 +195,6 @@ class Launcher(object):
         else:
             self.main.app.run(*self.args, **self.kwargs)
         # end if
-
     # end def
 
     def fake_main_app(self, text='App not started', status=500):
@@ -205,7 +208,6 @@ class Launcher(object):
     # end def
 
     def error_handler(self, text='App not started', status=500):
-        from werkzeug.debug.tbtools import Traceback
         from werkzeug.debug import DebuggedApplication
         from flask import request
 
@@ -226,9 +228,7 @@ class Launcher(object):
             # end if
 
             if self.exception:
-                exc_type, exc_value, traceback = self.exception
-                tb = Traceback(exc_type, exc_value, traceback)
-                html = tb.render_full(evalex=False, secret=None, evalex_trusted=False)
+                html = self.exception.render_full(evalex=False, secret=None, evalex_trusted=False)
                 html = html.replace('</head>', '<style>.footer,.pastemessage{display:none}</style></head>')
                 return html, status
             # end if
