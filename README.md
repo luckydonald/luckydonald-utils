@@ -234,6 +234,9 @@ Package of some regular expressions I found useful.
         - hash: Can be non-existent or empty. Everything behind the '#'
 - ```url```
     - ```URL_REGEX```: Matching URLs. Based on [dperini's MIT licensed Gist](https://gist.github.com/dperini/729294#gistcomment-1296121) (Added in [v0.58](https://github.com/luckydonald/python-utils/releases/tag/v0.58))
+    - ```youtube```:
+        - ```YOUTUBE_REGEX```: Matches youtube videos. The matching group `vid` contains the video id.
+    
 
 #### ```text```
 
