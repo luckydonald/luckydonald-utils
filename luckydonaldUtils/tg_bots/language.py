@@ -10,7 +10,7 @@ except ImportError:  # pragma nocover
     Message = import_or_install("pytgbot.api_types.receivable.updates", "Message")  # pip install pytgbot
 # end try
 
-__all__ = ['get_language_code', 'l_from']
+__all__ = ['get_language_code', 'l_get']
 
 LangClass = TypeVar('LangClass')
 
