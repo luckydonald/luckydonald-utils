@@ -6,3 +6,4 @@ Crypto  # store
 django  # djangos
 weakreflist  # djangos.middleware.access
 Pillow  # images.color
+pytgbot
