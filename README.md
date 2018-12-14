@@ -244,6 +244,11 @@ Package of some regular expressions I found useful.
     - ```youtube```:
         - ```YOUTUBE_REGEX```: Matches youtube videos. The matching group `vid` contains the video id.
     
+#### ```tg_bots```
+Utilities for the telegram bots (pytgbot and/or flask).
+- `gitinfo`: Parse git meta information written by a deploy script.
+- `language`: Helper for loading language files (classes). [v0.64](https://github.com/luckydonald/python-utils/releases/tag/v0.64)+
+
 
 #### ```text```
 
