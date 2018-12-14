@@ -45,16 +45,40 @@ def create_l(DefaultLang: Type[T], LANG: Dict[str, T]) -> Callable:
     :param LANG:
     :return:
     """
-
     def l(update_msg_or_language_code: Union[Update, Message, str, None] = None) -> DefaultLang:
+        """
+        Retrieves a translation string for a given update/message/language_code.
+
+        :param update_msg_or_language_code: The stuff containing language info.
+        :return: the fitting language class.
+        """
         lang = get_language_code(update_msg_or_language_code)
 
         # if it now is None (default, or getting from message failed), use the default
-        if lang is None or lang not in LANG:
-            return cast(DefaultLang, LANG['default'])
+        if lang is None:
+            return LANG['default']
         # end if
-        return cast(DefaultLang, LANG[lang])
 
+        if lang in LANG:
+            return cast(DefaultLang, LANG[lang])
+        # end if
+
+        # try splitting it "de_DE" => "de",
+
+        part = lang.split('-')[0]
+        if part in LANG:
+            return cast(DefaultLang, LANG[part])
+        # end def
+
+        # try splitting it "de-DE" => "de",
+        part = lang.split('_')[0]
+        if part in LANG:
+            return cast(DefaultLang, LANG[part])
+        # end def
+        # or use the default
+
+        return cast(DefaultLang, LANG['default'])
     # end def
+
     return l
 # end def
