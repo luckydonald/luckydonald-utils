@@ -121,6 +121,13 @@ Utilities for flask.
 - `flasks.launcher`
     - `Launcher`: Allow `flask`'s auto-reload to survive syntax errors and similar exceptions, also show them in the browser.
 
+#### ```jinja2```
+Utilities for the jinja templating engine.
+[v0.64](https://github.com/luckydonald/python-utils/releases/tag/v0.64)+
+
+- `filters`: Filter for templates.
+    - `br`: Add `<br>` to linebreaks.
+
 #### ```functions```
 Information about calling functions (Added in [v0.35](https://github.com/luckydonald/python-utils/releases/tag/v0.35))
 
