@@ -22,7 +22,7 @@ __author__ = 'luckydonald'
 logger = logging.getLogger(__name__)
 
 
-def route_for(url, is_full_url=False):
+def route_for(url, is_full_url=False, method=None):
     """
     Basically `flask.url_for` in reverse.
     You give a url, it gives you the route and the required arguments.
@@ -40,9 +40,11 @@ def route_for(url, is_full_url=False):
     :param url: The url you want the route for.
     :param is_full_url: If true it will try to remove `{adapter.url_scheme}://{adapter.server_name}` from the beginning,
                         and return `None` if it fails.
+    :param method: The method to use, defaults to `request.method`.
     :return: you get a tuple in the form ``(endpoint, arguments)`` if there is a match, else if anything goes wrong, ``None``.
     :rtype: None | tuple of (str, list of str)
     """
+    method = request.method if method is None else method
     adapter = _app_ctx_stack.top.url_adapter if _app_ctx_stack and _app_ctx_stack.top and _app_ctx_stack.top.url_adapter else _request_ctx_stack.top.url_adapter
     assert isinstance(adapter, MapAdapter)
     if is_full_url:
@@ -67,7 +69,7 @@ def route_for(url, is_full_url=False):
     # end if
 
     try:
-        return adapter.match(url, method=request.method, return_rule=False)
+        return adapter.match(url, method=method, return_rule=False)
     except HTTPException as e:
         logger.debug("Route not found: {}".format(e))
         return None
