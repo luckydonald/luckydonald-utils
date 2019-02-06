@@ -31,6 +31,9 @@ def get_language_code(update_msg_or_language_code: Union[Update, Message, str, N
             return update_msg_or_language_code.from_peer.language_code
         # end if
     # end if
+    if not isinstance(update_msg_or_language_code, str):
+        return None
+    # end if
     return update_msg_or_language_code
 # end def
 
