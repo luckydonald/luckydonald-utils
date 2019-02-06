@@ -19,16 +19,26 @@ def get_language_code(update_msg_or_language_code: Union[Update, Message, str, N
     assert_type_or_raise(update_msg_or_language_code, None, str, Message, Update, parameter_name="msg")
 
     # if is message, get the language_code from there.
-    if isinstance(update_msg_or_language_code, Update) and update_msg_or_language_code.message:
-        # we are in a update, we want the message
-        update_msg_or_language_code = update_msg_or_language_code.message
+    if isinstance(update_msg_or_language_code, Update):
+        # we are in a update, we want any message
+        if update_msg_or_language_code.message:
+            update_msg_or_language_code = update_msg_or_language_code.message
+        elif update_msg_or_language_code.callback_query:
+            if update_msg_or_language_code.callback_query.from_peer and update_msg_or_language_code.callback_query.from_peer.language_code:
+                return update_msg_or_language_code.callback_query.from_peer.language_code
+            elif update_msg_or_language_code.callback_query.message:
+                update_msg_or_language_code = update_msg_or_language_code.callback_query.message
+            # end if
+        # end if
     # end if
     if isinstance(update_msg_or_language_code, Message):
         # we are in a message, we want the language_code
-        if not update_msg_or_language_code.from_peer or not update_msg_or_language_code.from_peer.language_code:
-            return None
-        else:
+        if update_msg_or_language_code.from_peer and update_msg_or_language_code.from_peer.language_code:
             return update_msg_or_language_code.from_peer.language_code
+        elif update_msg_or_language_code.callback_query:
+            return update_msg_or_language_code.callback_query.from_peer
+        else:
+            return None
         # end if
     # end if
     if not isinstance(update_msg_or_language_code, str):
