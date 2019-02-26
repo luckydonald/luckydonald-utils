@@ -6,32 +6,131 @@ from datetime import datetime, timedelta
 logger = logging.getLogger(__name__)
 
 __author__ = 'luckydonald'
-__all__ = ["caller", "deprecated", "gone", "cached"]
+__all__ = [
+    "caller", "deprecated", "gone", "cached",
+    "CallerResult", "CallerInfo"
+]
 
 
-def caller(func):
+class CallerResult(object):
+    # noinspection PyMethodParameters
+    def __init__(this, self, caller):
+        """
+        :type  self: CallerInfo
+        :type  caller: CallerInfo
+        """
+        this.self = self
+        this.caller = caller
+    # end def
+
+    def __getitem__(self, item):
+        if item in ("self", "caller"):
+            return getattr(self, item)
+        # end if
+        raise KeyError("Key {!r} not found".format(item))
+    # end def
+# end class
+
+
+class CallerInfo(object):
+    def __init__(self, name, file, line, code=None):
+        self.name = name
+        self.file = file
+        self.line = line
+        self.code = code
+    # end def
+
+    def __getitem__(self, item):
+        if item in ("name", "file", "line", "code"):
+            return getattr(self, item)
+        # end if
+        raise KeyError("Key {!r} not found".format(item))
+    # end def
+# end class
+
+
+def caller(level=0, kwarg_name="call"):
     """
     functions decorated with this will be called with an `call` kwarg, containing information about the function itself, and the caller.
     If the caller could not be fetched correctly, the `caller`s attributes all will be `None`.
+
+    Level is the amount of functions to go upwards. Default is 1.
+    kwarg_name is the name of the kwarg parameter we input the caller data as. Default is "call".
     """
+    def caller_func_wrapper(func, level=0, kwarg_name="call"):
+        """
+        :param func: The function we need to call.
 
-    @functools.wraps(func)
-    def new_func(*args, **kwargs):
-        try:
-            stack = inspect.stack()[1]
-            call = {"self": {"name": func.__name__, "file": func.__code__.co_filename,
-                             "line": func.__code__.co_firstlineno + 1},
-                    "caller": {"name": stack[3], "file": stack[1], "line": stack[2], "code": stack[4][0]}
-                    }
-        except TypeError:
-            call = {"self": {"name": func.__name__, "file": func.__code__.co_filename,
-                             "line": func.__code__.co_firstlineno + 1},
-                    "caller": {"name": None, "file": None, "line": None, "code": None}
-                    }
-        kwargs["call"] = call
-        return func(*args, **kwargs)
+        :param level: The level to go back in stack.
+        :type  level: int
 
-    return new_func
+        :param kwarg_name: the **kwargs element to write to.
+        :type  kwarg_name: str
+        :return:
+        """
+        level += 1  # as we need to ignore the caller_wrapping_func
+
+        @functools.wraps(func)
+        def caller_wrapping_func(*args, **kwargs):
+            # so the decorated function is the 'self' one.
+            try:
+                self = CallerInfo(
+                    name=func.__name__,
+                    file=func.__code__.co_filename,
+                    line=func.__code__.co_firstlineno + 1,
+                )
+            except AttributeError as e:
+                    logger.debug("self lookup failed", exc_info=True)
+                    # we just don't know
+                    self = CallerInfo(
+                        name=None,
+                        file=None,
+                        line=None,
+                    )
+                # end if
+            # end try
+            try:
+                s = inspect.stack()
+                stack = s[level + 1]  # the +1 out-of-bounds is handled by the except IndexError.
+                caller = CallerInfo(
+                    name=stack[3],
+                    file=stack[1],
+                    line=stack[2],
+                    code=stack[4][0],
+                )
+            except (TypeError, IndexError):
+                caller = CallerInfo(
+                    name=None,
+                    file=None,
+                    line=None,
+                    code=None,
+                )
+            # end try
+            call = CallerResult(
+                self=self,
+                caller=caller
+            )
+            kwargs[kwarg_name] = call
+            return func(*args, **kwargs)
+
+        return caller_wrapping_func
+    # end def
+
+    def caller_wrapping_func_applyer(func):
+        return caller_func_wrapper(func, level=level, kwarg_name=kwarg_name)
+    # end def
+
+    try:
+        is_callable = callable(level)
+    except (SyntaxError, NameError):
+        is_callable = inspect.isfunction(level) or inspect.isbuiltin(level)
+    # end try
+    if is_callable:  # level was not provided, level is actually our function to decorate
+        func = level
+        _func = functools.wraps(func)(caller_func_wrapper)
+        return _func(func)  # keeping the defaults at the defaults.
+    return caller_wrapping_func_applyer  # else: level is level, we need to return a decorator accepting the function
+# end def
 
 
 def deprecated(func, message=None):
