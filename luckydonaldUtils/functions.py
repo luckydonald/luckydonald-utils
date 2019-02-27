@@ -29,6 +29,10 @@ class CallerResult(object):
         # end if
         raise KeyError("Key {!r} not found".format(item))
     # end def
+
+    def __repr__(self):
+        return "{s.__class__.__name__}(self={s.self!r}, caller={s.caller!r})".format(s=self)
+    # end def
 # end class
 
 
@@ -46,6 +50,10 @@ class CallerInfo(object):
         # end if
         raise KeyError("Key {!r} not found".format(item))
     # end def
+
+    def __repr__(self):
+        return "{s.__class__.__name__}(name={s.name!r}, file={s.file!r}, line={s.line!r}, code={s.code!r})".format(s=self)
+    # end def
 # end class
 
 
@@ -56,6 +64,21 @@ def caller(level=0, kwarg_name="call"):
 
     Level is the amount of functions to go upwards. Default is 1.
     kwarg_name is the name of the kwarg parameter we input the caller data as. Default is "call".
+
+
+    Usage:
+
+    >>> @caller
+    ... def whatever(arg, kwarg=None, call=None):
+    ...     pass  # do something with the `call` info
+
+    >>> @caller(1)  # change this if you you are deep within another call. You can adust the stack index here.
+    ... def whatever(arg, kwarg=None, call=None):
+    ...     pass  # do something with the `call` info
+
+    >>> @caller(kwarg_name="_call_info")  # change this if you you are deep within another call. You can adust the stack index here.
+    ... def whatever(arg, kwarg=None, _call_info=None):
+    ...     pass  # do something with the `_call_info` info
     """
     def caller_func_wrapper(func, level=0, kwarg_name="call"):
         """
@@ -68,7 +91,6 @@ def caller(level=0, kwarg_name="call"):
         :type  kwarg_name: str
         :return:
         """
-        level += 1  # as we need to ignore the caller_wrapping_func
 
         @functools.wraps(func)
         def caller_wrapping_func(*args, **kwargs):
@@ -91,6 +113,7 @@ def caller(level=0, kwarg_name="call"):
             # end try
             try:
                 s = inspect.stack()
+                # +1 as we need to ignore the caller_wrapping_func
                 stack = s[level + 1]  # the +1 out-of-bounds is handled by the except IndexError.
                 caller = CallerInfo(
                     name=stack[3],
