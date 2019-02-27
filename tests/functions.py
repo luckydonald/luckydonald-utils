@@ -137,6 +137,9 @@ class CallerTestCase(unittest.TestCase):
         self.assertIsNotNone(result.caller, 'single level: caller.name (new access style)')
         self.assertEqual("test_kwarg", result.caller.name, 'single level: caller.name (new access style)')
     # end def
+# end class
+
 
 if __name__ == '__main__':
     unittest.main()
+# end if
