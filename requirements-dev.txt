@@ -1,1 +1,8 @@
+# versioning
 bump2version
+
+# pip
+setuptools
+wheel
+twine
+keyring
