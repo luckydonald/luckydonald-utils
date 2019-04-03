@@ -1,12 +1,23 @@
 # -*- coding: utf-8 -*-
 from luckydonaldUtils.logger import logging  # pip install luckydonald-utils
+from .functions import __all__ as _functions_all
+# noinspection PyUnresolvedReferences
+from .functions import *  # because everyone searches for the decorators in this file ... lel.
 
 __author__ = 'luckydonald'
 logger = logging.getLogger(__name__)
 
-from .functions import *  # because everyone searches for the decorators in this file ... lel.
+# noinspection PyProtectedMember
 
-#TODO: py2 safe?
+__all__ = [
+    "decorator_with_default_params", "classproperty",
+] + _functions_all
+
+# noinspection PyProtectedMember
+
+
+# TODO: py2 safe?
+
 
 def decorator_with_default_params(real_decorator, args, kwargs, default_args=None, default_kwargs=None):
     """
@@ -48,17 +59,25 @@ def decorator_with_default_params(real_decorator, args, kwargs, default_args=Non
                 return real_decorator(func, *default_args, **default_kwargs)  # func = arg[0]
             else:  # has kwargs
                 return real_decorator(*args, **kwargs) # args contains func.
+            # end if
         else:  # test = admin(test, param)
             return real_decorator(*args, **kwargs)
+        # end if
     else:  # @admin(param)
         if args is None or len(args) == 0: # you don't provide a function at all.
             if kwargs is None or len(kwargs) == 0:
                 args = default_args
                 kwargs = default_kwargs
+            # end if
+        # end if
         elif args[0] == Ellipsis: # so you can insert callables, after Ellipsis as first argument.
             args = args[1:]
+        # end if
+
         def real_decorator_param_provider(func):
             return real_decorator(func, *args, **kwargs)
+        # end def
+
         return real_decorator_param_provider  # it will call real_decorator(func) by its own
     # end if
 # end def
