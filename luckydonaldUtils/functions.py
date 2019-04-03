@@ -1,7 +1,10 @@
+from datetime import datetime, timedelta
+
 import functools
 import inspect
 import logging
-from datetime import datetime, timedelta
+
+from .clazzes import Kwargs
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +15,17 @@ __all__ = [
 ]
 
 
-class CallerResult(object):
+class CallerResult(Kwargs):
+    """
+    Contains the data of who called us.
+
+    Can also be used via ** mapping.
+    >>> x = CallerResult("aaa", "bbb")
+    >>> dict(**x)
+    {'self': 'aaa', 'caller': 'bbb'}
+    """
+    __FIELDS__ = ("self", "caller")
+
     # noinspection PyMethodParameters
     def __init__(this, self, caller):
         """
@@ -22,37 +35,17 @@ class CallerResult(object):
         this.self = self
         this.caller = caller
     # end def
-
-    def __getitem__(self, item):
-        if item in ("self", "caller"):
-            return getattr(self, item)
-        # end if
-        raise KeyError("Key {!r} not found".format(item))
-    # end def
-
-    def __repr__(self):
-        return "{s.__class__.__name__}(self={s.self!r}, caller={s.caller!r})".format(s=self)
-    # end def
 # end class
 
 
-class CallerInfo(object):
+class CallerInfo(Kwargs):
+    __FIELDS__ = ("name", "file", "line", "code")
+
     def __init__(self, name, file, line, code=None):
         self.name = name
         self.file = file
         self.line = line
         self.code = code
-    # end def
-
-    def __getitem__(self, item):
-        if item in ("name", "file", "line", "code"):
-            return getattr(self, item)
-        # end if
-        raise KeyError("Key {!r} not found".format(item))
-    # end def
-
-    def __repr__(self):
-        return "{s.__class__.__name__}(name={s.name!r}, file={s.file!r}, line={s.line!r}, code={s.code!r})".format(s=self)
     # end def
 # end class
 
