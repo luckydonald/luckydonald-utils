@@ -42,7 +42,7 @@ from luckydonaldUtils import selfupdate
 Related to class manipulations.
 
 - ```Singleton```: Metaclass to use, if only the one (the same) instance of a class is needed.  (Added in [v0.35](https://github.com/luckydonald/python-utils/releases/tag/v0.35))
-- ```Kwags```: Extend and set `__FIELDS__ = tuple("a", "b", ...)` to be able to use `**obj`. ([v0.73](https://github.com/luckydonald/python-utils/releases/tag/v0.73)+)
+- ```Kwags```: Extend and set `__FIELDS__ = tuple("a", "b", ...)` to be able to use `**obj`. ([v0.72](https://github.com/luckydonald/python-utils/releases/tag/v0.72)+)
     
     
 #### ```djangos```
