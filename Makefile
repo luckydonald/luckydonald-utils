@@ -7,9 +7,13 @@ delete-compiled-shit:
 
 upload: pip git
 
-pip:
+pip-build:
 	python3 setup.py sdist bdist_wheel
+
+test-pip: pip-build
 	python3 -m twine upload --username luckydonald --skip-existing --repository-url https://test.pypi.org/legacy/ dist/*
+
+pip: pip-build
 	python3 -m twine upload --username luckydonald --skip-existing dist/*
 
 git:
