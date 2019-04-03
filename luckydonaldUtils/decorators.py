@@ -60,5 +60,15 @@ def decorator_with_default_params(real_decorator, args, kwargs, default_args=Non
         def real_decorator_param_provider(func):
             return real_decorator(func, *args, **kwargs)
         return real_decorator_param_provider  # it will call real_decorator(func) by its own
-
+    # end if
 # end def
+
+
+# noinspection PyPep8Naming
+class classproperty(property):
+    # https://stackoverflow.com/a/7864317/3423324#python-staticmethod-with-property
+    def __get__(self, cls, owner):
+        return classmethod(self.fget).__get__(None, owner)()
+    # end def
+# end class
+
