@@ -257,6 +257,11 @@ String manipulation, etc.
 
 - `split_in_parts(string, parts, strict=False)`: [v0.48](https://github.com/luckydonald/python-utils/releases/tag/v0.48)+  Splits a string in given `parts` pieces.
 
+#### ```typing```
+
+Additions to the great stuff in the `typing` module. Python 3+ it seems.
+- `JSONType`: The stuff returned by `json.loads(str)`. [v0.73](https://github.com/luckydonald/python-utils/releases/tag/v0.72)+  
+
 #### ```compat```  [v0.58](https://github.com/luckydonald/python-utils/releases/tag/v0.58)
 
 Detecting versions and stuff. For string compatibility use `.encoding`.
