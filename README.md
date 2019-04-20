@@ -193,7 +193,9 @@ All stuff related to list and iterators.
 	for iterator_result, i in iter_with_i(["a","b"])
 	```
 - ```chunks(iterable, size)```: ([v0.73](https://github.com/luckydonald/python-utils/releases/tag/v0.73)+)    
-    Yields chunks of an `iterable`, using the `slice` protocol. That means, the slices are resolved lazy when needed and thus generated, and not loaded up front.
+    Yields chunks of an `iterable`, using the `slice` protocol. That means, the slices are resolved lazy when needed and thus generated, and not loaded up front. End is determined by the actual length of a chunk being less then the specified `size`.
+- ```chunks_known_length(iterable, size, length=None)```: ([v0.73](https://github.com/luckydonald/python-utils/releases/tag/v0.73)+)
+    Similar to `chunks(...)` but uses a for loop with a previously determined max length to do the slicing, instead of the `while True` `if len < size: break` loop.
 
 #### ```interactions```
 Interact with the user.

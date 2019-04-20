@@ -31,13 +31,30 @@ def iter_with_i(iterator, i_start=0):
 # end def
 
 
-def chunks(iterable, n):
-    """Yield successive n-sized chunks from l."""
-    # https://stackoverflow.com/a/312464/3423324
-    for i in range(0, len(iterable), n):
-        yield l[i:i + n]
+def chunks_known_length(iterable, size, length=None):
+    """
+    Yield successive `size`-sized chunks from `iterable`,
+    if the length of `iterable is already known or easy to compute.
+
+    https://stackoverflow.com/a/312464/3423324
+
+    :param iterable: The object you want to split into pieces.
+
+    :param size: The size each of the resulting pieces should have.
+    :type  size: int
+
+    :param length: Optional. Length of the `iterable`.
+                   If set to `None` (default), the length get calculated automatically.
+    :type  length: None | int
+    """
+    if length is None:
+        len(iterable)
+    # end if
+    for i in range(0, length, size):
+        yield iterable[i:i + size]
     # end for
 # end for
+
 
 def chunks(iterable, size):
     """
@@ -50,7 +67,7 @@ def chunks(iterable, size):
     """
     i = 0
     while True:
-        sliced = iterable[i : i + size]
+        sliced = iterable[i:i + size]
         if len(sliced) == 0:
             # to suppress stuff like `range(max, max)`.
             break
