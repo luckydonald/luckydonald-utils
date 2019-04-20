@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 from .logger import logging
+from .functions import deprecated
 
 __author__ = 'luckydonald'
 
 logger = logging.getLogger(__name__)
 
-
-def iter_with_i(iterator, i_start = 0):
+@deprecated(message="Instead of `for obj, i in iter_with_i(iterator=iterable, i_start=start)` use `for i, obj in enumerate(iterable, start=start)`.")
+def iter_with_i(iterator, i_start=0):
     """
     Yields a tuple of the iterator result and an i(iterator_result, i),
     i incrementing each time.
