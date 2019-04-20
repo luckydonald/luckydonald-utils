@@ -192,6 +192,8 @@ All stuff related to list and iterators.
 	```
 	for iterator_result, i in iter_with_i(["a","b"])
 	```
+- ```chunks(iterable, size)```: ([v0.73](https://github.com/luckydonald/python-utils/releases/tag/v0.73)+)    
+    Yields chunks of an `iterable`, using the `slice` protocol. That means, the slices are resolved lazy when needed and thus generated, and not loaded up front.
 
 #### ```interactions```
 Interact with the user.
