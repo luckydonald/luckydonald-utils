@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+from .logger import logging
+
 __author__ = 'luckydonald'
 
-from luckydonaldUtils.logger import logging  # pip install luckydonald-utils
 logger = logging.getLogger(__name__)
 
 
@@ -25,4 +26,39 @@ def iter_with_i(iterator, i_start = 0):
     for iterator_result in iterator:
         yield (iterator_result, i)
         i += 1
+    # end for
+# end def
 
+
+def chunks(iterable, n):
+    """Yield successive n-sized chunks from l."""
+    # https://stackoverflow.com/a/312464/3423324
+    for i in range(0, len(iterable), n):
+        yield l[i:i + n]
+    # end for
+# end for
+
+def chunks(iterable, size):
+    """
+    Yield successive chunks from `iterable`, being `size` long.
+
+    https://stackoverflow.com/a/55776536/3423324
+
+    :param iterable: The object you want to split into pieces.
+    :param size: The size each of the resulting pieces should have.
+    """
+    i = 0
+    while True:
+        sliced = iterable[i : i + size]
+        if len(sliced) == 0:
+            # to suppress stuff like `range(max, max)`.
+            break
+        # end if
+        yield sliced
+        if len(sliced) < size:
+            # our slice is not the full length, so we must have passed the end of the iterator
+            break
+        # end if
+        i += size  # so we start the next chunk at the right place.
+    # end while
+# end def
