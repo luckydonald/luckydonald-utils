@@ -187,7 +187,7 @@ That's what `Holder` is for.
 #### ```iterators```
 All stuff related to list and iterators. 
 
-- ```iter_with_i (iterator, start_i=0)```: (Added in [v0.34](https://github.com/luckydonald/python-utils/releases/tag/v0.34))    
+- ~~```iter_with_i (iterator, start_i=0)```~~: (Added in [v0.34](https://github.com/luckydonald/python-utils/releases/tag/v0.34)) Deprecated since [v0.73](https://github.com/luckydonald/python-utils/releases/tag/v0.73).     
 	Yields a tuple of the iterator result and an integer incrementing each time.    
 	```
 	for iterator_result, i in iter_with_i(["a","b"])
