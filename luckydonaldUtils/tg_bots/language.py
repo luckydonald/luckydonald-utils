@@ -12,10 +12,12 @@ except ImportError:  # pragma nocover
 
 __all__ = ['get_language_code', 'l_get']
 
-Lang = TypeVar('Lang')
+# noinspection PyTypeHints
+T_Lang = TypeVar('T_Lang')  # The class with your language in it.
+T_update_msg_or_language_code = Union[Update, Message, str, None]  # allowed parameter types for get_language_code.
 
 
-def get_language_code(update_msg_or_language_code: Union[Update, Message, str, None] = None) -> Optional[str]:
+def get_language_code(update_msg_or_language_code: T_update_msg_or_language_code = None) -> Optional[str]:
     assert_type_or_raise(update_msg_or_language_code, None, str, Message, Update, parameter_name="msg")
 
     # if is message, get the language_code from there.
@@ -49,8 +51,8 @@ def get_language_code(update_msg_or_language_code: Union[Update, Message, str, N
 
 
 def l_get(
-        language_dict: Dict[str, Type[Lang]], update_msg_or_language_code: Union[Update, Message, str, None] = None
-) -> Type[Lang]:
+        language_dict: Dict[str, Type[T_Lang]], update_msg_or_language_code: T_update_msg_or_language_code = None
+) -> Type[T_Lang]:
     """
     Retrieves a translation string for a given update/message/language_code.
 
