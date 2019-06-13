@@ -56,6 +56,12 @@ def l_get(
     """
     Retrieves a translation string for a given update/message/language_code.
 
+    It will try the given string first.
+    If that was not found it will try the following modifications:
+    - `"de_DE"` -> `"de-DE"`
+    - `"de-DE"` -> `"de"`
+    - `"de_DE"` -> `"de"`
+
     :param language_dict: the array containing the languages.
     :param update_msg_or_language_code: The stuff containing language info.
     :return: the fitting language class.
@@ -71,13 +77,19 @@ def l_get(
         return language_dict[lang]
     # end if
 
-    # try splitting it "de_DE" => "de"
-    part = lang.split('-')[0]
+    # try replacing "de_DE" => "de-DE"
+    part = lang.replace("_", "-")
     if part in language_dict:
         return language_dict[part]
     # end of
 
     # try splitting it "de-DE" => "de"
+    part = lang.split('-')[0]
+    if part in language_dict:
+        return language_dict[part]
+    # end of
+
+    # try splitting it "de_DE" => "de"
     part = lang.split('_')[0]
     if part in language_dict:
         return language_dict[part]
