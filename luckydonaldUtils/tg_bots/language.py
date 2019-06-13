@@ -79,19 +79,19 @@ def l_get(
 
     # try replacing "de_DE" => "de-DE"
     part = lang.replace("_", "-")
-    if part in language_dict:
+    if part != lang and part in language_dict:
         return language_dict[part]
     # end of
 
     # try splitting it "de-DE" => "de"
     part = lang.split('-')[0]
-    if part in language_dict:
+    if part != lang and part in language_dict:
         return language_dict[part]
     # end of
 
     # try splitting it "de_DE" => "de"
     part = lang.split('_')[0]
-    if part in language_dict:
+    if part != lang and part in language_dict:
         return language_dict[part]
     # end if
 
