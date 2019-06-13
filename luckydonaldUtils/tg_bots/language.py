@@ -1,4 +1,4 @@
-from typing import Type, Dict, TypeVar, cast, Union, Optional, Callable
+from typing import Type, Dict, TypeVar, Union, Optional
 
 from ..exceptions import assert_type_or_raise
 from ..dependencies import import_or_install
@@ -12,7 +12,7 @@ except ImportError:  # pragma nocover
 
 __all__ = ['get_language_code', 'l_get']
 
-LangClass = TypeVar('LangClass')
+Lang = TypeVar('Lang')
 
 
 def get_language_code(update_msg_or_language_code: Union[Update, Message, str, None] = None) -> Optional[str]:
@@ -49,8 +49,8 @@ def get_language_code(update_msg_or_language_code: Union[Update, Message, str, N
 
 
 def l_get(
-        language_dict: Dict[str, LangClass], update_msg_or_language_code: Union[Update, Message, str, None] = None
-) -> LangClass:
+        language_dict: Dict[str, Type[Lang]], update_msg_or_language_code: Union[Update, Message, str, None] = None
+) -> Type[Lang]:
     """
     Retrieves a translation string for a given update/message/language_code.
 
