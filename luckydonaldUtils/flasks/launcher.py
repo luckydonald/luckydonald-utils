@@ -84,7 +84,7 @@ class Launcher(object):
         self.name = name
         self.args = args
         self.kwargs = kwargs
-        self.main = None
+        self._main = None
         self.did_fail = False
         self.exception = None
         self._files = set()
@@ -100,7 +100,7 @@ class Launcher(object):
         if exc_type:
             from werkzeug.debug.tbtools import Traceback
             logger.exception('could not load app code:')
-            self.main = None
+            self._main = None
             tb = Traceback(exc_type, exc_value, traceback)
             self.exception = tb
             self._files.update(frame.filename for frame in tb.frames if frame and frame.filename)
@@ -109,7 +109,7 @@ class Launcher(object):
     # end def
 
     def __call__(self, main):
-        self.main = main
+        self._main = main
 
     # end def
 
@@ -122,7 +122,7 @@ class Launcher(object):
             # "__main__" means, this python file is called directly.
             # not to be confused with "main" (because main.py) when called from from nginx
 
-            if self.main is None:
+            if self._main is None:
                 # loading failed due to Syntax Errors or similar.
                 self.did_fail = True
                 self.fake_main_app()
@@ -164,8 +164,8 @@ class Launcher(object):
 
             # enable template auto reload
             if auto_reload_templates:
-                self.main.app.jinja_env.auto_reload = True
-                self.main.app.config['TEMPLATES_AUTO_RELOAD'] = True
+                self._main.app.jinja_env.auto_reload = True
+                self._main.app.config['TEMPLATES_AUTO_RELOAD'] = True
             # end def
 
             self.kwargs.setdefault('host', '0.0.0.0')
@@ -184,7 +184,7 @@ class Launcher(object):
                 self.kwargs['debug'] = True
             # end if
             self.run_app()
-        return self.main
+        return self._main
     # end def
 
     @property
@@ -204,11 +204,11 @@ class Launcher(object):
     def fake_main_app(self, text='App not started', status=500):
         # loading failed due to Syntax Errors or similar.
         from flask import Flask
-        self.main = lambda: 0  # fake main
-        self.main.app = Flask(__name__)  # simple app
-        self.main.app.debug = self.kwargs.get('debug', False)
-        self.main.app.errorhandler(500)(self.error_handler(text, status))
-        self.main.app.errorhandler(404)(self.error_handler(text, status))
+        self._main = lambda: 0  # fake main
+        self._main.app = Flask(__name__)  # simple app
+        self._main.app.debug = self.kwargs.get('debug', False)
+        self._main.app.errorhandler(500)(self.error_handler(text, status))
+        self._main.app.errorhandler(404)(self.error_handler(text, status))
     # end def
 
     def error_handler(self, text='App not started', status=500):
