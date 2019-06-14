@@ -5,51 +5,57 @@ from ..dependencies import import_or_install
 
 try:
     from pytgbot.api_types.receivable.updates import Update, Message
+    from pytgbot.api_types.receivable.peer import User
 except ImportError:  # pragma nocover
     Update = import_or_install("pytgbot.api_types.receivable.updates", "Update")  # pip install pytgbot
     Message = import_or_install("pytgbot.api_types.receivable.updates", "Message")  # pip install pytgbot
+    User = import_or_install("pytgbot.api_types.receivable.peer", "User")  # pip install pytgbot
 # end try
 
 __all__ = ['get_language_code', 'l_get']
 
 # noinspection PyTypeHints
 T_Lang = TypeVar('T_Lang')  # The class with your language in it.
-T_update_msg_or_language_code = Union[Update, Message, str, None]  # allowed parameter types for get_language_code.
+T_update_msg_user_or_language_code = Union[Update, Message, User, str, None]  # allowed types for get_language_code(...)
 
 
-def get_language_code(update_msg_or_language_code: T_update_msg_or_language_code = None) -> Optional[str]:
-    assert_type_or_raise(update_msg_or_language_code, None, str, Message, Update, parameter_name="msg")
+def get_language_code(update_msg_user_or_language_code: T_update_msg_user_or_language_code = None) -> Optional[str]:
+    assert_type_or_raise(update_msg_user_or_language_code, None, str, User, Message, Update, parameter_name="msg")
 
     # if is message, get the language_code from there.
-    if isinstance(update_msg_or_language_code, Update):
+    if isinstance(update_msg_user_or_language_code, Update):
         # we are in a update, we want any message
-        if update_msg_or_language_code.message:
-            update_msg_or_language_code = update_msg_or_language_code.message
-        elif update_msg_or_language_code.callback_query:
-            if update_msg_or_language_code.callback_query.from_peer and update_msg_or_language_code.callback_query.from_peer.language_code:
-                return update_msg_or_language_code.callback_query.from_peer.language_code
-            elif update_msg_or_language_code.callback_query.message:
-                update_msg_or_language_code = update_msg_or_language_code.callback_query.message
+        if update_msg_user_or_language_code.message:
+            update_msg_user_or_language_code = update_msg_user_or_language_code.message  # Update -> Message
+        elif update_msg_user_or_language_code.callback_query:
+            if update_msg_user_or_language_code.callback_query.from_peer and update_msg_user_or_language_code.callback_query.from_peer.language_code:
+                return update_msg_user_or_language_code.callback_query.from_peer.language_code
+            elif update_msg_user_or_language_code.callback_query.message:
+                update_msg_user_or_language_code = update_msg_user_or_language_code.callback_query.message  # -> Message
             # end if
         # end if
     # end if
-    if isinstance(update_msg_or_language_code, Message):
+    if isinstance(update_msg_user_or_language_code, Message):
         # we are in a message, we want the language_code
-        if update_msg_or_language_code.from_peer and update_msg_or_language_code.from_peer.language_code:
-            return update_msg_or_language_code.from_peer.language_code
+        if update_msg_user_or_language_code.from_peer:
+            update_msg_user_or_language_code = update_msg_user_or_language_code.from_peer  # Message -> User
         else:
             return None
         # end if
     # end if
-    if not isinstance(update_msg_or_language_code, str):
+    if isinstance(update_msg_user_or_language_code, User):
+        if update_msg_user_or_language_code.language_code:
+            return update_msg_user_or_language_code.language_code
+        # end if
+    if not isinstance(update_msg_user_or_language_code, str):
         return None
     # end if
-    return update_msg_or_language_code
+    return update_msg_user_or_language_code
 # end def
 
 
 def l_get(
-        language_dict: Dict[str, Type[T_Lang]], update_msg_or_language_code: T_update_msg_or_language_code = None
+        language_dict: Dict[str, Type[T_Lang]], update_msg_user_or_language_code: T_update_msg_user_or_language_code = None
 ) -> Type[T_Lang]:
     """
     Retrieves a translation string for a given update/message/language_code.
@@ -61,10 +67,10 @@ def l_get(
     - `"de_DE"` -> `"de"`
 
     :param language_dict: the array containing the languages.
-    :param update_msg_or_language_code: The stuff containing language info.
+    :param update_msg_user_or_language_code: The stuff containing language info.
     :return: the fitting language class.
     """
-    lang = get_language_code(update_msg_or_language_code)
+    lang = get_language_code(update_msg_user_or_language_code)
 
     # if it is None (default, or getting from message failed), use the default
     if lang is None:
