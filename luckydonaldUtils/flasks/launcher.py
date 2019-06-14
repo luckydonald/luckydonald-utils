@@ -114,9 +114,9 @@ class Launcher(object):
     # end def
 
     @property
-    def app(self):
+    def main(self):
         """
-        :rtype:
+        Grabs the file which has the app inside, or fakes something similar if there are syntax errors and it can't be loaded.
         """
         if self.name == "__main__":
             # "__main__" means, this python file is called directly.
@@ -185,7 +185,11 @@ class Launcher(object):
             # end if
             self.run_app()
         return self.main
+    # end def
 
+    @property
+    def app(self):
+        return self.main.app
     # end def
 
     def run_app(self):
