@@ -250,9 +250,20 @@ Package of some regular expressions I found useful.
         - ```YOUTUBE_REGEX```: Matches youtube videos. The matching group `vid` contains the video id.
     
 #### ```tg_bots```
-Utilities for the telegram bots (pytgbot and/or flask).
+Utilities for the telegram bots (pytgbot and/or teleflask).
 - `gitinfo`: Parse git meta information written by a deploy script.
 - `language`: Helper for loading language files (classes). [v0.64](https://github.com/luckydonald/python-utils/releases/tag/v0.64)+
+- `peer`: Tools for handling chats and users.  [v0.74](https://github.com/luckydonald/python-utils/releases/tag/v0.74)+
+    - `chat`:  Tools for chats.
+        - `format`: Formatting related chat tools.
+            - `format_chat(chat: Chat)`: Formats a channel for html, escaping username and title.
+    - `user`:  Tools for chats.
+        - `format`: Formatting related chat tools.
+            - `format_user(user: User, ...)`: Formats a user for html, escaping html tags where needed.
+            - `retrieve_and_format_user(user_id, ...)`: Retrieves a user from telegram, and formats it with `format_user(...)`.
+        - `rights`: User permission related tools.
+            - `is_admin(...)`: Checks if a user has admin privileges, and optionally a specified right.
+            - `retrieve_and_is_admin(...)`: Retrieves info about a user in a chat from telegram, and calls `is_admin(...)`.  
 
 
 #### ```text```
