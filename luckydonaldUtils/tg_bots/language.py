@@ -37,8 +37,6 @@ def get_language_code(update_msg_or_language_code: T_update_msg_or_language_code
         # we are in a message, we want the language_code
         if update_msg_or_language_code.from_peer and update_msg_or_language_code.from_peer.language_code:
             return update_msg_or_language_code.from_peer.language_code
-        elif update_msg_or_language_code.callback_query and update_msg_or_language_code.callback_query.from_peer and update_msg_or_language_code.callback_query.from_peer.language_code:
-            return update_msg_or_language_code.callback_query.from_peer.language_code
         else:
             return None
         # end if
