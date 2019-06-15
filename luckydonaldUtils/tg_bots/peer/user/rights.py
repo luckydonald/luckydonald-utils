@@ -27,7 +27,7 @@ if __name__ == '__main__':
 STATUS_IS_ADMIN = ("creator", "administrator")
 
 
-def is_admin(chat_member: ChatMember, right: Union[None, str] = None):
+def is_admin(chat_member: ChatMember, right: Union[None, str] = None) -> bool:
     """
     Checks if a user is admin (or even creator) of a chat/group. Optionally a specific right can be requested to exist.
 
@@ -48,7 +48,7 @@ def is_admin(chat_member: ChatMember, right: Union[None, str] = None):
 # end def
 
 
-def retrieve_and_is_admin(bot: Bot, chat_id: int, user_id: int, right: Union[None, str] = None):
+def retrieve_and_is_admin(bot: Bot, chat_id: int, user_id: int, right: Union[None, str] = None) -> bool:
     """
     Checks if a user is admin (or even creator) of a chat/group. Optionally a specific right can be requested to exist.
     If lookup fails, `False` is assumed.
