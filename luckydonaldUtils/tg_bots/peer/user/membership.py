@@ -48,9 +48,8 @@ def retrieve_and_is_member(bot: Bot, chat_id: int, user_id: int) -> bool:
     If lookup fails, `False` is assumed.
 
     :param bot: The bot to execute the get_chat_member request with.
-    :param chat_id:
-    :param user_id:
-    :param right: Right to require, e.g. `"can_promote_members"`.
+    :param chat_id: id of the chat the user should be in
+    :param user_id: id of the user
 
     :return:
     """
