@@ -6,6 +6,9 @@ __author__ = 'luckydonald'
 __all__ = ["logging", "ColoredFormatter", "ColoredStreamHandler", "LevelByNameFilter"]
 
 
+DEFAULT_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+
+
 class ColoredFormatter(_logging.Formatter):
     class Color(object):
         """
@@ -189,7 +192,7 @@ class ColoredStreamHandler(_logging.StreamHandler):
     `self.formatter = ColoredFormatter()`
     """
 
-    def __init__(self, stream=None, date_formatter=None):
+    def __init__(self, stream=None, date_formatter=DEFAULT_DATE_FORMATTER):
         super(ColoredStreamHandler, self).__init__(stream)
         self.formatter = ColoredFormatter(date_formatter=date_formatter)
 
@@ -247,7 +250,9 @@ class _LoggingWrapper(object):
 
     # end def
 
-    def add_colored_handler(self, logger_name=None, stream=None, level=None, date_formatter=None, filter=None):
+    def add_colored_handler(
+        self, logger_name=None, stream=None, level=None, date_formatter=DEFAULT_DATE_FORMAT, filter=None,
+    ):
         """
         Register a logger handler to colorfull print the messages.
 
