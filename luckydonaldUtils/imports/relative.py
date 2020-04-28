@@ -50,6 +50,7 @@ assert relimport('foo.bar.batz', 'foo.bar') == '.batz'
 
 """
 
+
 def relimport(path, start):
     """
     Return a relative import path from the `start` module's view'.
