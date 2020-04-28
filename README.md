@@ -122,6 +122,12 @@ Utilities for flask.
 - `flasks.launcher`
     - `Launcher`: Allow `flask`'s auto-reload to survive syntax errors and similar exceptions, also show them in the browser.
 
+#### ```imports```
+Utilities for importing and import related stuff. [v0.77](https://github.com/luckydonald/python-utils/releases/tag/v0.77)+
+
+- `imports.relative`
+    - `relimport`: Basically like [`os.path.relpath`](https://docs.python.org/3.7/library/os.path.html#os.path.relpath), but for dot delimited import paths.
+
 #### ```jinja2```
 Utilities for the jinja templating engine.
 [v0.64](https://github.com/luckydonald/python-utils/releases/tag/v0.64)+
