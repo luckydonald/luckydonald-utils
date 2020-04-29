@@ -56,6 +56,48 @@ def relimport(destination, start):
     Return a relative import path from the `start` module's view'.
     This is a path computation: the filesystem is not accessed to confirm the existence or nature of `destination` or `start`.
 
+    Here are some examples:
+
+        >>> relimport(destination='foo.bar.batz', start='foo.bar')  # in foo.bar: from . import batz: .batz
+        '.batz'
+
+        >>> relimport(destination='foo.bar.batz.gneeh', start='foo.bar')
+        '.batz.gneeh'
+
+        >>> relimport(destination='foo.bar', start='foo.bar.batz')  # in foo.bar.batz: from ... import batz
+        '...bar'
+
+        >>> relimport(destination='foo.bar', start='foo.bar.batz.gneeh')  # in foo.bar: from . import batz: .batz
+        '....bar'
+
+        >>> relimport(destination='foo.bar.c', start='foo.bar.batz')
+        '.c'
+
+        >>> relimport(destination='foo.b.c', start='foo.bar.batz')
+        '..b.c'
+
+        >>> relimport(destination='package.subpackage1.moduleY.spam', start='package.subpackage1.moduleX')
+        '.moduleY.spam'
+
+        >>> relimport(destination='package.subpackage1.moduleY', start='package.subpackage1.moduleX')
+        '.moduleY'
+
+        >>> relimport(destination='package.subpackage2.moduleZ.eggs', start='package.subpackage1.moduleX')
+        '..subpackage2.moduleZ.eggs'
+
+        >>> relimport(destination='moduleA.foo', start='package.subpackage1.moduleX')
+        '...moduleA.foo'
+
+        >>> relimport(destination='sys.path', start='package.subpackage1.moduleX')
+        '...sys.path'
+
+        >>> relimport(destination='foo.bar.batz', start='foo.bar')
+        '.batz'
+
+    Note: Those examples above are also used as part of the unit tests, via the doctest system.
+    Note: This is called the same way as `os.path.relpath(path, start)` would be, and is compatible in calling,
+          except the `path` parameter called `destination` to be more clear, and `start` (not yet) being optional.
+
     :param destination: the destination path
     :type  destination: str
 
@@ -100,42 +142,3 @@ def relimport(destination, start):
         return '.' + "."*(len(start_parts)-1) + ".".join(destination_parts)
     # end if
 # end def
-
-
-gnerf = relimport('foo.bar.batz', start='foo.bar')  # in foo.bar: from . import batz: .batz
-assert gnerf == '.batz'
-
-gnerf = relimport('foo.bar.batz.gneeh', start='foo.bar')
-assert gnerf == '.batz.gneeh'
-
-gnerf = relimport('foo.bar', start='foo.bar.batz')  # in foo.bar.batz: from ... import batz
-# assert gnerf == '..'
-assert gnerf == '...bar'
-
-gnerf = relimport('foo.bar', start='foo.bar.batz.gneeh')  # in foo.bar: from . import batz: .batz
-# assert gnerf == '...'
-assert gnerf == '....bar'
-
-gnerf = relimport('foo.bar.c', start='foo.bar.batz')
-assert gnerf == '.c'
-
-gnerf = relimport('foo.b.c', start='foo.bar.batz')
-assert gnerf == '..b.c'
-
-gnerf = relimport('package.subpackage1.moduleY.spam', start='package.subpackage1.moduleX')
-assert gnerf == '.moduleY.spam'
-
-gnerf = relimport('package.subpackage1.moduleY', start='package.subpackage1.moduleX')
-assert gnerf == '.moduleY'
-
-gnerf = relimport('package.subpackage2.moduleZ.eggs', start='package.subpackage1.moduleX')
-assert gnerf == '..subpackage2.moduleZ.eggs'
-
-gnerf = relimport('moduleA.foo', start='package.subpackage1.moduleX')
-assert gnerf == '...moduleA.foo'
-
-gnerf = relimport('sys.path', start='package.subpackage1.moduleX')
-assert gnerf == '...sys.path'
-
-gnerf = relimport('foo.bar.batz', start='foo.bar')
-assert gnerf == '.batz'
