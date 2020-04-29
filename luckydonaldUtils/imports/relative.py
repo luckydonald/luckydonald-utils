@@ -51,13 +51,13 @@ assert relimport('foo.bar.batz', 'foo.bar') == '.batz'
 """
 
 
-def relimport(path, start):
+def relimport(destination, start):
     """
     Return a relative import path from the `start` module's view'.
     This is a path computation: the filesystem is not accessed to confirm the existence or nature of `destination` or `start`.
 
-    :param path: the destination path
-    :type  path: str
+    :param destination: the destination path
+    :type  destination: str
 
     :param start: our current module where we call the import. You can supply the current module with `start=__NAME__`.
     :type  start: str
@@ -65,39 +65,39 @@ def relimport(path, start):
     :return: the relative path. `'...foo.bar'`
     :rtype: str
     """
-    path_parts = path.split('.')
+    destination_parts = destination.split('.')
     start_parts = start.split('.')
-    original_path_parts = path.split('.')
+    original_destination_parts = destination.split('.')
 
-    for i in range(min(len(start_parts), len(path_parts))):
-        if start_parts[0] == path_parts[0]:
+    for i in range(min(len(start_parts), len(destination_parts))):
+        if start_parts[0] == destination_parts[0]:
             start_parts.pop(0)
-            path_parts.pop(0)
+            destination_parts.pop(0)
             continue
         else:
             break
         # end if
     # end for
-    if path_parts == [] and start_parts == []:
+    if destination_parts == [] and start_parts == []:
         # same path
         # a.b.c == a.b.c
         return None  # same dir
     # end if
-    if start_parts == [] and path_parts:
+    if start_parts == [] and destination_parts:
         # some children module, even deeper in the tree
         # a == a.b.c
-        return "." + ".".join(path_parts)
+        return "." + ".".join(destination_parts)
     # end if
-    if start_parts and path_parts == []:
+    if start_parts and destination_parts == []:
         # some parent folder module
         # a.b.c == a
         # make sure it's ending with a package name to import.
-        return '.' + "." * len(start_parts) + '.' + original_path_parts[-1]
+        return '.' + "." * len(start_parts) + '.' + original_destination_parts[-1]
     # end if
-    if start_parts and path_parts:
+    if start_parts and destination_parts:
         # so the paths differ at some point, or from the beginning.
         # a.b.c == x.y.z
-        return '.' + "."*(len(start_parts)-1) + ".".join(path_parts)
+        return '.' + "."*(len(start_parts)-1) + ".".join(destination_parts)
     # end if
 # end def
 
