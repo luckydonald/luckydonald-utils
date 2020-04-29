@@ -54,7 +54,7 @@ assert relimport('foo.bar.batz', 'foo.bar') == '.batz'
 def relimport(path, start):
     """
     Return a relative import path from the `start` module's view'.
-    This is a path computation: the filesystem is not accessed to confirm the existence or nature of `path` or `start`.
+    This is a path computation: the filesystem is not accessed to confirm the existence or nature of `destination` or `start`.
 
     :param path: the destination path
     :type  path: str
@@ -80,22 +80,23 @@ def relimport(path, start):
     # end for
     if path_parts == [] and start_parts == []:
         # same path
+        # a.b.c == a.b.c
         return None  # same dir
     # end if
     if start_parts == [] and path_parts:
-        # some subfolder even more inside then
-        # return_str += ".".join(path_parts)
-        # end if
+        # some children module, even deeper in the tree
+        # a == a.b.c
         return "." + ".".join(path_parts)
     # end if
     if start_parts and path_parts == []:
         # some parent folder module
-        # return '.' + "." * len(start_parts)
+        # a.b.c == a
         # make sure it's ending with a package name to import.
         return '.' + "." * len(start_parts) + '.' + original_path_parts[-1]
     # end if
     if start_parts and path_parts:
-        # so the paths differ at some point
+        # so the paths differ at some point, or from the beginning.
+        # a.b.c == x.y.z
         return '.' + "."*(len(start_parts)-1) + ".".join(path_parts)
     # end if
 # end def
