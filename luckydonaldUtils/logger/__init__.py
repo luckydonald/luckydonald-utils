@@ -186,13 +186,14 @@ class ColoredFormatter(_logging.Formatter):
 
 
 class ColoredStreamHandler(_logging.StreamHandler):
+    DEFAULT_DATE_FORMAT = DEFAULT_DATE_FORMAT
     """
     Like the normal StreamHandler,
     but it automatically sets
     `self.formatter = ColoredFormatter()`
     """
 
-    def __init__(self, stream=None, date_formatter=DEFAULT_DATE_FORMATTER):
+    def __init__(self, stream=None, date_formatter=DEFAULT_DATE_FORMAT):
         super(ColoredStreamHandler, self).__init__(stream)
         self.formatter = ColoredFormatter(date_formatter=date_formatter)
 
