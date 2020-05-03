@@ -94,6 +94,9 @@ def relimport(destination, start):
         >>> relimport(destination='foo.bar.batz', start='foo.bar')
         '.batz'
 
+        >>> relimport(destination='foo.bar.batz.Something', start='foo.bar.gnerf')
+        '.batz.Something'
+
     Note: Those examples above are also used as part of the unit tests, via the doctest system.
     Note: This is called the same way as `os.path.relpath(path, start)` would be, and is compatible in calling,
           except the `path` parameter called `destination` to be more clear, and `start` (not yet) being optional.
