@@ -10,6 +10,54 @@ if __name__ == '__main__':
 # end if
 
 
+def split_path(path):
+    """
+    Splits the text and build a nice import statement from it.
+    Note: only well defined import paths are supported. Not something invalid like '..foo.bar..'.
+
+
+    >>> split_path('foo.bar.Batz')
+    ('foo.bar', 'Batz')
+
+    >>> split_path('..lel')
+    ('..', 'lel')
+
+    >>> split_path('.lul')
+    ('.', 'lul')
+
+    >>> split_path('lol')
+    ('', 'lol')
+
+    >>> split_path('...na.na.na.na.na.na.Batman')
+    ('...na.na.na.na.na.na', 'Batman')
+
+    >>> split_path('...........yolo.swagger')
+    ('...........yolo', 'swagger')
+
+    :param path: The path to split.
+    :type  path: str
+
+    :return: The import text, like `from x import y` or `import z`
+    :rtype: tuple(str)|Tuple[str, str]
+    """
+    last_dot_position = path.rfind('.')
+    if last_dot_position == -1:
+        # no dot found.
+        import_path = ''
+        import_name = path
+    else:
+        import_path = path[:last_dot_position + 1]
+        import_name = path[last_dot_position + 1:]
+
+        # handle 'foo.bar.Baz' not resulting in 'foo.bar.', i.e. remove the dot at the end.
+        if import_path.rstrip('.') != '':
+            # e.g. not '....'
+            import_path = import_path.rstrip('.')
+    # end if
+
+    return import_path, import_name
+# end def
+
 def path_to_import_text(path):
     """
     Splits the text and build a nice import statement from it.
@@ -39,23 +87,9 @@ def path_to_import_text(path):
     :return: The import text, like `from x import y` or `import z`
     :rtype: str
     """
-    last_dot_position = path.rfind('.')
-    if last_dot_position == -1:
-        # no dot found.
-        import_path = ''
-        import_name = path
-    else:
-        import_path = path[:last_dot_position + 1]
-        import_name = path[last_dot_position + 1:]
-
-        # handle 'foo.bar.Baz' not resulting in 'foo.bar.', i.e. remove the dot at the end.
-        if import_path.rstrip('.') != '':
-            # e.g. not '....'
-            import_path = import_path.rstrip('.')
-    # end if
+    import_path, import_name = split_path(path)
 
     if import_path:
         return 'from {import_path} import {import_name}'.format(import_path=import_path, import_name=import_name)
     # end if
     return 'import {import_name}'.format(import_name=import_name)
-# end def
