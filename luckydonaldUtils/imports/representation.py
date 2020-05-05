@@ -58,6 +58,7 @@ def split_path(path):
     return import_path, import_name
 # end def
 
+
 def path_to_import_text(path):
     """
     Splits the text and build a nice import statement from it.
@@ -93,3 +94,4 @@ def path_to_import_text(path):
         return 'from {import_path} import {import_name}'.format(import_path=import_path, import_name=import_name)
     # end if
     return 'import {import_name}'.format(import_name=import_name)
+# end def
