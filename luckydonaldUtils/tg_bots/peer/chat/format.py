@@ -2,7 +2,7 @@
 from html import escape
 
 from pytgbot.api_types.receivable.peer import Chat
-from ...logger import logging
+from ....logger import logging
 
 
 __author__ = 'luckydonald'
