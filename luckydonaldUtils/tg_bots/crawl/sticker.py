@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import os
-import re
-
+import json
 import requests
-from luckydonaldUtils.logger import logging
 
-__author__ = 'luckydonald'
+from luckydonaldUtils.logger import logging
 
 from pytgbot.api_types.receivable.media import Sticker
 from pytgbot.api_types.receivable.updates import Message, Update
@@ -14,6 +12,9 @@ from pytgbot.api_types.receivable.updates import Message, Update
 from teleflask import TBlueprint
 
 from ...regex.urls.telegram import ADDSTICKERS_REGEX
+
+__author__ = 'luckydonald'
+
 
 logger = logging.getLogger(__name__)
 if __name__ == '__main__':
@@ -104,7 +105,7 @@ def submit_sticker_message(message: Message):
     if not isinstance(message, Message) or not isinstance(message.sticker, Sticker):
         return
     # end if
-    payload = message.to_array()
+    payload = json.dumps(message.to_array())
     logger.debug(f'sending {payload!r} to the API.')
     try:
         requests.put(
