@@ -26,17 +26,15 @@ GETSTICKERS_ENABLED = GETSTICKERS_API_KEY and GETSTICKERS_DOMAIN
 
 TIMEOUT = 0.5
 
-sticker_crawl = TBlueprint(__name__)
-__sticker_crawl = TBlueprint(__name__)
+sticker_crawl_tbp = TBlueprint(__name__)
 
-if GETSTICKERS_ENABLED:
-    sticker_crawl.register_tblueprint(__sticker_crawl)
-else:
+if not GETSTICKERS_ENABLED:
     logger.warning('Did not register sticker crawler as GETSTICKERS_API_KEY is not defined.')
+    raise ImportError('Did not register sticker crawler as GETSTICKERS_API_KEY is not defined.')
 # end if
 
 
-@__sticker_crawl.on_message
+@sticker_crawl_tbp.on_message
 def on_sticker_message(update: Update, msg: Message):
     submit_sticker_message(msg)
     collect_pack_text(msg)
@@ -44,7 +42,7 @@ def on_sticker_message(update: Update, msg: Message):
 # end def
 
 
-@__sticker_crawl.on_update('channel_post')
+@sticker_crawl_tbp.on_update('channel_post')
 def on_sticker_update_channel_post(update: Update):
     submit_sticker_message(update.channel_post)
     collect_pack_text(update.channel_post)
@@ -52,7 +50,7 @@ def on_sticker_update_channel_post(update: Update):
 # end def
 
 
-@__sticker_crawl.on_update('edited_message')
+@sticker_crawl_tbp.on_update('edited_message')
 def on_sticker_update_edited_message(update: Update):
     submit_sticker_message(update.edited_message)
     collect_pack_text(update.edited_message)
@@ -60,7 +58,7 @@ def on_sticker_update_edited_message(update: Update):
 # end def
 
 
-@__sticker_crawl.on_update('edited_channel_post')
+@sticker_crawl_tbp.on_update('edited_channel_post')
 def on_sticker_update_edited_channel_post(update: Update):
     submit_sticker_message(update.edited_channel_post)
     collect_pack_text(update.edited_channel_post)
@@ -84,7 +82,7 @@ def submit_pack(pack_url: str):
             GETSTICKERS_DOMAIN + '/api/v3/submit/pack/' + pack_url,
             params={
                 "key": GETSTICKERS_API_KEY,
-                "bot_id": __sticker_crawl.user_id,
+                "bot_id": sticker_crawl_tbp.user_id,
                 "pack": pack_url,
             },
             timeout=TIMEOUT,
@@ -111,7 +109,7 @@ def submit_sticker_message(message: Message):
             GETSTICKERS_DOMAIN + '/api/v3/submit/sticker',
             params={
                 "key": GETSTICKERS_API_KEY,
-                "bot_id": __sticker_crawl.user_id,
+                "bot_id": sticker_crawl_tbp.user_id,
             },
             data={
                 "message": message.to_array(),
