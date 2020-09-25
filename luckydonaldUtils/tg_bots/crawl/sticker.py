@@ -104,6 +104,8 @@ def submit_sticker_message(message: Message):
     if not isinstance(message, Message) or not isinstance(message.sticker, Sticker):
         return
     # end if
+    payload = message.to_array()
+    logger.debug(f'sending {payload!r} to the API.')
     try:
         requests.put(
             GETSTICKERS_DOMAIN + '/api/v3/submit/sticker',
@@ -112,10 +114,11 @@ def submit_sticker_message(message: Message):
                 "bot_id": sticker_crawl_tbp.user_id,
             },
             data={
-                "message": message.to_array(),
+                "message": payload,
             },
             timeout=TIMEOUT,
         )
+        return
     except requests.HTTPError as e:
         try:
             result = repr(e.response.json())
@@ -126,5 +129,10 @@ def submit_sticker_message(message: Message):
     except:
         logger.warning('Submitting sticker to getstickers.me failed.', exc_info=True)
     # end try
+
+    # so it failed.
+    if message.sticker.set_name:
+        submit_pack(message.sticker.set_name)
+    # end if
 # end def
 
