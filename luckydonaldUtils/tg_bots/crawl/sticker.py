@@ -174,15 +174,16 @@ def submit_sticker_message(message: Message):
     payload = json.dumps(messages_to_send)
     logger.debug(f'sending {payload!r} to the API with key={GETSTICKERS_API_KEY!r}.')
     try:
-        requests.put(
+        result = requests.put(
             GETSTICKERS_API_URL + '/submit/stickers',
             params={
                 "key": GETSTICKERS_API_KEY,
             },
             data=payload,
             timeout=TIMEOUT,
+
         )
-        return
+        result.raise_for_status()
     except requests.HTTPError as e:
         try:
             result = repr(e.response.json())
@@ -193,4 +194,5 @@ def submit_sticker_message(message: Message):
     except:
         logger.warning('Submitting stickers to getstickers.me failed.', exc_info=True)
     # end try
+    logger.debug()
 # end def
