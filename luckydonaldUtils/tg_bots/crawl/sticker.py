@@ -44,6 +44,10 @@ class BotMessage(object):
     def to_array(self):
         return {"bot_id": self.bot_id, "message": self.message.to_array()}
     # end def
+
+    def __repr__(self):
+        return f'{self.__class__.__name__}(bot_id={self.bot_id!r}, message={self.message!r})'
+    # end def
 # end class
 
 
@@ -63,6 +67,10 @@ class CacheData(object):
         self.enabled = enabled
         self.queue = queue
         self.next_send = next_send
+    # end def
+
+    def __repr__(self):
+        return f'{self.__class__.__name__}(enabled={self.enabled!r}, queue={self.queue!r}, next_send={self.next_send!r})'
     # end def
 # end class
 
