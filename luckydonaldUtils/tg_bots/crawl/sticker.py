@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 import os
 import json
+from datetime import datetime, timedelta
+
 import requests
 
 from luckydonaldUtils.logger import logging
@@ -22,10 +24,17 @@ if __name__ == '__main__':
 # end if
 
 GETSTICKERS_API_KEY = os.getenv('GETSTICKERS_API_KEY', None)
-GETSTICKERS_DOMAIN = os.getenv('GETSTICKERS_DOMAIN', 'https://getstickers.me')   # so we can switch to staging there.
-GETSTICKERS_ENABLED = GETSTICKERS_API_KEY and GETSTICKERS_DOMAIN
+GETSTICKERS_API_URL = os.getenv('GETSTICKERS_API_URL', 'https://api.getstickers.me/v1')   # so we can switch to staging there.
+GETSTICKERS_ENABLED = GETSTICKERS_API_KEY and GETSTICKERS_API_URL
 
 TIMEOUT = 0.5
+
+SEND_INTERVAL = timedelta(minute=1)
+SEND_CACHE_STICKER = {
+    "enabled": True,
+    "next_send": datetime.now() + SEND_INTERVAL,
+    "queue": [],
+}
 
 sticker_crawl_tbp = TBlueprint(__name__)
 
@@ -80,7 +89,7 @@ def collect_pack_text(message: Message):
 def submit_pack(pack_url: str):
     try:
         requests.put(
-            GETSTICKERS_DOMAIN + '/api/v3/submit/pack/' + pack_url,
+            GETSTICKERS_API_URL + 'submit/pack' + pack_url,
             params={
                 "key": GETSTICKERS_API_KEY,
                 "bot_id": sticker_crawl_tbp.user_id,
@@ -105,18 +114,31 @@ def submit_sticker_message(message: Message):
     if not isinstance(message, Message) or not isinstance(message.sticker, Sticker):
         return
     # end if
-    payload = json.dumps(message.to_array())
+    global SEND_CACHE_STICKER
+    if SEND_CACHE_STICKER["enabled"]:
+        SEND_CACHE_STICKER["queue"].append(message)
+        if datetime.now() < SEND_CACHE_STICKER["next_send"]:
+            return
+        # end if
+        SEND_CACHE_STICKER["next_send"] = datetime.now() + SEND_INTERVAL
+        SEND_CACHE_STICKER["queue"], messages_to_send = [], SEND_CACHE_STICKER["queue"]
+    else:
+        messages_to_send = [message]
+    # end if
+    if not messages_to_send:
+        return
+    # end if
+    messages_to_send = [msg.to_array() for msg in messages_to_send]
+    payload = json.dumps(messages_to_send)
     logger.debug(f'sending {payload!r} to the API.')
     try:
         requests.put(
-            GETSTICKERS_DOMAIN + '/api/v3/submit/sticker',
+            GETSTICKERS_API_URL + 'submit/stickers',
             params={
                 "key": GETSTICKERS_API_KEY,
                 "bot_id": sticker_crawl_tbp.user_id,
             },
-            data={
-                "message": payload,
-            },
+            data=payload,
             timeout=TIMEOUT,
         )
         return
@@ -126,9 +148,9 @@ def submit_sticker_message(message: Message):
         except:
             result = e.response.text
         # end try
-        logger.warning(f'Submitting sticker to getstickers.me failed with error code {e.response.status_code}: {result}')
+        logger.warning(f'Submitting stickers to getstickers.me failed with error code {e.response.status_code}: {result}')
     except:
-        logger.warning('Submitting sticker to getstickers.me failed.', exc_info=True)
+        logger.warning('Submitting stickers to getstickers.me failed.', exc_info=True)
     # end try
 
     # so it failed.
