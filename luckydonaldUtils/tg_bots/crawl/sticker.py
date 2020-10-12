@@ -171,15 +171,14 @@ def submit_sticker_message(message: Message):
         return
     # end if
     messages_to_send = [msg.to_array() for msg in messages_to_send]
-    payload = json.dumps(messages_to_send)
-    logger.debug(f'sending {payload!r} to the API with key={GETSTICKERS_API_KEY!r}.')
+    logger.debug(f'sending {messages_to_send!r} to the API with key={GETSTICKERS_API_KEY!r}.')
     try:
         result = requests.put(
             GETSTICKERS_API_URL + '/submit/stickers',
             params={
                 "key": GETSTICKERS_API_KEY,
             },
-            data=payload,
+            json=messages_to_send,
             timeout=TIMEOUT,
 
         )
