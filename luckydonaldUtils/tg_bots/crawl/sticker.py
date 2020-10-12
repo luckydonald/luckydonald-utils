@@ -126,7 +126,7 @@ def collect_pack_text(message: Message):
 def submit_pack(pack_url: str):
     try:
         requests.put(
-            GETSTICKERS_API_URL + 'submit/pack' + pack_url,
+            GETSTICKERS_API_URL + '/submit/pack',
             params={
                 "key": GETSTICKERS_API_KEY,
                 "bot_id": sticker_crawl_tbp.user_id,
