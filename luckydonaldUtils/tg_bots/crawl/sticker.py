@@ -175,7 +175,7 @@ def submit_sticker_message(message: Message):
     logger.debug(f'sending {payload!r} to the API with key={GETSTICKERS_API_KEY!r}.')
     try:
         requests.put(
-            GETSTICKERS_API_URL + 'submit/stickers',
+            GETSTICKERS_API_URL + '/submit/stickers',
             params={
                 "key": GETSTICKERS_API_KEY,
             },
