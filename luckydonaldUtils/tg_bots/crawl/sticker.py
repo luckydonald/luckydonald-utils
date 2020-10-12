@@ -3,6 +3,7 @@
 import os
 import json
 from datetime import datetime, timedelta
+from typing import List, Dict
 
 import requests
 
@@ -29,11 +30,29 @@ GETSTICKERS_ENABLED = GETSTICKERS_API_KEY and GETSTICKERS_API_URL
 
 TIMEOUT = 0.5
 
-SEND_INTERVAL = timedelta(minute=1)
-SEND_CACHE_STICKER = {
-    "enabled": True,
-    "next_send": datetime.now() + SEND_INTERVAL,
-    "queue": [],
+class CacheData(object):
+    next_send: datetime
+    queue: List[Message]
+
+    def __init__(self, queue=None, *, next_send=None):
+        if queue is None:
+            queue = []
+        # end if
+        if next_send is None:
+            next_send = datetime.now() + SEND_INTERVAL
+        # end if
+        self.queue = queue
+        self.next_send = next_send
+    # end def
+# end class
+
+
+SEND_INTERVAL = timedelta(minutes=1)
+
+SEND_CACHE_STICKER_ENABLED = True
+# noinspection PyCompatibility
+SEND_CACHE_STICKER: Dict[int, CacheData] = {
+    # key: bot_user_id, value: CacheData
 }
 
 sticker_crawl_tbp = TBlueprint(__name__)
@@ -115,13 +134,16 @@ def submit_sticker_message(message: Message):
         return
     # end if
     global SEND_CACHE_STICKER
-    if SEND_CACHE_STICKER["enabled"]:
-        SEND_CACHE_STICKER["queue"].append(message)
-        if datetime.now() < SEND_CACHE_STICKER["next_send"]:
+    if SEND_CACHE_STICKER_ENABLED:
+        if sticker_crawl_tbp.user_id not in SEND_CACHE_STICKER:
+            SEND_CACHE_STICKER[sticker_crawl_tbp.user_id] = CacheData()
+        # end if
+        cache = SEND_CACHE_STICKER[sticker_crawl_tbp.user_id]
+        if datetime.now() < cache.next_send:
             return
         # end if
-        SEND_CACHE_STICKER["next_send"] = datetime.now() + SEND_INTERVAL
-        SEND_CACHE_STICKER["queue"], messages_to_send = [], SEND_CACHE_STICKER["queue"]
+        cache.next_send = datetime.now() + SEND_INTERVAL
+        messages_to_send, cache.queue = cache.queue, []
     else:
         messages_to_send = [message]
     # end if
