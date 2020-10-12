@@ -193,10 +193,4 @@ def submit_sticker_message(message: Message):
     except:
         logger.warning('Submitting stickers to getstickers.me failed.', exc_info=True)
     # end try
-
-    # so it failed.
-    if message.sticker.set_name:
-        submit_pack(message.sticker.set_name)
-    # end if
 # end def
-
