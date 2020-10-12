@@ -30,30 +30,47 @@ GETSTICKERS_ENABLED = GETSTICKERS_API_KEY and GETSTICKERS_API_URL
 
 TIMEOUT = 0.5
 
-class CacheData(object):
-    next_send: datetime
-    queue: List[Message]
 
-    def __init__(self, queue=None, *, next_send=None):
+# noinspection PyCompatibility
+class BotMessage(object):
+    bot_id: int
+    message: Message
+
+    def __init__(self, bot_id, message):
+        self.bot_id = bot_id
+        self.message = message
+    # end def
+
+    def to_array(self):
+        return {"bot_id": self.bot_id, "message": self.message.to_array()}
+    # end def
+# end class
+
+# noinspection PyCompatibility
+class CacheData(object):
+    enabled: bool
+    next_send: datetime
+    queue: List[BotMessage]
+
+    def __init__(self, queue=None, *, next_send=None, enabled=True):
         if queue is None:
             queue = []
         # end if
         if next_send is None:
             next_send = datetime.now() + SEND_INTERVAL
         # end if
+        self.enabled = enabled
         self.queue = queue
         self.next_send = next_send
     # end def
 # end class
 
 
+
 SEND_INTERVAL = timedelta(minutes=1)
 
-SEND_CACHE_STICKER_ENABLED = True
 # noinspection PyCompatibility
-SEND_CACHE_STICKER: Dict[int, CacheData] = {
-    # key: bot_user_id, value: CacheData
-}
+SEND_CACHE_STICKER = CacheData(enabled=True)
 
 sticker_crawl_tbp = TBlueprint(__name__)
 
@@ -129,23 +146,23 @@ def submit_pack(pack_url: str):
 # end def
 
 
+# noinspection PyCompatibility
 def submit_sticker_message(message: Message):
     if not isinstance(message, Message) or not isinstance(message.sticker, Sticker):
         return
     # end if
     global SEND_CACHE_STICKER
-    if SEND_CACHE_STICKER_ENABLED:
-        if sticker_crawl_tbp.user_id not in SEND_CACHE_STICKER:
-            SEND_CACHE_STICKER[sticker_crawl_tbp.user_id] = CacheData()
-        # end if
-        cache = SEND_CACHE_STICKER[sticker_crawl_tbp.user_id]
-        if datetime.now() < cache.next_send:
+    wrapped_msg = BotMessage(bot_id=sticker_crawl_tbp.user_id, message=message)
+    if SEND_CACHE_STICKER.enabled:
+        SEND_CACHE_STICKER.queue.append(wrapped_msg)
+
+        if datetime.now() < SEND_CACHE_STICKER.next_send:
             return
         # end if
-        cache.next_send = datetime.now() + SEND_INTERVAL
-        messages_to_send, cache.queue = cache.queue, []
+        SEND_CACHE_STICKER.next_send = datetime.now() + SEND_INTERVAL
+        messages_to_send, SEND_CACHE_STICKER.queue = SEND_CACHE_STICKER.queue, []
     else:
-        messages_to_send = [message]
+        messages_to_send = [wrapped_msg]
     # end if
     if not messages_to_send:
         return
@@ -158,7 +175,6 @@ def submit_sticker_message(message: Message):
             GETSTICKERS_API_URL + 'submit/stickers',
             params={
                 "key": GETSTICKERS_API_KEY,
-                "bot_id": sticker_crawl_tbp.user_id,
             },
             data=payload,
             timeout=TIMEOUT,
