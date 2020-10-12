@@ -46,6 +46,7 @@ class BotMessage(object):
     # end def
 # end class
 
+
 # noinspection PyCompatibility
 class CacheData(object):
     enabled: bool
@@ -157,6 +158,7 @@ def submit_sticker_message(message: Message):
         SEND_CACHE_STICKER.queue.append(wrapped_msg)
 
         if datetime.now() < SEND_CACHE_STICKER.next_send:
+            logger.debug(f'Not yet sending the sticker, waiting until {SEND_CACHE_STICKER.next_send}.')
             return
         # end if
         SEND_CACHE_STICKER.next_send = datetime.now() + SEND_INTERVAL
@@ -165,11 +167,12 @@ def submit_sticker_message(message: Message):
         messages_to_send = [wrapped_msg]
     # end if
     if not messages_to_send:
+        logger.debug(f'no stickers, not sending.')
         return
     # end if
     messages_to_send = [msg.to_array() for msg in messages_to_send]
     payload = json.dumps(messages_to_send)
-    logger.debug(f'sending {payload!r} to the API.')
+    logger.debug(f'sending {payload!r} to the API with key={GETSTICKERS_API_KEY!r}.')
     try:
         requests.put(
             GETSTICKERS_API_URL + 'submit/stickers',
