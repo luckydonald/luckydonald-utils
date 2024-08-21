@@ -23,7 +23,7 @@ setup(
     packages=find_submodules(main_package),
     version=VERSION,
     author="luckydonald",
-    author_email="code@luckydonald.de",
+    author_email="code_utils@luckydonald.de",
     description=long_description,
     license="GPLv2+",
     keywords="luckydonald utils utilities utility python dependencies dependency download progress bar encoding files "
