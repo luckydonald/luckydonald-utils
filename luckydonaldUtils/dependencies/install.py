@@ -30,8 +30,8 @@ logger = logging.getLogger(__name__)
 
 def import_or_install(package_name, pip_name=None):
     """
-    Tries to import an package.
-    If that fails it tries to install it via pip, using the given `pip_name` or if not given, the `package_name`.
+    Tries to import a package.
+    If that fails, it tries to install it via pip, using the given `pip_name` or if not given, the `package_name`.
     :param package_name:  Package name to import. (E.g. "PIL")
     :param pip_name:  The name to install it like `$pip install <pip_name>` would do. (E.g. "Pillow")
     :return:
@@ -39,7 +39,7 @@ def import_or_install(package_name, pip_name=None):
     # if pip name is given, just use that.
     if pip_name:
         return import_or_install_with_exact_pip_name(package_name, pip_name)
-    # if pip name is not given, try posibilities, by splitting the dots.
+    # if pip name is not given, try possibilities, by splitting the dots.
     #
     # Example:
     #  >> import_or_install("imgurpython.client.ImgurClient")
@@ -70,7 +70,7 @@ def import_or_install_with_exact_pip_name(package_name, pip_name):
     """
     Just a helper for import_or_install()
 
-    Also Littlepip is best pony.
+    Also, Littlepip is best pony.
     """
     err = None
     for try_i in [1, 2, 3]:
@@ -79,7 +79,7 @@ def import_or_install_with_exact_pip_name(package_name, pip_name):
         except ImportError as e:
             err = e
             logger.debug("Import failed.", exc_info=True)
-            upgrade = try_i >= 2  # import failed twice (one after doing a normal install)
+            upgrade = try_i >= 2  # import failed twice (we first try normal install and only if that doesn't work, an --upgrade)
             install_only(pip_name, upgrade)
     raise err  # should store the last occurred error.
 
