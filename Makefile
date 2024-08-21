@@ -5,12 +5,9 @@ delete-compiled-shit:
 	rm -R build/ ; rm -R luckydonald_utils.egg-info/ ; find . -name '*.pyc'
 	find . -name '*.pyc' -delete ; True
 
-delete-old-dist:
-	find dist -name '*' -delete ; True
-
 upload: pip git
 
-pip-build: delete-old-dist
+pip-build:
 	python3 setup.py sdist bdist_wheel
 
 dev-dependencies:
