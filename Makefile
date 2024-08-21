@@ -21,3 +21,7 @@ pip: pip-build
 
 git:
 	git push
+
+bump: dev-dependencies
+	bump-my-version show-bump
+	bump-my-version bump patch
