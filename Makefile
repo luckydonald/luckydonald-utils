@@ -10,7 +10,10 @@ upload: pip git
 pip-build:
 	python3 setup.py sdist bdist_wheel
 
-test-pip: pip-build
+dev-dependencies:
+	python3 -m pip install -r requirements-dev.txt
+
+test-pip: pip-build dev-dependencies
 	python3 -m twine upload --username luckydonald --skip-existing --repository-url https://test.pypi.org/legacy/ dist/*
 
 pip: pip-build
