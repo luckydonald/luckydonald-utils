@@ -28,7 +28,7 @@ setup(
     license="GPLv2+",
     keywords="luckydonald utils utilities utility python dependencies dependency download progress bar encoding files "
              "interactions json update store text xml time network logger color images webserver django CSRF headers "
-             "eastereggs decorator holder assert raise is None",
+             "eastereggs decorator holder assert raise is None ponies pony",
     url="https://github.com/luckydonald/luckydonald-utils",
     install_requires=install_requires,
     long_description=long_description,
