@@ -8,7 +8,7 @@
 ### Install
 `$` `pip install luckydonald-utils`
 Or, to install a specific version:
-`$` `pip install luckydonald-utils==0.83`
+`$` `pip install luckydonald-utils==0.84`
 
 
 ### Update
