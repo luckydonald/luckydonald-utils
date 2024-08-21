@@ -5,8 +5,13 @@ try:
     from .pip_interface import pip_install
 except ImportError as e:
     logger = logging.getLogger(__name__)
-    logger.warn("Could not apply logger workaround. Falling back to using pip directly.")
-    from .pip_interface_fallback import pip_install
+    logger.warn("pip_interface: Could not apply logger workaround. Falling back to using pip as import.")
+    try:
+        from .pip_interface_fallback import pip_install
+    except ImportError as e:
+        logger.warn("pip_interface: Could not import pip module. Falling back to using pip directly via cli call.")
+        from .pip_interface_fallback_fallback import pip_install
+    # end try
 # end try
 
 from setuptools import find_packages
