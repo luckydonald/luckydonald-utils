@@ -3,6 +3,49 @@ from ..logger import ColoredFormatter, ColoredStreamHandler
 
 
 def get_uvicorn_log_config(*, disable_existing_loggers: bool = False, project: str | None = None) -> dict[str, Any]:
+    """
+    ## Function
+    ### Args:
+        disable_existing_loggers:
+        project:
+
+    ### Returns:
+        the config dict.
+
+    ## Usage:
+
+    ### Albemic:
+    ```py
+    # alembic/env.py
+    # # Import:
+    from luckydonald_utils.uvicorns.log_config import get_uvicorn_log_config
+
+    # Replacing/adding any `*Config` lines - i.e. `dictConfig(…)` or `fileConfig(…)`.
+    dictConfig(get_uvicorn_log_config(disable_existing_loggers=False, project="cum_control"))
+    ```
+    ```py
+    if __name__ == "__main__":
+        logging.add_colored_handler(level=logging.DEBUG, date_formatter="%Y-%m-%d %H:%M:%S")
+        logger.info("Starting server...")
+        # ... migrations ...
+        print('Migrations done, reapplying logger config.')
+        logging_config.dictConfig(get_uvicorn_log_config())
+    # end if
+    # …
+    uvicorn.run(
+        app=f'{app_module_path}:app',
+        host='0.0.0.0',
+        port=port,
+        reload=False,
+        workers=None,
+        root_path="",
+        proxy_headers=False,
+        log_config=get_uvicorn_log_config(),
+        log_level="trace",
+        use_colors=None,
+    )
+    ```
+    """
     config = {
         "version": 1,
         "disable_existing_loggers": disable_existing_loggers,
