@@ -5,6 +5,7 @@ import sys
 __author__ = 'luckydonald'
 __all__ = ["logging", "ColoredFormatter", "ColoredStreamHandler", "LevelByNameFilter"]
 
+from typing import Dict
 
 DEFAULT_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
@@ -22,7 +23,7 @@ class ColoredFormatter(_logging.Formatter):
 
         # end def
 
-        colors = {
+        colors: Dict[str, int] = {
             'default': 39,
             'black': 30,
             'red': 31,
@@ -47,9 +48,22 @@ class ColoredFormatter(_logging.Formatter):
 
         color_prefix = '\033['
 
-        def prepare_color(self, color_number):
-            return ('%s%dm') % (self.color_prefix, color_number)
+        @classmethod
+        def prepare_color(cls, color_number: int) -> str:
+            return ('%s%dm') % (cls.color_prefix, color_number)
+        # end def
 
+        @classmethod
+        def prepare_colors(cls, on_color: int) -> Dict[str, str]:
+            return dict(
+                all_off=cls.prepare_color(0),  # Reset all attributes
+                color_on=cls.prepare_color(on_color),  # Color as given/from lookup
+                color_off=cls.prepare_color(39),  # Default foreground color
+                inverse_on=cls.prepare_color(7),  # Reverse (invert the foreground and background colors)
+                inverse_off=cls.prepare_color(27),  # Reset reverse
+                background_off=cls.prepare_color(49),  # Default background color
+                file_color_on=cls.prepare_color(94),  # Light blue
+            )
         # end def
 
         def colored(self, record):
@@ -58,16 +72,9 @@ class ColoredFormatter(_logging.Formatter):
             """
 
             color = self.mapping.get(record.levelname, 'default')
-            clr = self.colors[color]
-            formatter = dict(
-                all_off=self.prepare_color(0),  # Reset all attributes
-                color_on=self.prepare_color(clr),  # Color as given/from lookup
-                color_off=self.prepare_color(39),  # Default foreground color
-                inverse_on=self.prepare_color(7),  # Reverse (invert the foreground and background colors)
-                inverse_off=self.prepare_color(27),  # Reset reverse
-                background_off=self.prepare_color(49),  # Default background color
-                file_color_on=self.prepare_color(94),  # Light blue
-            )
+            on_color = self.colors[color]
+            formatter = self.prepare_colors(on_color)
+
             lines = []
 
             # log level
@@ -138,12 +145,11 @@ class ColoredFormatter(_logging.Formatter):
     def __init__(self, date_formatter=None):
         super(ColoredFormatter, self).__init__(datefmt=date_formatter)
         self.color_instance = self.Color(self)
+    # end def
 
     def colored(self, record):
         return self.color_instance.colored(record)
-
     # end def
-
 
     def format(self, record):
         super(ColoredFormatter, self).format(record)
@@ -158,6 +164,7 @@ class ColoredFormatter(_logging.Formatter):
         if record.exc_text:
             if s[-1:] != "\n":
                 s += "\n"
+            # end if
             try:
                 s = s + record.exc_text
             except UnicodeError:  # PYTHON 2, LOL!
@@ -168,20 +175,21 @@ class ColoredFormatter(_logging.Formatter):
                 # encodings, e.g. UTF-8 for the filesystem and latin-1
                 # for a script. See issue 13232.
                 s = s + record.exc_text.decode(sys.getfilesystemencoding(), 'replace')
+            # end try
+        # end if
         if hasattr(record, "stack_info") and record.stack_info:  # py2 doesn't have .stack_info
             if s[-1:] != "\n":
                 s += "\n"
+            # end if
             s = s + record.stack_info  # py3: self.formatStack()
+        # end if
         record.message = s
         return self.colored(record)
-
     # end def
 
     def usesTime(self):
         return bool(self.datefmt)
-        # end def
-
-
+    # end def
 # end class
 
 
@@ -196,6 +204,8 @@ class ColoredStreamHandler(_logging.StreamHandler):
     def __init__(self, stream=None, date_formatter=DEFAULT_DATE_FORMAT):
         super(ColoredStreamHandler, self).__init__(stream)
         self.formatter = ColoredFormatter(date_formatter=date_formatter)
+    # end def
+# end class
 
 
 # noinspection PyProtectedMember,PyProtectedMember
@@ -204,6 +214,7 @@ class _LoggingWrapper(object):
 
     def __init__(self):
         _logging.addLevelName(self.SUCCESS, 'SUCCESS')
+    # end def
 
     def getLoglevelInt(self, level_string):
         """
@@ -237,8 +248,7 @@ class _LoggingWrapper(object):
                 pass
             # end try
             raise  # key not known, and is no integer either.
-            # end try
-
+        # end try
     # end def
 
     def __call__(self, logger_name):
@@ -248,7 +258,6 @@ class _LoggingWrapper(object):
         :return: self.getLogger(logger_name)
         """
         return self.getLogger(logger_name)
-
     # end def
 
     def add_colored_handler(
@@ -292,7 +301,6 @@ class _LoggingWrapper(object):
             logger.setLevel(level)
         # end if
         return logger
-
     # end def
 
     def test_logger_levels(self, name=__name__, force_all_levels=True):
@@ -308,8 +316,7 @@ class _LoggingWrapper(object):
         logger.critical('level critical')
         if force_all_levels:
             logger.setLevel(logger_level)
-            # end if
-
+        # end if
     # end def
 
     def getLogger(self, name=None):
@@ -322,6 +329,7 @@ class _LoggingWrapper(object):
         logger.SUCCESS = self.SUCCESS
         setattr(logger, "success", lambda message, *args: logger._log(self.SUCCESS, message, args))
         return logger
+    # end def
 
     if sys.version < "3":
         def success(self, msg, *args, **kwargs):
@@ -334,29 +342,33 @@ class _LoggingWrapper(object):
             logger.debug("Houston, we landed in the %s", "moon", exc_info=False)
             """
             self._success(msg, *args, **kwargs)
+        # end def
     else:
         from .py3 import success
+    # end if
 
     def _success(self, msg, *args, **kwargs):
         if len(self.root.handlers) == 0:
             self.basicConfig()
+        # end if
         self.root._log(self.SUCCESS, msg, args, **kwargs)
+    # end def
 
     def __getattr__(self, item):
         if item != "__getattr__":
             if item in self.__dict__:
                 return self.__dict__[item]
+            # end if
+        # end if
         if item == "getLogger":
             return self.getLogger
         elif item == "success":
             return self.success
         elif item == "SUCCESS":
             return self.SUCCESS
-            # end if
-            pass
         else:
             return getattr(_logging, item)
-            # end def
+        # end def
 # end class
 
 
@@ -385,9 +397,10 @@ class LevelByNameFilter(object):
         if root:
             if isinstance(root, str):
                 root = logging.getLoglevelInt(root)
+            # end if
             assert isinstance(root, int)
             self.mapping[""] = root
-        # end
+        # end if
         level = logging.DEBUG
         self.parse_argument(debug, logging.DEBUG)
         self.parse_argument(info, logging.INFO)
@@ -400,9 +413,8 @@ class LevelByNameFilter(object):
             assert isinstance(by_level, dict)
             for level, files in by_level.items():
                 self.parse_argument(files, level)
-                # end for
-                # end if
-
+            # end for
+        # end if
     # end def
 
     def parse_argument(self, argument, level):
@@ -422,10 +434,9 @@ class LevelByNameFilter(object):
                     argument.append(part.split(","))
                 else:
                     self.mapping[part.strip() + "."] = level
-                    # end if
-                    # end for
-                    # end if
-
+                # end if
+            # end for
+        # end if
     # end def
 
     def filter(self, record):
@@ -440,8 +451,8 @@ class LevelByNameFilter(object):
             if name.startswith(k):
                 if len(mapping_path) < len(k):  # we got a longer path. longer = more specific.
                     mapping_path = k
-                    # end if
-                    # end if
+                # end if
+            # end if
         # end for
 
         if mapping_path in self.mapping:  # e.g. root "" is not specified.
@@ -452,10 +463,11 @@ class LevelByNameFilter(object):
         # end def
 # end class
 
-        # # Test code to get a threaded logger:
-        # from luckydonaldUtils.logger import logging;import threading; from time import sleep;
-        # def lel():
-        #     logger.debug(threading.current_thread().name)
-        #     logging.test_logger_levels(),logger.critical("littlepip is\nBEST\npony!")
-        # # end def
+# # Test code to get a threaded logger:
+# from luckydonaldUtils.logger import logging;import threading; from time import sleep;
+# def lel():
+#     logger.debug(threading.current_thread().name)
+#     logging.test_logger_levels(),logger.critical("littlepip is\nBEST\npony!")
+# # end def
+
 # logger = logging.add_colored_handler(level=logging.DEBUG, date_formatter="%Y-%m-%d %H:%M:%S");logging.add_colored_handler(level=logging.DEBUG); lel();sleep(1);thread=threading.Thread(target=lel);thread.start();thread.join()
