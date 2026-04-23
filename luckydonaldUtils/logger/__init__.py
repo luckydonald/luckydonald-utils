@@ -44,6 +44,7 @@ class ColoredFormatter(_logging.Formatter):
             'CRITICAL': 'magenta',
             'SUCCESS': 'green',
             'DEBUG': 'grey',
+            'TRACE': 'grey',
         }
 
         color_prefix = '\033['
