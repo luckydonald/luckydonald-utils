@@ -142,7 +142,7 @@ class ColoredFormatter(_logging.Formatter):
             return "\n".join(lines)
             # end def
 
-    def __init__(self, date_formatter=None):
+    def __init__(self, *args, date_formatter=None, **kwargs):
         super(ColoredFormatter, self).__init__(datefmt=date_formatter)
         self.color_instance = self.Color(self)
     # end def
