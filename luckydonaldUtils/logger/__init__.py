@@ -42,8 +42,8 @@ class ColoredFormatter(_logging.Formatter):
             'WARNING': 'yellow',
             'ERROR': 'red',
             'CRITICAL': 'magenta',
+            'SUCCESS': 'green',
             'DEBUG': 'grey',
-            'SUCCESS': 'green'
         }
 
         color_prefix = '\033['
@@ -142,7 +142,12 @@ class ColoredFormatter(_logging.Formatter):
             return "\n".join(lines)
             # end def
 
-    def __init__(self, *args, date_formatter=None, **kwargs):
+    def __init__(
+        self,
+        *args,
+        date_formatter=None,
+        **kwargs,
+    ):
         super(ColoredFormatter, self).__init__(datefmt=date_formatter)
         self.color_instance = self.Color(self)
     # end def
