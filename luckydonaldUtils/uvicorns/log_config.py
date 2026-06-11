@@ -1,3 +1,5 @@
+from typing_extensions import Any
+
 from ..fully_qualified_name import fqn
 from ..logger import ColoredFormatter, ColoredStreamHandler
 
