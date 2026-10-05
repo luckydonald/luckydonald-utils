@@ -4,9 +4,10 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-_AT_MENTION_RE = re.compile(r"(?<!\S)@([^\s`]+)")
+_AT_MENTION_RE = re.compile(r"(?<![^\s(\[{\"'])@([^\s`]+)")
 _BACKTICK_MENTION_RE = re.compile(r"`([^`\n]+)`")
 _TRAILING_PUNCT = ".,;:!?)]}\"'"
+_SKILL_RE = re.compile(r"(?<![^\s(\[{\"'])/([a-z0-9][a-z0-9-]*)(?![\w/-]|\.\w)")
 _FENCE_RE = re.compile(r"^([ \t>]*)(```|~~~)")
 _LINE_FRAGMENT_RE = re.compile(r"^#L?(\d+)(?:-L?(\d+))?$")
 _COLON_FRAGMENT_RE = re.compile(r"^:(\d+)(?:-(\d+))?$")
@@ -78,29 +79,47 @@ class Mention:
     in_fence: bool                             # True if found inside a fenced code block
     fence_end_line: int | None = None          # that fence's closing delimiter line (set only when in_fence)
     fence_prefix: str | None = None            # that fence's leading prefix string, verbatim (set only when in_fence)
+    skill: str | None = None                   # the slug, for a `/skill` mention (then `candidates` is its SKILL.md path)
+    raw: str = ""                              # the match text before trailing punctuation was stripped (empty: use `suffix` as is)
 # end class
 
 
-def line_mentions(line: str) -> list[tuple[int, int, bool, list[tuple[str, str | None]], str]]:
-    """(start, end, at, candidates, suffix) tuples for @mentions and backtick mentions on a single line."""
-    found: list[tuple[int, int, bool, list[tuple[str, str | None]], str]] = []
-    for m in _AT_MENTION_RE.finditer(line):
-        raw = m.group(1)
-        trimmed = raw.rstrip(_TRAILING_PUNCT)
-        suffix = raw[len(trimmed):]
-        candidates = split_candidates(trimmed)
-        if candidates:
-            found.append((m.start(), m.end(), True, candidates, suffix))
-        # end if
-    # end for
-    for m in _BACKTICK_MENTION_RE.finditer(line):
-        raw = m.group(1)
-        trimmed = raw.rstrip(_TRAILING_PUNCT)
-        suffix = raw[len(trimmed):]
-        candidates = split_candidates(trimmed)
-        if candidates:
-            found.append((m.start(), m.end(), False, candidates, suffix))
-        # end if
+def mention_candidates(raw: str) -> tuple[list[tuple[str, str | None]], str]:
+    """`(candidates, suffix)` for a mention's raw text. The candidates are those of the text with trailing punctuation trimmed (so
+    `@ai/a.txt)` resolves to `ai/a.txt`), followed by the untrimmed text as a last-resort literal path, in case a real file is named
+    with the trailing punctuation. `suffix` is the trimmed punctuation."""
+    trimmed = raw.rstrip(_TRAILING_PUNCT)
+    suffix = raw[len(trimmed):]
+    candidates = split_candidates(trimmed)
+    if suffix and "/" in raw:
+        candidates.append((raw, None))
+    # end if
+    return candidates, suffix
+# end def
+
+
+def skill_path(slug: str) -> str:
+    return f"ai/skills/{slug}/SKILL.md"
+# end def
+
+
+def line_skill_mentions(line: str) -> list[tuple[int, int, str]]:
+    """(start, end, slug) tuples for `/slug` tokens on a single line. Whether the skill really exists is decided on resolving."""
+    return [(m.start(), m.end(), m.group(1)) for m in _SKILL_RE.finditer(line)]
+# end def
+
+
+def line_mentions(line: str) -> list[tuple[int, int, bool, list[tuple[str, str | None]], str, str]]:
+    """(start, end, at, candidates, suffix, raw) tuples for @mentions and backtick mentions on a single line."""
+    found: list[tuple[int, int, bool, list[tuple[str, str | None]], str, str]] = []
+    for regex, at in ((_AT_MENTION_RE, True), (_BACKTICK_MENTION_RE, False)):
+        for m in regex.finditer(line):
+            raw = m.group(1)
+            candidates, suffix = mention_candidates(raw)
+            if candidates:
+                found.append((m.start(), m.end(), at, candidates, suffix, raw))
+            # end if
+        # end for
     # end for
     return found
 # end def
@@ -141,8 +160,13 @@ def find_mentions(content: str) -> list[Mention]:
             continue
         # end if
         matches = [
-            Mention(line=lineno, start=start, end=end, at=at, candidates=candidates, suffix=suffix, in_fence=in_fence)
-            for start, end, at, candidates, suffix in line_mentions(line)
+            Mention(line=lineno, start=start, end=end, at=at, candidates=candidates, suffix=suffix, in_fence=in_fence, raw=raw)
+            for start, end, at, candidates, suffix, raw in line_mentions(line)
+        ]
+        matches += [
+            Mention(line=lineno, start=start, end=end, at=False, candidates=[(skill_path(slug), None)], suffix="", in_fence=in_fence,
+                    skill=slug)
+            for start, end, slug in line_skill_mentions(line)
         ]
         if in_fence:
             fence_pending.extend(matches)

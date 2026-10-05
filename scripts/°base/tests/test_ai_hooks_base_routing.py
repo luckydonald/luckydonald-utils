@@ -9,6 +9,7 @@ import tempfile
 import unittest
 import uuid
 from pathlib import Path
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -2363,19 +2364,58 @@ class AiHooksBaseRoutingTests(unittest.TestCase):
             tracked = run_git(repo, "ls-files", "--", "sub/file.txt").stdout.strip()
             self.assertEqual(tracked, "sub/file.txt")
 
-    def test_referenced_file_mention_tracked_only_staged(self):
+    def _consumer_with_committed_file(self, tmp: str) -> Path:
+        repo = Path(tmp) / "myproject"
+        init_repo(repo, "https://github.com/example/consumer.git")
+        (repo / "sub").mkdir(parents=True, exist_ok=True)
+        (repo / "sub" / "file.txt").write_text("v1\n", encoding="utf-8")
+        run_git(repo, "add", "sub/file.txt")
+        run_git(repo, "commit", "-m", "add file")
+        return repo
+
+    def test_referenced_file_mention_tracked_modified_gets_own_commit(self):
         with tempfile.TemporaryDirectory() as tmp:
-            repo = Path(tmp) / "myproject"
-            init_repo(repo, "https://github.com/example/consumer.git")
-            (repo / "sub").mkdir(parents=True, exist_ok=True)
-            (repo / "sub" / "file.txt").write_text("v1\n", encoding="utf-8")
-            run_git(repo, "add", "sub/file.txt")
-            run_git(repo, "commit", "-m", "add file")
+            repo = self._consumer_with_committed_file(tmp)
             (repo / "sub" / "file.txt").write_text("v2\n", encoding="utf-8")
 
             run_hook(repo, PROMPT_HOOK, {"prompt": "see `sub/file.txt` for context"}, "claude")
 
+            self.assertEqual(last_subject(repo), "ai: referenced file for task added.")
+            self.assertEqual(run_git(repo, "status", "--porcelain", "--", "sub/file.txt").stdout.strip(), "")
+
+    def test_referenced_file_mention_tracked_clean_not_committed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = self._consumer_with_committed_file(tmp)
+
+            run_hook(repo, PROMPT_HOOK, {"prompt": "see `sub/file.txt` for context"}, "claude")
+
             self.assertEqual(last_subject(repo), "ai: updated prompt")
+
+    def test_referenced_file_mention_staged_new_file_committed_other_staged_untouched(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = self._consumer_with_committed_file(tmp)
+            (repo / "sub" / "new.txt").write_text("new\n", encoding="utf-8")
+            (repo / "sub" / "other.txt").write_text("other\n", encoding="utf-8")
+            run_git(repo, "add", "sub/new.txt", "sub/other.txt")
+
+            run_hook(repo, PROMPT_HOOK, {"prompt": "see `sub/new.txt` for context"}, "claude")
+
+            self.assertEqual(last_subject(repo), "ai: referenced file for task added.")
+            self.assertEqual(run_git(repo, "ls-files", "--", "sub/new.txt").stdout.strip(), "sub/new.txt")
+            staged = run_git(repo, "diff", "--cached", "--name-only").stdout.strip().splitlines()
+            self.assertEqual(staged, ["sub/other.txt"])
+
+    def test_referenced_file_mention_during_merge_only_staged(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = self._consumer_with_committed_file(tmp)
+            (repo / "sub" / "file.txt").write_text("v2\n", encoding="utf-8")
+            git_dir = Path(run_git(repo, "rev-parse", "--absolute-git-dir").stdout.strip())
+            (git_dir / "MERGE_HEAD").write_text(run_git(repo, "rev-parse", "HEAD").stdout, encoding="utf-8")
+
+            run_hook(repo, PROMPT_HOOK, {"prompt": "see `sub/file.txt` for context"}, "claude")
+
+            subjects = run_git(repo, "log", "--pretty=%s").stdout.strip().splitlines()
+            self.assertNotIn("ai: referenced file for task added.", subjects)
             staged = run_git(repo, "diff", "--cached", "--name-only").stdout.strip().splitlines()
             self.assertIn("sub/file.txt", staged)
 
@@ -2602,6 +2642,16 @@ class ReffilesLibMentionsTests(unittest.TestCase):
             self.mentions.extract_candidate_paths(prompt),
             ["sub/file.txt", "other/file.md"],
         )
+
+    def test_at_mention_inside_parentheses(self):
+        self.assertEqual(self.mentions.extract_candidate_paths("see (@ai/somefile.txt)"), ["ai/somefile.txt"])
+        mentions = self.mentions.find_mentions("see (@ai/somefile.txt) here")
+        self.assertEqual(len(mentions), 1)
+        self.assertEqual(mentions[0].candidates, [("ai/somefile.txt", None), ("ai/somefile.txt)", None)])
+        self.assertEqual(mentions[0].suffix, ")")
+
+    def test_at_mention_ignores_email_like_text(self):
+        self.assertEqual(self.mentions.find_mentions("mail user@host/path now"), [])
 
     def test_ignores_non_path_tokens(self):
         prompt = "ping @someone and `just_a_word` about this"
@@ -2878,6 +2928,73 @@ class ReffilesLibCommitTests(unittest.TestCase):
                 os.chdir(cwd)
 
         self.assertEqual(content, "see [@`sub/file.txt`](../sub/file.txt), thanks\n")
+
+    def test_process_referenced_files_parenthesized_mention(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "sub").mkdir()
+            (repo / "sub" / "file.txt").write_text("hi\n", encoding="utf-8")
+            cwd = Path.cwd()
+            os.chdir(repo)
+            try:
+                content, resolved = self.commit_mod.process_referenced_files(
+                    "see (@sub/file.txt) there\n", repo, repo / "ai" / "query.md",
+                )
+            finally:
+                os.chdir(cwd)
+
+        self.assertTrue(content.startswith("see ([@`sub/file.txt`]("), content)
+        self.assertTrue(content.endswith("sub/file.txt)) there\n"), content)
+        self.assertEqual(resolved[0].suffix, ")")
+
+    def test_process_referenced_files_prefers_real_file_with_trailing_punctuation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "sub").mkdir()
+            (repo / "sub" / "file.txt)").write_text("hi\n", encoding="utf-8")
+            cwd = Path.cwd()
+            os.chdir(repo)
+            try:
+                content, resolved = self.commit_mod.process_referenced_files(
+                    "see (@sub/file.txt)\n", repo, repo / "ai" / "query.md",
+                )
+            finally:
+                os.chdir(cwd)
+
+        self.assertEqual(resolved[0].path, "sub/file.txt)")
+        self.assertEqual(resolved[0].suffix, "")
+
+    def _process_with_skill(self, prompt: str) -> tuple[str, list]:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "ai" / "skills" / "code-style").mkdir(parents=True)
+            (repo / "ai" / "skills" / "code-style" / "SKILL.md").write_text("x\n", encoding="utf-8")
+            cwd = Path.cwd()
+            os.chdir(repo)
+            try:
+                return self.commit_mod.process_referenced_files(prompt, repo, repo / "ai" / "query.md")
+            finally:
+                os.chdir(cwd)
+
+    def test_process_referenced_files_links_existing_skill(self):
+        content, resolved = self._process_with_skill("please /code-style this, then /code-style.\n")
+        self.assertEqual(content.count("[/code-style]("), 2, content)
+        self.assertEqual(content.count("ai/skills/code-style/SKILL.md)"), 2, content)
+        self.assertTrue(content.endswith(", then [/code-style](" + content.rsplit("](", 1)[1]), content)
+        self.assertTrue(all(m.skill == "code-style" for m in resolved))
+
+    def test_process_referenced_files_ignores_unknown_skill_and_paths(self):
+        prompt = "run /nonexistent and look in /etc/code-style/x and /code-style/x and /code-style.md\n"
+        content, resolved = self._process_with_skill(prompt)
+        self.assertEqual(content, prompt)
+        self.assertEqual(resolved, [])
+
+    def test_stage_and_commit_mentions_ignores_skill_mentions(self):
+        _, resolved = self._process_with_skill("/code-style\n")
+        self.assertEqual(len(resolved), 1)
+        with mock.patch.object(self.commit_mod.subprocess, "run") as run:
+            self.commit_mod.stage_and_commit_mentions(resolved)
+        run.assert_not_called()
 
     def test_process_referenced_files_two_mentions_same_line(self):
         with tempfile.TemporaryDirectory() as tmp:
