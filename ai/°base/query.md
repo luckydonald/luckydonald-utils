@@ -7585,3 +7585,30 @@ I actually want `bugsink` and `sync_todo` MCPs available in this repo locally (&
 
 ❯ Plan accepted, auto mode.
 
+❯ Plan accepted, auto mode.
+
+❯ 0d08dcdc4ac09c65f1de0b76a2307b3b21568f5e
+
+❯ Question answered.
+> <details><summary>
+>
+>> 1. You sent only the hash 0d08dcdc4, which is a stray `ai: agent 097.b8wttnciw results` commit sitting before the commits I just folded. What should I do with it?
+>
+> (click to expand)
+>
+> </summary>
+>
+>> **Commit 0d08dcdc4** (1/1) <kbd>Single Select</kbd><br>
+>> You sent only the hash 0d08dcdc4, which is a stray `ai: agent 097.b8wttnciw results` commit sitting before the commits I just folded. What should I do with it?
+> - [ ] 1\. Fold it into 6d3faad42
+>   - _Rebase so it becomes part of the preceding code commit (`code style skill`), as the skill does by default for agent-result commits. Rewrites history from there up, including the two commits I just made._
+> - [ ] 2\. Show me what it contains
+>   - _Just report its diff: an agent prompt/result record for agent 097 plus 8 lines in ai/°base/query.md. No history changes._
+> - [ ] 3\. Leave it alone
+>   - _It was a stray reference; do nothing._
+> - [x] 4\. _Type something:_
+>   - > fold it into what it belongs to
+>
+> </details>
+>
+

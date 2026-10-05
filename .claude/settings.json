@@ -374,11 +374,12 @@
     "openai-developers@openai-developers": true,
     "skill-creator@claude-plugins-official": true
   },
-  "enabledMcpjsonServers": [],
-  "disabledMcpjsonServers": [
+  "enabledMcpjsonServers": [
     "bugsink",
+    "sync_todo"
+  ],
+  "disabledMcpjsonServers": [
     "chrome-devtools",
-    "sync_todo",
     "coolify"
   ],
   "includeCoAuthoredBy": false

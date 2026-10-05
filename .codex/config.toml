@@ -6,7 +6,7 @@ enabled = true
 # --- BEGIN generated mcp_servers (scripts/°base/ai/settings/sync.py) ---
 
 [mcp_servers."bugsink"]
-enabled = false
+enabled = true
 command = "npx"
 args = ["-y", "envmcp", "--env-file", "ai/.env", "npx", "-y", "bugsink-mcp"]
 
@@ -25,7 +25,7 @@ command = "npx"
 args = ["-y", "chrome-devtools-mcp@latest", "--autoConnect", "--no-usage-statistics"]
 
 [mcp_servers."sync_todo"]
-enabled = false
+enabled = true
 command = "npx"
 args = ["-y", "envmcp", "--env-file", "ai/.env", "npx", "-y", "mcp-remote", "\"$SYNC_TODO_MCP_URL\"", "--header", "\"Authorization:Bearer $SYNC_TODO_MCP_TOKEN\""]
 

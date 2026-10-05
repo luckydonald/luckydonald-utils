@@ -405,7 +405,7 @@
     },
     "servers": {
       "bugsink": {
-        "enabled": false,
+        "enabled": true,
         "type": "stdio",
         "tools": [
           ".env"
@@ -419,7 +419,7 @@
         "cmd": ["npx", "-y", "chrome-devtools-mcp@latest", "--autoConnect", "--no-usage-statistics"]
       },
       "sync_todo": {
-        "enabled": false,
+        "enabled": true,
         "type": "stdio",
         "tools": [
           ".env"

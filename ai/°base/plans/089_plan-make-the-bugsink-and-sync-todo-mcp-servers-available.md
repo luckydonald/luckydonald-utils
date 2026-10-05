@@ -35,6 +35,29 @@ Read-only diagnosis, using key-scoped reads only (no `env`/`headers` values were
 - This turns both servers on for every project that adopts this base, because the shared default changes. A sync_todo token or `SYNC_TODO_MCP_URL` must be set in `.env` or the server will start but fail to connect.
 - The `bugsink-triage` skill's `enable.md` and the sync_todo skill still describe these as "disabled by default", so their wording may need a follow-up touch.
 
+## Status update: edits are already applied, commit and connection failure remain
+
+The edits from the change section are already in the working tree: `ai/settings/settings.json`, `.codex/config.toml` and the regenerated `.claude/settings.json` (3 files, +8/−7).
+`sync.py --dry-run` reported `Would write: .claude/settings.json` after the Codex flag fix, as `enable.md` expects.
+After the restart notice, both servers report `CONNECTION_CLOSED` ("Connection closed"), so enabling worked but the stdio processes exit on start.
+That is a separate problem from the disable list.
+Likely candidates, all unverified: a missing `SYNC_TODO_MCP_URL`/token or bugsink credentials in `ai/.env`, or `npx` failing to launch the package.
+
+## Commit (lplp style)
+
+1. Stage only the three files above by explicit path, after re-running `git status` and `git diff --name-only`.
+   Untracked `ai/°base/errors/*`, `output/agents/*` and `scripts/°base/tests/aaa.py` are not ours and stay unstaged.
+2. Write the message to `ai/git/pending-commit.md` (first `rm ai/git/pending-commit.md || echo 'was gone'`).
+   Summary line shape: `[base] [sync_todo] mcp: ai: Run: Enabled the \`bugsink\` and \`sync_todo\` MCP servers in the shared settings and the Codex config.`
+   Prior commits on these files use the label `[sync_todo] mcp`, so reuse it, and confirm the `[base] [source-repo]` bracket against the "Commit format" section of `ai/°base/AGENTS.md`.
+   The body explains the shared-disable-beats-local-enable cause and the stale `.codex/config.toml` gotcha, and notes that the final plan revision (089) changed nothing beyond the chosen option.
+   No `Co-Authored-By` or `Claude-Session` trailers, which overrides the attribution reminder.
+3. Run `git commit -F ai/git/pending-commit.md && ./scripts/tag_backup.py`.
+4. Fold the trailing auto-commits into it via the documented interactive rebase: `142dafc00` (updated prompt), `5c7251368` (save decision), `3526f90a8` and `720227cb4` (plan 089, final revision folds into the run commit).
+   Re-audit with `git log --oneline -5` right before writing the todo and again after the run, because each message or answer adds a new `ai:` commit.
+   Use `git reset --keep` if a reset is ever needed, never `--hard`.
+5. Commit after each later completed task without asking again.
+
 ## Other doctor checks
 
 Skipped for this run, since the request was narrowly about the two MCP servers.
