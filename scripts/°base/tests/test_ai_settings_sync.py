@@ -537,6 +537,27 @@ class HooksTests(unittest.TestCase):
         rendered = hooks.render_claude({"hooks": {}, "plugins": {"a@m": {"enabled": True}, "b@m": {"enabled": False}}})
         self.assertEqual(rendered["enabledPlugins"], {"a@m": True, "b@m": False})
 
+    def test_skill_overrides_are_normalized_merged_and_rendered_into_claude(self):
+        merged = hooks._merge({"skillOverrides": {"a": "off", "b": "off"}}, {"skillOverrides": {"b": "on", "c": "off"}})
+        self.assertEqual(merged["skillOverrides"], {"a": "off", "b": "on", "c": "off"})
+        self.assertEqual(hooks.render_claude(merged)["skillOverrides"], {"a": "off", "b": "on", "c": "off"})
+        self.assertNotIn("skillOverrides", hooks.render_claude({"hooks": {}}))
+        self.assertNotIn("skillOverrides", hooks._normalize_native({}))
+
+    def test_enable_only_mcp_servers_only_reach_claude_enabled_lists(self):
+        shared = {
+            "hooks": {},
+            "mcp": {"tools": {}, "servers": {"bugsink": {"enabled": True}, "coolify": {"enabled": False}}},
+        }
+        rendered = hooks.render_claude(shared)
+        self.assertEqual(rendered["enabledMcpjsonServers"], ["bugsink"])
+        self.assertEqual(rendered["disabledMcpjsonServers"], ["coolify"])
+        mcp_json, skipped = mcp_servers.render_claude_mcp(shared, Path("/repo"))
+        self.assertEqual((mcp_json, skipped), ({"mcpServers": {}}, []))
+        block, skipped = mcp_servers.render_codex_mcp_block(shared, Path("/repo"))
+        self.assertEqual(skipped, [])
+        self.assertNotIn("bugsink", block)
+
 
 class CommandsTests(unittest.TestCase):
     def test_parse_render_round_trip_bash(self):

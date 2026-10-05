@@ -26,6 +26,13 @@
     "plugins": {
       "type": "object"
     },
+    "skillOverrides": {
+      "type": "object",
+      "description": "Claude Code skill toggles, e.g. {\"my-skill\": \"off\"}. Rendered verbatim into the Claude settings; Codex has no equivalent.",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
     "mcp": {
       "$ref": "./mcp.schema.json"
     },

@@ -10,6 +10,8 @@ Core keys:
 - `version`: settings format version
 - `hooks`: hook definitions shared across tools
 - `permissions`: allow/deny command lists for Claude-style configuration
+- `skillOverrides`: Claude skill toggles like `{"my-skill": "off"}`, rendered verbatim into `.claude/settings*.json`
+- `mcp.servers.<name>`: besides full definitions, an enable-only entry (`{"enabled": false}`) toggles a server defined elsewhere (e.g. `.mcp.json`) and is rendered only into Claude's `enabledMcpjsonServers`/`disabledMcpjsonServers`
 - `pre_commit.yarn@4.enabled`: shared, enabled-by-default Yarn 4 repository policy
 
 Downloader settings:

@@ -102,6 +102,12 @@ def _reconstruct_stdio_entry(mcp: dict[str, Any], cmd: list[str], enabled: bool,
     return entry
 
 
+def _is_enable_only(server: dict[str, Any]) -> bool:
+    """An entry with no definition at all (no `type`/`cmd`/`tools`/`url`), only `enabled`. It toggles a server that is
+    defined elsewhere (e.g. `.mcp.json`) and is only rendered into Claude's enabled/disabledMcpjsonServers lists."""
+    return not ({"type", "cmd", "tools", "url"} & server.keys())
+
+
 def render_claude_mcp(shared: dict[str, Any], git_root: Path) -> tuple[dict[str, Any], list[str]]:
     """Build `.mcp.json` content. Returns (data, skipped_server_names)."""
     mcp = shared.get("mcp") or {}
@@ -109,7 +115,7 @@ def render_claude_mcp(shared: dict[str, Any], git_root: Path) -> tuple[dict[str,
     rendered: dict[str, Any] = {}
     skipped: list[str] = []
     for name, server in servers.items():
-        if not isinstance(server, dict):
+        if not isinstance(server, dict) or _is_enable_only(server):
             continue
         if server.get("type") == "http":
             entry: dict[str, Any] = {"type": "http", "url": server.get("url", "")}
@@ -210,7 +216,7 @@ def render_codex_mcp_block(shared: dict[str, Any], git_root: Path) -> tuple[str,
     lines = [MCP_TOML_BEGIN_MARKER]
     skipped: list[str] = []
     for name, server in servers.items():
-        if not isinstance(server, dict):
+        if not isinstance(server, dict) or _is_enable_only(server):
             continue
         table_lines = _server_table_lines(name, server, mcp, git_root, tool_permissions.get(name))
         if table_lines is None:

@@ -69,7 +69,10 @@
             "additionalProperties": { "type": "string" }
           }
         },
-        "required": ["type"],
+        "anyOf": [
+          { "required": ["type"] },
+          { "required": ["enabled"], "maxProperties": 1, "description": "Enable-only override of a server defined elsewhere (e.g. .mcp.json); only rendered into Claude's enabledMcpjsonServers/disabledMcpjsonServers." }
+        ],
         "additionalProperties": false,
         "allOf": [
           {

@@ -13,7 +13,7 @@ CURRENT_VERSION = 2
 # here (so `_normalize_plugins` can read it and `_shared_extras` won't treat
 # it as opaque user metadata to preserve verbatim), even though nothing ever
 # writes it back out at this level again.
-_CORE_SHARED_KEYS = {"$schema", "version", "hooks", "permissions", "plugins", "enabledPlugins", "mcp"}
+_CORE_SHARED_KEYS = {"$schema", "version", "hooks", "permissions", "plugins", "enabledPlugins", "mcp", "skillOverrides"}
 
 
 def _hook_id(event: str, entry: dict[str, Any]) -> str:
@@ -115,7 +115,7 @@ def _normalize_native(data: dict[str, Any]) -> dict[str, Any]:
                     else:
                         hook.pop("timeoutSec", None)
     mcp = data.get("mcp") or {}
-    return {
+    normalized = {
         "version": CURRENT_VERSION,
         "hooks": hooks,
         "permissions": _normalize_permissions(data.get("permissions") or {}),
@@ -125,6 +125,10 @@ def _normalize_native(data: dict[str, Any]) -> dict[str, Any]:
             "servers": deepcopy(mcp.get("servers") or {}),
         },
     }
+    skill_overrides = data.get("skillOverrides")
+    if isinstance(skill_overrides, dict) and skill_overrides:
+        normalized["skillOverrides"] = deepcopy(skill_overrides)
+    return normalized
 
 
 def _shared_extras(data: dict[str, Any]) -> dict[str, Any]:
@@ -173,6 +177,10 @@ def _merge(base: dict[str, Any], incoming: dict[str, Any]) -> dict[str, Any]:
     for plugin_id, entry in (incoming.get("plugins") or {}).items():
         plugins[plugin_id] = deepcopy(entry)
     merged["plugins"] = plugins
+
+    skill_overrides = {**(merged.get("skillOverrides") or {}), **(incoming.get("skillOverrides") or {})}
+    if skill_overrides:
+        merged["skillOverrides"] = skill_overrides
 
     merged_mcp = deepcopy(merged.get("mcp") or {"tools": {}, "servers": {}})
     incoming_mcp = incoming.get("mcp") or {}
@@ -317,6 +325,9 @@ def render_claude(shared: dict[str, Any]) -> dict[str, Any]:
             for plugin_id, entry in plugins.items()
             if isinstance(entry, dict)
         }
+    skill_overrides = shared.get("skillOverrides")
+    if skill_overrides:
+        data["skillOverrides"] = deepcopy(skill_overrides)
     servers = (shared.get("mcp") or {}).get("servers") or {}
     if servers:
         enabled = [name for name, server in servers.items() if isinstance(server, dict) and server.get("enabled", True)]
