@@ -153,6 +153,10 @@
         "hooks": [
           {
             "type": "command",
+            "bash": "python3 \"$(git rev-parse --show-toplevel)/scripts/°base/ai/hooks/plan-style-context/hook.py\""
+          },
+          {
+            "type": "command",
             "bash": "python3 \"$(git rev-parse --show-toplevel)/scripts/°base/ai/hooks/save-prompt/hook.py\" 'copilot'"
           },
           {

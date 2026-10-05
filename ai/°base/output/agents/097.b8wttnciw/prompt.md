@@ -1,0 +1,1 @@
+Background command "Run full test suite" completed (exit code -1)
