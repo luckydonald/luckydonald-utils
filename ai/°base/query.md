@@ -7559,3 +7559,29 @@ I actually want `bugsink` and `sync_todo` MCPs available in this repo locally (&
 ❯ Conversation compacted <kbd>auto</kbd>:
 > - [Result (`13849` chars, `13.5 KB`)](output/compact/009.ecdd0b30-1874-4f14-bd0e-0b1b2779ef2b/result.md)
 
+❯ /doctor Why is my bugsink & todo MCP not available?
+
+❯ Question answered.
+> <details><summary>
+>
+>> 1. bugsink and sync_todo are enabled in your local settings but still listed as disabled in the checked-in .claude/settings.json, and that disable seems to win. Where should the fix go?
+>
+> (click to expand)
+>
+> </summary>
+>
+>> **Fix scope** (1/1) <kbd>Single Select</kbd><br>
+>> bugsink and sync_todo are enabled in your local settings but still listed as disabled in the checked-in .claude/settings.json, and that disable seems to win. Where should the fix go?
+> - [ ] 1\. Fix sync.py rendering (Recommended)
+>   - _Change scripts/°base/ai/settings/sync.py so a server enabled in settings.local.json is dropped from the shared disabledMcpjsonServers list. Keeps 'disabled by default' for other projects and fixes the cause._
+> - [x] 2\. Flip shared default to enabled
+>   - _Set enabled:true for bugsink and sync_todo in ai/settings/settings.json and re-run sync.py. Fastest, but turns them on for every project using this base._
+> - [ ] 3\. Just show me the steps
+>   - _No file changes from me. I only write up the diagnosis and the manual edit for you to apply._
+> - [ ] 4\. _Type something._
+>
+> </details>
+>
+
+❯ Plan accepted, auto mode.
+
